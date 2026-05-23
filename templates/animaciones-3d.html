@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Animaciones 3D — Douglas Torres</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,900;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#08080f;--surface:#0f0e1a;--border:rgba(255,255,255,.07);--primary:#7c3aed;--pl:#a855f7;--accent:#f97316;--text:#f0eeff;--muted:#8b8a9b;--faint:#3a3850;--mono:'JetBrains Mono',monospace}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow-x:hidden}
+    .back-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:rgba(8,8,15,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+    .back-link{display:inline-flex;align-items:center;gap:8px;color:var(--pl);text-decoration:none;font-size:13px;font-weight:500;transition:gap .2s}
+    .back-link:hover{gap:12px}
+    .nav-title{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+    .demo-section{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 60px;position:relative;overflow:hidden}
+    .demo-section:nth-child(even){background:var(--surface)}
+    .section-badge{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--pl);margin-bottom:12px}
+    .section-heading{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;text-align:center;line-height:1.1;margin-bottom:16px}
+    .section-heading em{font-style:italic;color:var(--pl)}
+    .section-desc{font-size:15px;color:var(--muted);text-align:center;max-width:540px;line-height:1.7;margin-bottom:36px}
+    .canvas-wrap{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(124,58,237,.1);width:100%;max-width:960px}
+    .canvas-wrap canvas{display:block;width:100%!important;height:auto!important}
+    .canvas-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.3);white-space:nowrap;pointer-events:none}
+    .info-pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:20px}
+    .pill{padding:4px 12px;border-radius:99px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);font-family:var(--mono);font-size:11px;color:var(--pl)}
+    .speed-controls{display:flex;align-items:center;gap:12px;margin-top:20px;font-size:13px;color:var(--muted);flex-wrap:wrap;justify-content:center}
+    .speed-btn{padding:6px 16px;border-radius:99px;background:var(--surface);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:12px;transition:all .2s}
+    .speed-btn:hover,.speed-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+    #globe-tooltip{position:fixed;pointer-events:none;z-index:300;display:none;max-width:260px}
+    .tt-card{background:rgba(8,8,15,.97);border:1px solid var(--primary);border-radius:12px;padding:12px 16px;backdrop-filter:blur(16px);box-shadow:0 8px 32px rgba(0,0,0,.5)}
+    .tt-flag{font-size:20px;margin-bottom:4px}
+    .tt-country{font-weight:700;font-size:13px;color:var(--pl);font-family:var(--mono);margin-bottom:2px}
+    .tt-capital{font-size:11px;color:var(--muted);margin-bottom:6px;font-family:var(--mono)}
+    .tt-fact{font-size:11px;color:var(--text);line-height:1.5}
+    @media(max-width:600px){.demo-section{padding:90px 12px 50px}}
+  </style>
+</head>
+<body>
+
+<nav class="back-nav">
+  <a href="../index.html" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Volver al portafolio
+  </a>
+  <span class="nav-title">Animaciones 3D — Three.js + CSS</span>
+</nav>
+
+<div id="globe-tooltip"><div class="tt-card"><div class="tt-flag" id="tt-flag"></div><div class="tt-country" id="tt-country"></div><div class="tt-capital" id="tt-capital"></div><div class="tt-fact" id="tt-fact"></div></div></div>
+
+<!-- 1. CUBE -->
+<section class="demo-section">
+  <p class="section-badge">01 · Three.js BoxGeometry</p>
+  <h1 class="section-heading">Cubo <em>Interactivo</em></h1>
+  <p class="section-desc">Arrastra para rotar en cualquier dirección. Rueda del ratón para zoom. Cada cara tiene color único.</p>
+  <div class="canvas-wrap" id="cube-wrap"><canvas id="cube-canvas"></canvas><p class="canvas-hint">← drag to rotate · scroll to zoom →</p></div>
+  <div class="info-pills"><span class="pill">BoxGeometry</span><span class="pill">MeshStandardMaterial</span><span class="pill">6 faces</span></div>
+</section>
+
+<!-- 2. GLOBE -->
+<section class="demo-section">
+  <p class="section-badge">02 · Three.js WebGL</p>
+  <h2 class="section-heading">Globo <em>Terráqueo</em></h2>
+  <p class="section-desc">Textura real del planeta. Hover sobre los puntos dorados para ver datos culturales de cada país.</p>
+  <div class="canvas-wrap" id="globe-wrap"><canvas id="globe-canvas"></canvas><p class="canvas-hint">← drag · hover countries · scroll zoom →</p></div>
+  <div class="info-pills"><span class="pill">TextureLoader</span><span class="pill">Raycaster</span><span class="pill">150+ países</span></div>
+</section>
+
+<!-- 3. DODECAHEDRON -->
+<section class="demo-section">
+  <p class="section-badge">03 · Three.js Geometry</p>
+  <h2 class="section-heading">Dodecaedro <em>Paisajes</em></h2>
+  <p class="section-desc">12 caras, cada una con un paisaje único dibujado a la forma pentagonal. Arrastra para rotar, rueda para zoom.</p>
+  <div class="canvas-wrap" id="dodec-wrap"><canvas id="dodec-canvas"></canvas><p class="canvas-hint">← drag to rotate · scroll to zoom →</p></div>
+  <div class="info-pills"><span class="pill">DodecahedronGeometry</span><span class="pill">Canvas Textures</span><span class="pill">12 paisajes</span></div>
+</section>
+
+<!-- 4. SOLAR SYSTEM -->
+<section class="demo-section">
+  <p class="section-badge">04 · Three.js Animation</p>
+  <h2 class="section-heading">Sistema <em>Solar</em></h2>
+  <p class="section-desc">8 planetas con órbitas. Scroll dentro del canvas para zoom sin mover la página.</p>
+  <div class="canvas-wrap" id="solar-wrap"><canvas id="solar-canvas"></canvas><p class="canvas-hint">scroll to zoom · drag to orbit</p></div>
+  <div class="speed-controls">
+    <span>Velocidad:</span>
+    <button class="speed-btn" data-speed="0.5">0.5×</button>
+    <button class="speed-btn active" data-speed="1">1×</button>
+    <button class="speed-btn" data-speed="3">3×</button>
+    <button class="speed-btn" data-speed="8">8×</button>
+  </div>
+  <div class="info-pills" style="margin-top:12px"><span class="pill">PointLight</span><span class="pill">Object3D orbits</span><span class="pill">Scroll zoom</span></div>
+</section>
+
+<!-- 5. PARTICLES -->
+<section class="demo-section">
+  <p class="section-badge">05 · Three.js Particles</p>
+  <h2 class="section-heading">Campo de <em>Partículas</em></h2>
+  <p class="section-desc">Click sostenido para atraer partículas al cursor. Suelta para que se repelan.</p>
+  <div class="canvas-wrap" id="particles-wrap"><canvas id="particles-canvas"></canvas><p class="canvas-hint">click + hold = attract · release = repel</p></div>
+  <div class="info-pills"><span class="pill">BufferGeometry</span><span class="pill">Attract / Repel</span><span class="pill">10,000 pts</span></div>
+</section>
+
+<script>
+/* ── helpers ── */
+function sz(wrap){const w=wrap.clientWidth||900;return{w:Math.max(w,300),h:Math.round(Math.max(w,300)*.56)}}
+function mkRenderer(canvas,w,h,alpha){
+  const r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:!!alpha});
+  r.setSize(w,h); r.setPixelRatio(Math.min(devicePixelRatio,2)); return r;
+}
+function dragSetup(canvas,onMove){
+  let dn=false,px=0,py=0;
+  const start=e=>{dn=true;px=e.clientX||e.touches?.[0].clientX;py=e.clientY||e.touches?.[0].clientY};
+  const move=e=>{if(!dn)return;const cx=e.clientX??e.touches?.[0].clientX,cy=e.clientY??e.touches?.[0].clientY;onMove(cx-px,cy-py);px=cx;py=cy};
+  const end=()=>dn=false;
+  canvas.addEventListener('mousedown',start);
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',end);
+  canvas.addEventListener('touchstart',start,{passive:true});
+  window.addEventListener('touchmove',move,{passive:true});
+  window.addEventListener('touchend',end);
+  return ()=>dn;
+}
+
+/* ══════════════════════════════════════════
+   1. CUBE — Three.js BoxGeometry
+══════════════════════════════════════════ */
+(function(){
+  const wrap=document.getElementById('cube-wrap');
+  const canvas=document.getElementById('cube-canvas');
+  if(!canvas||!THREE)return;
+  const{w,h}=sz(wrap);
+  canvas.width=w;canvas.height=h;
+  const renderer=mkRenderer(canvas,w,h,true);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,w/h,.1,100);
+  camera.position.z=4.5;
+
+  function makeFaceTex(label,bgColor,textColor){
+    const c=document.createElement('canvas');c.width=512;c.height=512;
+    const ctx=c.getContext('2d');
+    // bg gradient
+    const g=ctx.createLinearGradient(0,0,512,512);
+    g.addColorStop(0,bgColor);g.addColorStop(1,shadeColor(bgColor,-40));
+    ctx.fillStyle=g;ctx.fillRect(0,0,512,512);
+    // inner border
+    ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=18;
+    ctx.strokeRect(12,12,488,488);
+    // corner dots
+    [[40,40],[472,40],[40,472],[472,472]].forEach(([x,y])=>{
+      ctx.fillStyle='rgba(255,255,255,.3)';
+      ctx.beginPath();ctx.arc(x,y,8,0,Math.PI*2);ctx.fill();
+    });
+    // label
+    ctx.fillStyle=textColor||'rgba(255,255,255,.95)';
+    ctx.font='bold 80px Inter,sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(label,256,256);
+    return new THREE.CanvasTexture(c);
+  }
+  function shadeColor(hex,amt){
+    let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+    r=Math.max(0,Math.min(255,r+amt));g=Math.max(0,Math.min(255,g+amt));b=Math.max(0,Math.min(255,b+amt));
+    return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+  }
+
+  const faceData=[
+    {label:'FRONT', color:'#7c3aed'},
+    {label:'BACK',  color:'#f97316'},
+    {label:'TOP',   color:'#22c55e'},
+    {label:'BOTTOM',color:'#ef4444'},
+    {label:'RIGHT', color:'#3b82f6'},
+    {label:'LEFT',  color:'#a855f7'},
+  ];
+  // BoxGeometry face order: +x,-x,+y,-y,+z,-z = right,left,top,bottom,front,back
+  const faceOrder=[4,5,2,3,0,1]; // front,back,top,bottom,right,left mapped to +x,-x,+y,-y,+z,-z
+  const mats=faceOrder.map(i=>new THREE.MeshStandardMaterial({map:makeFaceTex(faceData[i].label,faceData[i].color),roughness:.4,metalness:.1}));
+  const cube=new THREE.Mesh(new THREE.BoxGeometry(2,2,2),mats);
+  scene.add(cube);
+
+  // Edges
+  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(2,2,2)),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.15}));
+  cube.add(edges);
+
+  scene.add(new THREE.AmbientLight(0xffffff,.7));
+  const dl=new THREE.DirectionalLight(0xffffff,1);dl.position.set(4,6,4);scene.add(dl);
+  const dl2=new THREE.DirectionalLight(0x4466ff,.4);dl2.position.set(-4,-3,-4);scene.add(dl2);
+
+  let rotX=-.3,rotY=.5,camZ=4.5;
+  const isDrag=dragSetup(canvas,(dx,dy)=>{rotY+=dx*.006;rotX+=dy*.004;});
+
+  wrap.addEventListener('wheel',e=>{e.preventDefault();camZ=Math.max(2.5,Math.min(9,camZ+e.deltaY*.005));camera.position.z=camZ;},{passive:false});
+
+  function animate(){
+    requestAnimationFrame(animate);
+    if(!isDrag()){rotY+=.004;rotX+=.001;}
+    cube.rotation.y=rotY;cube.rotation.x=rotX;
+    renderer.render(scene,camera);
+  }
+  animate();
+
+  window.addEventListener('resize',()=>{const{w:nw,h:nh}=sz(wrap);renderer.setSize(nw,nh);camera.aspect=nw/nh;camera.updateProjectionMatrix();});
+})();
+
+/* ══════════════════════════════════════════
+   2. GLOBE — real texture + capitals
+══════════════════════════════════════════ */
+(function(){
+  const wrap=document.getElementById('globe-wrap');
+  const canvas=document.getElementById('globe-canvas');
+  if(!canvas||!THREE)return;
+  const{w,h}=sz(wrap);
+  canvas.width=w;canvas.height=h;
+  const renderer=mkRenderer(canvas,w,h,true);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,w/h,.1,100);
+  camera.position.z=3.0;
+
+  // Earth sphere
+  const globeGeo=new THREE.SphereGeometry(1,64,64);
+  const earthMat=new THREE.MeshPhongMaterial({shininess:15});
+  const globe=new THREE.Mesh(globeGeo,earthMat);
+
+  // Group so markers orbit with globe
+  const group=new THREE.Group();
+  group.add(globe);
+  scene.add(group);
+
+  // Load real world map texture
+  const loader=new THREE.TextureLoader();
+  loader.crossOrigin='anonymous';
+  loader.load(
+    'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/land_ocean_ice_cloud_2048.jpg',
+    tex=>{earthMat.map=tex;earthMat.needsUpdate=true;},
+    undefined,
+    ()=>{
+      // Fallback procedural
+      const tc=document.createElement('canvas');tc.width=1024;tc.height=512;
+      const cx=tc.getContext('2d');
+      const og=cx.createLinearGradient(0,0,0,512);og.addColorStop(0,'#0a1e50');og.addColorStop(.5,'#0e2d78');og.addColorStop(1,'#071530');
+      cx.fillStyle=og;cx.fillRect(0,0,1024,512);
+      cx.fillStyle='#2d7a45';
+      [[120,80,200,170],[190,240,120,190],[450,55,100,110],[460,155,130,230],[540,35,300,210],[720,295,140,110],[0,455,1024,57]].forEach(([x,y,w2,h2])=>{
+        cx.beginPath();cx.roundRect(x,y,w2,h2,15);cx.fill();
+      });
+      cx.fillStyle='#c8e8ff';cx.fillRect(0,0,1024,30);cx.fillRect(0,490,1024,22);
+      earthMat.map=new THREE.CanvasTexture(tc);earthMat.needsUpdate=true;
+    }
+  );
+
+  // Atmosphere
+  const atmMat=new THREE.MeshPhongMaterial({color:0x4488ff,transparent:true,opacity:.07,side:THREE.FrontSide,depthWrite:false});
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.06,32,32),atmMat));
+
+  // Stars
+  const sv=[];for(let i=0;i<2500;i++)sv.push((Math.random()-.5)*80,(Math.random()-.5)*80,(Math.random()-.5)*80);
+  const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(sv,3));
+  scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xffffff,size:.07})));
+
+  scene.add(new THREE.AmbientLight(0x334466,.7));
+  const sun=new THREE.DirectionalLight(0xfff5e0,1.4);sun.position.set(5,3,4);scene.add(sun);
+
+  // lat/lon → 3D
+  function ll2v(lat,lon,r){
+    const phi=(90-lat)*Math.PI/180,theta=(lon+180)*Math.PI/180;
+    return new THREE.Vector3(-r*Math.sin(phi)*Math.cos(theta),r*Math.cos(phi),r*Math.sin(phi)*Math.sin(theta));
+  }
+
+  const countries=[
+    {lat:38.9,lon:-77.0,flag:'🇺🇸',name:'Estados Unidos',capital:'Washington D.C.',fact:'Tiene más tornados que cualquier otro país del mundo.'},
+    {lat:45.4,lon:-75.7,flag:'🇨🇦',name:'Canadá',capital:'Ottawa',fact:'Tiene la costa más larga del mundo con 202,080 km.'},
+    {lat:19.4,lon:-99.1,flag:'🇲🇽',name:'México',capital:'Ciudad de México',fact:'Es la ciudad más antigua de América del Norte, fundada en 1325.'},
+    {lat:14.6,lon:-90.5,flag:'🇬🇹',name:'Guatemala',capital:'Guatemala',fact:'Tiene más de 30 volcanes activos.'},
+    {lat:9.9,lon:-84.1,flag:'🇨🇷',name:'Costa Rica',capital:'San José',fact:'Abolió su ejército en 1948 y es uno de los países más felices.'},
+    {lat:8.9,lon:-79.5,flag:'🇵🇦',name:'Panamá',capital:'Panamá',fact:'El Canal de Panamá ahorra 15,000 km de viaje marítimo.'},
+    {lat:23.1,lon:-82.4,flag:'🇨🇺',name:'Cuba',capital:'La Habana',fact:'Tiene 9 sitios Patrimonio de la Humanidad UNESCO.'},
+    {lat:18.5,lon:-69.9,flag:'🇩🇴',name:'Rep. Dominicana',capital:'Santo Domingo',fact:'Tiene la primera universidad del Nuevo Mundo (1538).'},
+    {lat:10.5,lon:-66.9,flag:'🇻🇪',name:'Venezuela',capital:'Caracas',fact:'Tiene el salto más alto del mundo, Salto Ángel (979 m).'},
+    {lat:-15.8,lon:-47.9,flag:'🇧🇷',name:'Brasil',capital:'Brasilia',fact:'El Amazonas genera el 20% del oxígeno del planeta.'},
+    {lat:-34.6,lon:-58.4,flag:'🇦🇷',name:'Argentina',capital:'Buenos Aires',fact:'Es el 8.° país más grande del mundo.'},
+    {lat:-12.0,lon:-77.0,flag:'🇵🇪',name:'Perú',capital:'Lima',fact:'Machu Picchu fue redescubierto por Hiram Bingham en 1911.'},
+    {lat:4.7,lon:-74.1,flag:'🇨🇴',name:'Colombia',capital:'Bogotá',fact:'Es el 2.° país más biodiverso del mundo.'},
+    {lat:-0.2,lon:-78.5,flag:'🇪🇨',name:'Ecuador',capital:'Quito',fact:'Las Islas Galápagos inspiraron la teoría de la evolución de Darwin.'},
+    {lat:-16.5,lon:-68.1,flag:'🇧🇴',name:'Bolivia',capital:'La Paz',fact:'Tiene la capital administrativa más alta del mundo a 3,640 m.'},
+    {lat:-33.5,lon:-70.6,flag:'🇨🇱',name:'Chile',capital:'Santiago',fact:'Es el país más largo del mundo con 4,270 km de norte a sur.'},
+    {lat:-25.3,lon:-57.6,flag:'🇵🇾',name:'Paraguay',capital:'Asunción',fact:'Tiene dos idiomas oficiales: español y guaraní.'},
+    {lat:-34.9,lon:-56.2,flag:'🇺🇾',name:'Uruguay',capital:'Montevideo',fact:'Fue el primer país de América Latina en legalizar el cannabis.'},
+    {lat:40.4,lon:-3.7,flag:'🇪🇸',name:'España',capital:'Madrid',fact:'Tiene el 3.° mayor número de Patrimonios UNESCO del mundo.'},
+    {lat:48.9,lon:2.3,flag:'🇫🇷',name:'Francia',capital:'París',fact:'Es el país más visitado del mundo con 90 millones de turistas.'},
+    {lat:51.5,lon:-0.1,flag:'🇬🇧',name:'Reino Unido',capital:'Londres',fact:'El Big Ben es el nombre de la campana, no de la torre.'},
+    {lat:52.5,lon:13.4,flag:'🇩🇪',name:'Alemania',capital:'Berlín',fact:'Tiene más de 1,500 tipos de cerveza registrados.'},
+    {lat:41.9,lon:12.5,flag:'🇮🇹',name:'Italia',capital:'Roma',fact:'Tiene más Patrimonio UNESCO que cualquier otro país.'},
+    {lat:52.4,lon:4.9,flag:'🇳🇱',name:'Países Bajos',capital:'Ámsterdam',fact:'Tiene 23 millones de bicicletas para 17 millones de personas.'},
+    {lat:50.8,lon:4.4,flag:'🇧🇪',name:'Bélgica',capital:'Bruselas',fact:'Produce más de 800 tipos distintos de cerveza.'},
+    {lat:48.2,lon:16.4,flag:'🇦🇹',name:'Austria',capital:'Viena',fact:'Fue elegida la ciudad más habitable del mundo 12 años seguidos.'},
+    {lat:47.4,lon:8.5,flag:'🇨🇭',name:'Suiza',capital:'Berna',fact:'Tiene 4 idiomas oficiales: alemán, francés, italiano y romanche.'},
+    {lat:38.7,lon:-9.1,flag:'🇵🇹',name:'Portugal',capital:'Lisboa',fact:'Fue el primer imperio colonial global de la historia moderna.'},
+    {lat:59.9,lon:10.7,flag:'🇳🇴',name:'Noruega',capital:'Oslo',fact:'Tiene los fiordos más profundos del mundo.'},
+    {lat:59.3,lon:18.1,flag:'🇸🇪',name:'Suecia',capital:'Estocolmo',fact:'Inventó el marcapasos, el Bluetooth y el mouse de computadora.'},
+    {lat:55.7,lon:12.6,flag:'🇩🇰',name:'Dinamarca',capital:'Copenhague',fact:'Ha sido elegida el país más feliz del mundo múltiples veces.'},
+    {lat:60.2,lon:24.9,flag:'🇫🇮',name:'Finlandia',capital:'Helsinki',fact:'Tiene más saunas que automóviles: 3.3 millones para 5.5 millones.'},
+    {lat:59.4,lon:24.7,flag:'🇪🇪',name:'Estonia',capital:'Tallin',fact:'Fue el primer país en usar voto electrónico en elecciones nacionales.'},
+    {lat:52.2,lon:21.0,flag:'🇵🇱',name:'Polonia',capital:'Varsovia',fact:'Copérnico, Marie Curie y Chopin eran polacos.'},
+    {lat:50.1,lon:14.4,flag:'🇨🇿',name:'Rep. Checa',capital:'Praga',fact:'Tiene el castillo más grande del mundo en área.'},
+    {lat:47.5,lon:19.0,flag:'🇭🇺',name:'Hungría',capital:'Budapest',fact:'El cubo de Rubik fue inventado por el húngaro Ernő Rubik.'},
+    {lat:44.8,lon:20.5,flag:'🇷🇸',name:'Serbia',capital:'Belgrado',fact:'Nikola Tesla nació en Serbia.'},
+    {lat:42.7,lon:23.3,flag:'🇧🇬',name:'Bulgaria',capital:'Sofía',fact:'El alfabeto cirílico fue creado por monjes búlgaros en el s. IX.'},
+    {lat:44.4,lon:26.1,flag:'🇷🇴',name:'Rumania',capital:'Bucarest',fact:'Drácula se basa en el príncipe Vlad III "el Empalador".'},
+    {lat:50.4,lon:30.5,flag:'🇺🇦',name:'Ucrania',capital:'Kyiv',fact:'Tiene las mayores reservas de tierras de cultivo de Europa.'},
+    {lat:41.3,lon:19.8,flag:'🇦🇱',name:'Albania',capital:'Tirana',fact:'Tiene más de 700,000 búnkeres construidos durante la Guerra Fría.'},
+    {lat:42.0,lon:43.0,flag:'🇬🇪',name:'Georgia',capital:'Tiflis',fact:'Adoptó el cristianismo en 327 d.C., uno de los primeros países.'},
+    {lat:55.8,lon:37.6,flag:'🇷🇺',name:'Rusia',capital:'Moscú',fact:'Es el país más grande del mundo con 17 millones de km².'},
+    {lat:39.9,lon:116.4,flag:'🇨🇳',name:'China',capital:'Pekín',fact:'Fue el primer país en imprimir papel moneda hace 1,000 años.'},
+    {lat:35.7,lon:139.7,flag:'🇯🇵',name:'Japón',capital:'Tokio',fact:'Sus trenes de alta velocidad tienen un retraso promedio de 54 segundos.'},
+    {lat:37.6,lon:127.0,flag:'🇰🇷',name:'Corea del Sur',capital:'Seúl',fact:'Tiene la conexión a Internet más rápida del mundo.'},
+    {lat:28.6,lon:77.2,flag:'🇮🇳',name:'India',capital:'Nueva Delhi',fact:'Inventó el sistema decimal que usamos en todo el mundo.'},
+    {lat:23.7,lon:90.4,flag:'🇧🇩',name:'Bangladesh',capital:'Daca',fact:'Tiene la densidad de población más alta del mundo entre países grandes.'},
+    {lat:27.5,lon:89.6,flag:'🇧🇹',name:'Bután',capital:'Timbu',fact:'Es el único país que mide la "Felicidad Nacional Bruta" en vez del PIB.'},
+    {lat:28.4,lon:84.1,flag:'🇳🇵',name:'Nepal',capital:'Katmandú',fact:'Tiene 8 de las 10 montañas más altas del mundo.'},
+    {lat:35.7,lon:51.4,flag:'🇮🇷',name:'Irán',capital:'Teherán',fact:'Tiene una de las civilizaciones más antiguas con más de 7,000 años.'},
+    {lat:33.3,lon:44.4,flag:'🇮🇶',name:'Irak',capital:'Bagdad',fact:'Mesopotamia (hoy Irak) es la "cuna de la civilización".'},
+    {lat:33.9,lon:35.5,flag:'🇱🇧',name:'Líbano',capital:'Beirut',fact:'Tiene la mayor diversidad religiosa reconocida oficialmente del mundo.'},
+    {lat:33.5,lon:36.3,flag:'🇸🇾',name:'Siria',capital:'Damasco',fact:'Damasco es la capital habitada más antigua del mundo.'},
+    {lat:31.9,lon:35.9,flag:'🇯🇴',name:'Jordania',capital:'Amán',fact:'Petra fue elegida una de las Nuevas 7 Maravillas del Mundo.'},
+    {lat:24.7,lon:46.7,flag:'🇸🇦',name:'Arabia Saudita',capital:'Riad',fact:'Es el único país del mundo completamente sin ningún río.'},
+    {lat:25.3,lon:55.3,flag:'🇦🇪',name:'Emiratos Árabes',capital:'Abu Dabi',fact:'El 88% de sus habitantes son expatriados de otros países.'},
+    {lat:25.3,lon:51.5,flag:'🇶🇦',name:'Catar',capital:'Doha',fact:'Tiene uno de los mayores PIB per cápita del mundo.'},
+    {lat:15.4,lon:44.2,flag:'🇾🇪',name:'Yemen',capital:'Saná',fact:'La isla de Socotra es llamada "Las Galápagos del Índico".'},
+    {lat:1.4,lon:103.8,flag:'🇸🇬',name:'Singapur',capital:'Singapur',fact:'Es una de las 3 ciudades-estado del mundo y la más densa.'},
+    {lat:3.1,lon:101.7,flag:'🇲🇾',name:'Malasia',capital:'Kuala Lumpur',fact:'Su bosque de Taman Negara tiene 130 millones de años de antigüedad.'},
+    {lat:13.8,lon:100.5,flag:'🇹🇭',name:'Tailandia',capital:'Bangkok',fact:'Nunca fue colonizada por potencias europeas.'},
+    {lat:21.0,lon:105.8,flag:'🇻🇳',name:'Vietnam',capital:'Hanói',fact:'Es el 2.° mayor exportador de café del mundo.'},
+    {lat:11.6,lon:104.9,flag:'🇰🇭',name:'Camboya',capital:'Nom Pen',fact:'Angkor Wat es el complejo religioso más grande del mundo.'},
+    {lat:-6.2,lon:106.8,flag:'🇮🇩',name:'Indonesia',capital:'Yakarta',fact:'Tiene la mayor biodiversidad marina del mundo.'},
+    {lat:14.6,lon:121.0,flag:'🇵🇭',name:'Filipinas',capital:'Manila',fact:'Tiene más de 7,100 islas en su archipiélago.'},
+    {lat:30.1,lon:31.2,flag:'🇪🇬',name:'Egipto',capital:'El Cairo',fact:'Las Pirámides de Giza son las únicas Maravillas Antiguas que aún existen.'},
+    {lat:36.8,lon:10.2,flag:'🇹🇳',name:'Túnez',capital:'Túnez',fact:'Fue el hogar de Cartago, la gran rival de Roma en la antigüedad.'},
+    {lat:36.7,lon:3.0,flag:'🇩🇿',name:'Argelia',capital:'Argel',fact:'Es el país más grande de África y el 10.° del mundo.'},
+    {lat:33.9,lon:-6.9,flag:'🇲🇦',name:'Marruecos',capital:'Rabat',fact:'La Universidad de Fez (859 d.C.) es la más antigua del mundo.'},
+    {lat:-1.3,lon:36.8,flag:'🇰🇪',name:'Kenia',capital:'Nairobi',fact:'Ha ganado más medallas olímpicas en atletismo de larga distancia que nadie.'},
+    {lat:-4.3,lon:15.3,flag:'🇨🇬',name:'Rep. del Congo',capital:'Brazzaville',fact:'Está a solo 4 km de Kinshasa: las capitales más cercanas del mundo.'},
+    {lat:-4.3,lon:15.6,flag:'🇨🇩',name:'RD Congo',capital:'Kinshasa',fact:'Tiene la 2.ª selva tropical más grande del mundo.'},
+    {lat:-4.3,lon:38.6,flag:'🇹🇿',name:'Tanzania',capital:'Dodoma',fact:'Tiene el punto más alto de África, el Kilimanjaro (5,895 m).'},
+    {lat:-1.9,lon:30.1,flag:'🇷🇼',name:'Ruanda',capital:'Kigali',fact:'Tiene más mujeres en el parlamento que cualquier país del mundo (61%).'},
+    {lat:9.0,lon:38.7,flag:'🇪🇹',name:'Etiopía',capital:'Addis Abeba',fact:'Es la cuna del café que el mundo conoce como "arábica".'},
+    {lat:-25.9,lon:32.6,flag:'🇲🇿',name:'Mozambique',capital:'Maputo',fact:'Tiene la mayor diversidad de peces de agua dulce del mundo.'},
+    {lat:-25.7,lon:28.2,flag:'🇿🇦',name:'Sudáfrica',capital:'Pretoria',fact:'Tiene 3 capitales: Pretoria, Ciudad del Cabo y Bloemfontein.'},
+    {lat:-22.6,lon:17.1,flag:'🇳🇦',name:'Namibia',capital:'Windhoek',fact:'El desierto del Namib tiene 55 millones de años, el más antiguo del mundo.'},
+    {lat:-22.9,lon:47.5,flag:'🇲🇬',name:'Madagascar',capital:'Antananarivo',fact:'El 90% de sus animales no existen en ningún otro lugar del planeta.'},
+    {lat:-13.0,lon:27.5,flag:'🇿🇲',name:'Zambia',capital:'Lusaka',fact:'Las Cataratas Victoria en su frontera son las más anchas del mundo.'},
+    {lat:-17.8,lon:31.0,flag:'🇿🇼',name:'Zimbabue',capital:'Harare',fact:'Fue el primer país en sufrir hiperinflación de billones por ciento (2008).'},
+    {lat:7.9,lon:-1.0,flag:'🇬🇭',name:'Ghana',capital:'Acra',fact:'Fue el primer país subsahariano en independizarse (1957).'},
+    {lat:14.7,lon:-17.4,flag:'🇸🇳',name:'Senegal',capital:'Dakar',fact:'El baobab, árbol que puede vivir más de 2,000 años, es su árbol nacional.'},
+    {lat:9.1,lon:8.7,flag:'🇳🇬',name:'Nigeria',capital:'Abuya',fact:'Tiene Nollywood, la 2.ª industria cinematográfica más grande del mundo.'},
+    {lat:7.7,lon:-5.0,flag:'🇨🇮',name:'Costa de Marfil',capital:'Yamusukro',fact:'Produce el 40% del cacao mundial.'},
+    {lat:15.6,lon:32.5,flag:'🇸🇩',name:'Sudán',capital:'Jartum',fact:'Tiene más pirámides antiguas que Egipto.'},
+    {lat:-35.3,lon:149.1,flag:'🇦🇺',name:'Australia',capital:'Canberra',fact:'Es el único continente que es también un solo país.'},
+    {lat:-41.3,lon:174.8,flag:'🇳🇿',name:'Nueva Zelanda',capital:'Wellington',fact:'Fue el primer país en dar el sufragio femenino (1893).'},
+    {lat:-9.4,lon:147.2,flag:'🇵🇬',name:'Papúa N. Guinea',capital:'Port Moresby',fact:'Tiene más de 800 idiomas, el 12% de todos los del mundo.'},
+    {lat:4.2,lon:73.5,flag:'🇲🇻',name:'Maldivas',capital:'Malé',fact:'Es el país más plano del mundo con altitud máxima de 2.4 m.'},
+    {lat:-82.0,lon:0.0,flag:'🌏',name:'Antártida',capital:'Base McMurdo',fact:'Es considerada un desierto: solo cae ~200mm de precipitación al año.'},
+    {lat:71.0,lon:-8.0,flag:'🧊',name:'Ártico',capital:'Polo Norte',fact:'Se está calentando 4 veces más rápido que el resto del planeta.'},
+  ];
+
+  // Marker meshes
+  const markerGeo=new THREE.SphereGeometry(.024,8,8);
+  const markers=[];
+  let hoveredMarker=null;
+
+  countries.forEach(c=>{
+    const mat=new THREE.MeshBasicMaterial({color:0xffd700});
+    const m=new THREE.Mesh(markerGeo,mat);
+    m.position.copy(ll2v(c.lat,c.lon,1.018));
+    m.userData=c;
+    group.add(m);
+    markers.push(m);
+  });
+
+  // Drag
+  let isDrag=false,px=0,py=0;
+  canvas.addEventListener('mousedown',e=>{isDrag=true;px=e.clientX;py=e.clientY;});
+  window.addEventListener('mousemove',e=>{
+    if(!isDrag)return;
+    group.rotation.y+=(e.clientX-px)*.005;
+    group.rotation.x+=(e.clientY-py)*.003;
+    px=e.clientX;py=e.clientY;
+  });
+  window.addEventListener('mouseup',()=>isDrag=false);
+  canvas.addEventListener('touchstart',e=>{isDrag=true;px=e.touches[0].clientX;py=e.touches[0].clientY;},{passive:true});
+  window.addEventListener('touchmove',e=>{if(!isDrag)return;group.rotation.y+=(e.touches[0].clientX-px)*.005;group.rotation.x+=(e.touches[0].clientY-py)*.003;px=e.touches[0].clientX;py=e.touches[0].clientY;},{passive:true});
+  window.addEventListener('touchend',()=>isDrag=false);
+
+  canvas.addEventListener('wheel',e=>{e.preventDefault();camera.position.z=Math.max(1.5,Math.min(8,camera.position.z+e.deltaY*.005));},{passive:false});
+
+  // Tooltip + stop rotation on hover
+  const rc=new THREE.Raycaster();
+  const tt=document.getElementById('globe-tooltip');
+  canvas.addEventListener('mousemove',e=>{
+    const r=canvas.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width*2-1,y=-(e.clientY-r.top)/r.height*2+1;
+    rc.setFromCamera({x,y},camera);
+    const hits=rc.intersectObjects(markers);
+    if(hits.length){
+      const d=hits[0].object.userData;
+      hoveredMarker=hits[0].object;
+      hits[0].object.material.color.set(0xff4444);
+      document.getElementById('tt-flag').textContent=d.flag;
+      document.getElementById('tt-country').textContent=d.name;
+      document.getElementById('tt-capital').textContent='Capital: '+d.capital;
+      document.getElementById('tt-fact').textContent='¿Sabías que '+d.fact;
+      tt.style.display='block';
+      tt.style.left=(e.clientX+18)+'px';
+      tt.style.top=(e.clientY-10)+'px';
+    } else {
+      if(hoveredMarker){hoveredMarker.material.color.set(0xffd700);hoveredMarker=null;}
+      tt.style.display='none';
+    }
+  });
+  canvas.addEventListener('mouseleave',()=>{tt.style.display='none';if(hoveredMarker){hoveredMarker.material.color.set(0xffd700);hoveredMarker=null;}});
+
+  function animate(){
+    requestAnimationFrame(animate);
+    // Stop auto-rotation on hover
+    if(!isDrag&&!hoveredMarker) group.rotation.y+=.002;
+    renderer.render(scene,camera);
+  }
+  animate();
+  window.addEventListener('resize',()=>{const{w:nw,h:nh}=sz(wrap);renderer.setSize(nw,nh);camera.aspect=nw/nh;camera.updateProjectionMatrix();});
+})();
+
+/* ══════════════════════════════════════════
+   3. DODECAHEDRON — landscape textures shaped to pentagon
+══════════════════════════════════════════ */
+(function(){
+  const wrap=document.getElementById('dodec-wrap');
+  const canvas=document.getElementById('dodec-canvas');
+  if(!canvas||!THREE)return;
+  const{w,h}=sz(wrap);
+  canvas.width=w;canvas.height=h;
+  const renderer=mkRenderer(canvas,w,h,true);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,w/h,.1,100);
+  camera.position.z=3.4;
+
+  // Create a landscape texture centered within a pentagon clip
+  function makeLandscape(type){
+    const S=512;
+    const tc=document.createElement('canvas');tc.width=S;tc.height=S;
+    const c=tc.getContext('2d');
+
+    // Pentagon clip path (centered, large enough to fill canvas)
+    function pentClip(ctx,cx,cy,r){
+      ctx.beginPath();
+      for(let i=0;i<5;i++){
+        const a=Math.PI/2+i*2*Math.PI/5;
+        const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.closePath();
+    }
+
+    // Background fill (full canvas first)
+    const scenes={
+      forest:{sky:['#87ceeb','#4a9ede'],ground:['#1a5c1a','#0d3d0d'],feat:'trees'},
+      ocean:{sky:['#4fc3f7','#0288d1'],ground:['#006994','#003d5c'],feat:'waves'},
+      desert:{sky:['#ff8c42','#ff6b1a'],ground:['#c8860a','#8b5e00'],feat:'dunes'},
+      snow:{sky:['#b0d4f1','#6baed6'],ground:['#e8f4fd','#b8d4e8'],feat:'peaks'},
+      arctic:{sky:['#1a0a3e','#2d1b6b'],ground:['#e8f0f5','#c5daea'],feat:'aurora'},
+      jungle:{sky:['#1a4a1a','#2d6b2d'],ground:['#0d3d0d','#1a5c1a'],feat:'canopy'},
+      canyon:{sky:['#e8933a','#c0652a'],ground:['#8b3a1a','#5c2200'],feat:'layers'},
+      meadow:{sky:['#7ec8e3','#3ea8ca'],ground:['#4caf50','#2e7d32'],feat:'flowers'},
+      volcano:{sky:['#1a0000','#3d0a0a'],ground:['#8b0000','#3d0000'],feat:'lava'},
+      autumn:{sky:['#87ceeb','#5ba3d0'],ground:['#8b4513','#6d3210'],feat:'leaves'},
+      lake:{sky:['#c5e8f5','#7ec2db'],ground:['#1565c0','#0d47a1'],feat:'reflection'},
+      savanna:{sky:['#1a0a00','#2d1600'],ground:['#8b7355','#6b5530'],feat:'stars'},
+    };
+    const types=Object.keys(scenes);
+    const s=scenes[types[type%types.length]];
+
+    // Full canvas sky
+    const skyG=c.createLinearGradient(0,0,0,S*.55);
+    skyG.addColorStop(0,s.sky[0]);skyG.addColorStop(1,s.sky[1]);
+    c.fillStyle=skyG;c.fillRect(0,0,S,S*.55);
+
+    // Full canvas ground
+    const gndG=c.createLinearGradient(0,S*.55,0,S);
+    gndG.addColorStop(0,s.ground[0]);gndG.addColorStop(1,s.ground[1]);
+    c.fillStyle=gndG;c.fillRect(0,S*.55,S,S*.45);
+
+    // Feature details
+    const feat=s.feat;
+    if(feat==='trees'){
+      // Mountain silhouette
+      c.fillStyle='#1a4a1a';
+      c.beginPath();c.moveTo(0,S*.6);
+      for(let x=0;x<=S;x+=30)c.lineTo(x,S*.4+Math.sin(x*.04)*40+Math.cos(x*.07)*25);
+      c.lineTo(S,S*.6);c.closePath();c.fill();
+      // Pine trees
+      for(let i=0;i<8;i++){
+        const tx=30+i*65,ty=S*.72;
+        c.fillStyle='#0d4a0d';
+        c.beginPath();c.moveTo(tx,ty-80);c.lineTo(tx-22,ty);c.lineTo(tx+22,ty);c.closePath();c.fill();
+        c.beginPath();c.moveTo(tx,ty-55);c.lineTo(tx-28,ty+15);c.lineTo(tx+28,ty+15);c.closePath();c.fill();
+        c.fillStyle='#3d2800';c.fillRect(tx-5,ty,10,20);
+      }
+    } else if(feat==='waves'){
+      // Sun
+      c.fillStyle='rgba(255,220,50,.9)';c.beginPath();c.arc(S*.7,S*.18,35,0,Math.PI*2);c.fill();
+      // Waves
+      for(let i=0;i<6;i++){
+        c.strokeStyle=`rgba(135,206,250,${.3+i*.1})`;c.lineWidth=3;
+        c.beginPath();
+        for(let x=0;x<=S;x+=10)c.lineTo(x,S*.58+i*28+Math.sin(x*.04+i)*10);
+        c.stroke();
+      }
+    } else if(feat==='dunes'){
+      // Sun halo
+      c.fillStyle='rgba(255,200,0,.95)';c.beginPath();c.arc(S*.5,S*.15,28,0,Math.PI*2);c.fill();
+      // Sand dunes
+      for(let i=3;i>=0;i--){
+        const g2=c.createLinearGradient(0,S*.5+i*30,0,S);
+        g2.addColorStop(0,`hsl(${30+i*5},70%,${45-i*5}%)`);g2.addColorStop(1,`hsl(${25+i*5},65%,${30-i*4}%)`);
+        c.fillStyle=g2;
+        c.beginPath();c.moveTo(0,S*.6+i*20);
+        for(let x=0;x<=S;x+=20)c.lineTo(x,S*.52+i*30+Math.sin(x*.008)*50+Math.cos(x*.015)*30);
+        c.lineTo(S,S);c.lineTo(0,S);c.closePath();c.fill();
+      }
+    } else if(feat==='peaks'){
+      // Snow peaks
+      const peaks=[[S*.2,S*.25],[S*.5,S*.1],[S*.8,S*.22],[S*.35,S*.3],[S*.65,S*.28]];
+      peaks.forEach(([px2,py])=>{
+        c.fillStyle='#4a7fa0';
+        c.beginPath();c.moveTo(px2,py);c.lineTo(px2-80,S*.65);c.lineTo(px2+80,S*.65);c.closePath();c.fill();
+        c.fillStyle='#e8f4fd';
+        c.beginPath();c.moveTo(px2,py);c.lineTo(px2-25,py+50);c.lineTo(px2+25,py+50);c.closePath();c.fill();
+      });
+      // Foreground snow
+      c.fillStyle='#d0e8f5';c.fillRect(0,S*.72,S,S*.28);
+    } else if(feat==='aurora'){
+      // Stars
+      for(let i=0;i<80;i++){c.fillStyle='rgba(255,255,255,.8)';c.beginPath();c.arc(Math.random()*S,Math.random()*S*.5,1,0,Math.PI*2);c.fill();}
+      // Aurora bands
+      [['rgba(0,255,150,.25)','rgba(0,200,120,.15)'],['rgba(150,0,255,.2)','rgba(100,0,200,.1)']].forEach(([c1,c2],i)=>{
+        const ag=c.createLinearGradient(0,S*.05+i*60,0,S*.35+i*60);
+        ag.addColorStop(0,c1);ag.addColorStop(1,c2);
+        c.fillStyle=ag;
+        c.beginPath();c.ellipse(S*.5,S*.2+i*50,S*.6,50,0,0,Math.PI*2);c.fill();
+      });
+    } else if(feat==='canopy'){
+      // Dense canopy
+      for(let i=0;i<25;i++){
+        const cx2=Math.random()*S,cy2=Math.random()*S*.5+S*.05,r=30+Math.random()*50;
+        const hue=100+Math.random()*30,lit=20+Math.random()*20;
+        c.fillStyle=`hsl(${hue},70%,${lit}%)`;
+        c.beginPath();c.arc(cx2,cy2,r,0,Math.PI*2);c.fill();
+      }
+      // Mist
+      c.fillStyle='rgba(200,230,200,.2)';c.fillRect(0,S*.45,S,S*.15);
+    } else if(feat==='layers'){
+      // Canyon layers
+      const cols=['#8b2500','#a0440a','#c06020','#d4884a','#c87840','#a05020','#7a3010'];
+      cols.forEach((col,i)=>{
+        c.fillStyle=col;
+        const y=S*.35+i*S*.09;
+        c.fillRect(0,y,S,S*.09+5);
+        // Layer detail
+        c.fillStyle='rgba(0,0,0,.2)';c.fillRect(0,y,S,3);
+      });
+      // Sky
+      const skyG2=c.createLinearGradient(0,0,0,S*.35);
+      skyG2.addColorStop(0,'#e8933a');skyG2.addColorStop(1,'#c0652a');
+      c.fillStyle=skyG2;c.fillRect(0,0,S,S*.35);
+    } else if(feat==='flowers'){
+      // Meadow with flowers
+      c.fillStyle='#388e3c';c.fillRect(0,S*.5,S,S*.5);
+      // Rolling hills
+      c.fillStyle='#4caf50';
+      c.beginPath();c.moveTo(0,S*.6);
+      for(let x=0;x<=S;x+=20)c.lineTo(x,S*.52+Math.sin(x*.015)*30+Math.cos(x*.025)*20);
+      c.lineTo(S,S*.6);c.lineTo(S,S);c.lineTo(0,S);c.closePath();c.fill();
+      // Flowers
+      const fcols=['#ff6b6b','#ffd93d','#ff9ff3','#54a0ff','#ff9f43'];
+      for(let i=0;i<40;i++){
+        const fx=Math.random()*S,fy=S*.55+Math.random()*S*.4;
+        c.fillStyle=fcols[i%5];
+        c.beginPath();c.arc(fx,fy,5,0,Math.PI*2);c.fill();
+      }
+      // Clouds
+      [[S*.2,S*.15],[S*.6,S*.1],[S*.85,S*.2]].forEach(([cx2,cy2])=>{
+        c.fillStyle='rgba(255,255,255,.9)';
+        c.beginPath();c.arc(cx2,cy2,30,0,Math.PI*2);c.arc(cx2+25,cy2-8,22,0,Math.PI*2);c.arc(cx2+45,cy2+5,18,0,Math.PI*2);c.fill();
+      });
+    } else if(feat==='lava'){
+      // Volcano lava scene
+      for(let i=0;i<15;i++){
+        const lx=Math.random()*S,ly=S*.5+Math.random()*S*.5;
+        c.fillStyle=`rgba(${200+Math.random()*55},${50+Math.random()*50},0,.8)`;
+        c.beginPath();c.arc(lx,ly,10+Math.random()*30,0,Math.PI*2);c.fill();
+      }
+      // Lava rivers
+      c.strokeStyle='rgba(255,100,0,.9)';c.lineWidth=8;
+      [[[S*.3,S*.4],[S*.5,S*.8]],[[S*.7,S*.45],[S*.5,S*.85]]].forEach(pts=>{
+        c.beginPath();c.moveTo(...pts[0]);c.lineTo(...pts[1]);c.stroke();
+      });
+      // Glow
+      const lg=c.createRadialGradient(S*.5,S*.9,0,S*.5,S*.9,200);
+      lg.addColorStop(0,'rgba(255,80,0,.4)');lg.addColorStop(1,'rgba(255,0,0,0)');
+      c.fillStyle=lg;c.fillRect(0,0,S,S);
+    } else if(feat==='leaves'){
+      // Autumn forest
+      const lcols=['#e55d00','#c0392b','#e67e22','#f39c12','#d35400','#8b0000'];
+      for(let i=0;i<20;i++){
+        const tx2=i*(S/20),h2=S*.4+Math.random()*S*.3;
+        c.fillStyle=lcols[i%6];
+        c.fillRect(tx2,S*.5-h2,S/20+2,h2+S*.5);
+        // Canopy
+        c.beginPath();c.arc(tx2+S/40,S*.5-h2,S/18,0,Math.PI*2);c.fill();
+      }
+      // Falling leaves
+      for(let i=0;i<25;i++){
+        c.fillStyle=lcols[i%6];c.save();
+        c.translate(Math.random()*S,Math.random()*S);c.rotate(Math.random()*Math.PI*2);
+        c.beginPath();c.ellipse(0,0,6,3,0,0,Math.PI*2);c.fill();c.restore();
+      }
+    } else if(feat==='reflection'){
+      // Mountain lake
+      const mkPeaks=(alpha)=>{
+        c.fillStyle=`rgba(60,90,120,${alpha})`;
+        [[S*.15,S*.2],[S*.5,S*.05],[S*.85,S*.22],[S*.35,S*.28],[S*.65,S*.25]].forEach(([px2,py])=>{
+          c.beginPath();c.moveTo(px2,py);c.lineTo(px2-70,S*.5);c.lineTo(px2+70,S*.5);c.closePath();c.fill();
+        });
+      };
+      mkPeaks(1);
+      // Lake water
+      const wg=c.createLinearGradient(0,S*.5,0,S);
+      wg.addColorStop(0,'#1a6fa0');wg.addColorStop(1,'#0d3d5c');
+      c.fillStyle=wg;c.fillRect(0,S*.5,S,S*.5);
+      // Reflection (inverted, slightly distorted)
+      c.save();c.translate(0,S);c.scale(1,-1);
+      c.globalAlpha=.4;mkPeaks(.6);c.restore();
+      // Ripples
+      for(let i=0;i<5;i++){
+        c.strokeStyle='rgba(255,255,255,.15)';c.lineWidth=1.5;
+        c.beginPath();c.ellipse(S*.5,S*.7+i*18,60+i*25,8+i*3,0,0,Math.PI*2);c.stroke();
+      }
+    } else if(feat==='stars'){
+      // Savanna night
+      for(let i=0;i<120;i++){c.fillStyle=`rgba(255,255,255,${.4+Math.random()*.5})`;c.beginPath();c.arc(Math.random()*S,Math.random()*S*.45,Math.random()*1.5,0,Math.PI*2);c.fill();}
+      // Milky Way band
+      const mwg=c.createLinearGradient(0,0,S,S*.5);
+      mwg.addColorStop(0,'rgba(255,255,255,0)');mwg.addColorStop(.5,'rgba(200,200,255,.08)');mwg.addColorStop(1,'rgba(255,255,255,0)');
+      c.fillStyle=mwg;c.fillRect(0,0,S,S*.5);
+      // Ground
+      c.fillStyle='#6b5530';c.fillRect(0,S*.5,S,S*.5);
+      c.fillStyle='#8b7355';c.fillRect(0,S*.55,S,S*.03);
+      // Acacia tree silhouette
+      c.fillStyle='#2d1a00';
+      c.fillRect(S*.45,S*.3,8,S*.3);
+      c.beginPath();c.ellipse(S*.49,S*.3,60,20,0,0,Math.PI*2);c.fill();
+    }
+
+    // Pentagon overlay (subtle border to show shape)
+    c.save();
+    pentClip(c,S*.5,S*.5,S*.46);
+    c.strokeStyle='rgba(255,255,255,.15)';c.lineWidth=6;c.stroke();
+    c.restore();
+
+    return new THREE.CanvasTexture(tc);
+  }
+
+  const landscapes=['forest','ocean','desert','snow','arctic','jungle','canyon','meadow','volcano','autumn','lake','savanna'];
+  const materials=landscapes.map((t,i)=>new THREE.MeshStandardMaterial({map:makeLandscape(i),roughness:.6,metalness:.05}));
+
+  const geo=new THREE.DodecahedronGeometry(1.2,0);
+  for(let i=0;i<12;i++) geo.addGroup(i*9,9,i);
+  const dodec=new THREE.Mesh(geo,materials);
+  scene.add(dodec);
+
+  const wire=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0x7c3aed,transparent:true,opacity:.4}));
+  dodec.add(wire);
+
+  scene.add(new THREE.AmbientLight(0xffffff,.9));
+  const dl=new THREE.DirectionalLight(0xffffff,1);dl.position.set(4,5,4);scene.add(dl);
+  const dl2=new THREE.DirectionalLight(0x4466ff,.35);dl2.position.set(-3,-2,-3);scene.add(dl2);
+
+  let isDrag=false,px=0,py=0;
+  canvas.addEventListener('mousedown',e=>{isDrag=true;px=e.clientX;py=e.clientY;});
+  window.addEventListener('mousemove',e=>{if(!isDrag)return;dodec.rotation.y+=(e.clientX-px)*.006;dodec.rotation.x+=(e.clientY-py)*.004;px=e.clientX;py=e.clientY;});
+  window.addEventListener('mouseup',()=>isDrag=false);
+  canvas.addEventListener('touchstart',e=>{isDrag=true;px=e.touches[0].clientX;py=e.touches[0].clientY;},{passive:true});
+  window.addEventListener('touchmove',e=>{if(!isDrag)return;dodec.rotation.y+=(e.touches[0].clientX-px)*.006;dodec.rotation.x+=(e.touches[0].clientY-py)*.004;px=e.touches[0].clientX;py=e.touches[0].clientY;},{passive:true});
+  window.addEventListener('touchend',()=>isDrag=false);
+  canvas.addEventListener('wheel',e=>{e.preventDefault();camera.position.z=Math.max(1.8,Math.min(9,camera.position.z+e.deltaY*.005));},{passive:false});
+
+  function animate(){requestAnimationFrame(animate);if(!isDrag){dodec.rotation.y+=.004;dodec.rotation.x+=.002;}renderer.render(scene,camera);}
+  animate();
+  window.addEventListener('resize',()=>{const{w:nw,h:nh}=sz(wrap);renderer.setSize(nw,nh);camera.aspect=nw/nh;camera.updateProjectionMatrix();});
+})();
+
+/* ══════════════════════════════════════════
+   4. SOLAR SYSTEM
+══════════════════════════════════════════ */
+(function(){
+  const wrap=document.getElementById('solar-wrap');
+  const canvas=document.getElementById('solar-canvas');
+  if(!canvas||!THREE)return;
+  const{w,h}=sz(wrap);canvas.width=w;canvas.height=h;
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setSize(w,h);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  const scene=new THREE.Scene();scene.background=new THREE.Color(0x020208);
+  const camera=new THREE.PerspectiveCamera(50,w/h,.1,500);camera.position.set(0,55,80);camera.lookAt(0,0,0);
+  const sv=[];for(let i=0;i<3000;i++)sv.push((Math.random()-.5)*400,(Math.random()-.5)*400,(Math.random()-.5)*400);
+  const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(sv,3));
+  scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xffffff,size:.2})));
+  const sun=new THREE.Mesh(new THREE.SphereGeometry(4,32,32),new THREE.MeshBasicMaterial({color:0xffdd44}));scene.add(sun);
+  const glowMat=new THREE.MeshBasicMaterial({color:0xff8800,transparent:true,opacity:.15});
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(4.8,32,32),glowMat));
+  scene.add(new THREE.PointLight(0xffeeaa,3,300));scene.add(new THREE.AmbientLight(0x111122,.5));
+  const pd=[
+    {c:0xb0b0b0,sz:.5,d:8, sp:4.15,ti:.03},
+    {c:0xe8c88a,sz:.9,d:12,sp:1.62,ti:2.64},
+    {c:0x2266cc,sz:1.0,d:17,sp:1.0, ti:.41},
+    {c:0xc44422,sz:.7, d:23,sp:.53, ti:.44},
+    {c:0xd4a866,sz:2.2,d:34,sp:.08, ti:.05,bands:true},
+    {c:0xe8d4aa,sz:1.9,d:46,sp:.03, ti:.47,ring:true},
+    {c:0x66ccdd,sz:1.4,d:58,sp:.01, ti:1.71},
+    {c:0x3355aa,sz:1.3,d:68,sp:.006,ti:.49},
+  ];
+  const pm=[];
+  pd.forEach(p=>{
+    scene.add(new THREE.Mesh(new THREE.RingGeometry(p.d-.05,p.d+.05,128),new THREE.MeshBasicMaterial({color:0x333355,side:THREE.DoubleSide,transparent:true,opacity:.5})));
+    const pivot=new THREE.Object3D();scene.add(pivot);
+    const mesh=new THREE.Mesh(new THREE.SphereGeometry(p.sz,24,24),new THREE.MeshPhongMaterial({color:p.c,shininess:40}));
+    mesh.position.x=p.d;mesh.rotation.z=p.ti;
+    if(p.ring){const r=new THREE.Mesh(new THREE.RingGeometry(p.sz*1.6,p.sz*2.6,64),new THREE.MeshBasicMaterial({color:0xd4c09a,side:THREE.DoubleSide,transparent:true,opacity:.7}));r.rotation.x=Math.PI/3;mesh.add(r);}
+    if(p.bands){mesh.add(new THREE.Mesh(new THREE.SphereGeometry(p.sz*1.01,8,4),new THREE.MeshPhongMaterial({color:0xc09050,transparent:true,opacity:.3})));}
+    pivot.add(mesh);pm.push({mesh,pivot,sp:p.sp,angle:Math.random()*Math.PI*2});
+  });
+  const mp=new THREE.Object3D();pm[2].mesh.add(mp);const moon=new THREE.Mesh(new THREE.SphereGeometry(.27,16,16),new THREE.MeshPhongMaterial({color:0xaaaaaa}));moon.position.x=2;mp.add(moon);
+  let sm=1;
+  document.querySelectorAll('.speed-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');sm=parseFloat(btn.dataset.speed);});});
+  let isDrag=false,px=0,py=0,theta=.3,phi=.9,radius=100;
+  canvas.addEventListener('mousedown',e=>{isDrag=true;px=e.clientX;py=e.clientY;});
+  window.addEventListener('mousemove',e=>{if(!isDrag)return;theta-=(e.clientX-px)*.005;phi-=(e.clientY-py)*.005;phi=Math.max(.1,Math.min(Math.PI-.1,phi));px=e.clientX;py=e.clientY;camera.position.set(radius*Math.sin(phi)*Math.sin(theta),radius*Math.cos(phi),radius*Math.sin(phi)*Math.cos(theta));camera.lookAt(0,0,0);});
+  window.addEventListener('mouseup',()=>isDrag=false);
+  canvas.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();radius=Math.max(30,Math.min(200,radius+e.deltaY*.1));camera.position.set(radius*Math.sin(phi)*Math.sin(theta),radius*Math.cos(phi),radius*Math.sin(phi)*Math.cos(theta));camera.lookAt(0,0,0);},{passive:false});
+  let t=0;
+  function animate(){requestAnimationFrame(animate);t+=.016;sun.rotation.y+=.003;glowMat.opacity=.12+Math.sin(t*2)*.04;pm.forEach(p=>{p.angle+=p.sp*.005*sm;p.pivot.rotation.y=p.angle;p.mesh.rotation.y+=.01;});mp.rotation.y+=.03*sm;renderer.render(scene,camera);}
+  animate();
+  window.addEventListener('resize',()=>{const{w:nw,h:nh}=sz(wrap);renderer.setSize(nw,nh);camera.aspect=nw/nh;camera.updateProjectionMatrix();});
+})();
+
+/* ══════════════════════════════════════════
+   5. PARTICLES — click=attract, release=repel
+══════════════════════════════════════════ */
+(function(){
+  const wrap=document.getElementById('particles-wrap');
+  const canvas=document.getElementById('particles-canvas');
+  if(!canvas||!THREE)return;
+  const{w,h}=sz(wrap);canvas.width=w;canvas.height=h;
+  const renderer=mkRenderer(canvas,w,h,true);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(60,w/h,.1,100);camera.position.z=3;
+
+  const COUNT=10000;
+  const geo=new THREE.BufferGeometry();
+  const pos=new Float32Array(COUNT*3);
+  const bx=new Float32Array(COUNT),by=new Float32Array(COUNT),bz=new Float32Array(COUNT);
+  for(let i=0;i<COUNT;i++){
+    const x=(Math.random()-.5)*10,y=(Math.random()-.5)*6,z=(Math.random()-.5)*4;
+    pos[i*3]=bx[i]=x;pos[i*3+1]=by[i]=y;pos[i*3+2]=bz[i]=z;
+  }
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const mat=new THREE.PointsMaterial({color:0xa855f7,size:.022,transparent:true,opacity:.75});
+  scene.add(new THREE.Points(geo,mat));
+
+  let mxW=9999,myW=9999,isDown=false;
+
+  function updateMouse(e){
+    const r=canvas.getBoundingClientRect();
+    const nx=(e.clientX-r.left)/r.width,ny=(e.clientY-r.top)/r.height;
+    const fov=camera.fov*Math.PI/180,hh=Math.tan(fov/2)*camera.position.z;
+    mxW=(nx*2-1)*hh*camera.aspect;myW=(1-ny*2)*hh;
+  }
+
+  canvas.addEventListener('mousemove',updateMouse);
+  canvas.addEventListener('mousedown',e=>{isDown=true;updateMouse(e);});
+  window.addEventListener('mouseup',()=>isDown=false);
+  canvas.addEventListener('mouseleave',()=>{mxW=9999;myW=9999;});
+
+  const R=1.4,STRENGTH=.55;
+  let t=0;
+  function animate(){
+    requestAnimationFrame(animate);t+=.016;
+    const pa=geo.attributes.position.array;
+    for(let i=0;i<COUNT;i++){
+      const wave=Math.sin(Math.sqrt(bx[i]*bx[i]+bz[i]*bz[i])*2.5-t*2.2)*.12;
+      const dx=pa[i*3]-mxW,dy=pa[i*3+1]-myW;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      let rx=0,ry=0;
+      if(dist<R&&dist>.001){
+        const force=(1-dist/R)*STRENGTH;
+        if(isDown){
+          // Attract — pull toward cursor
+          rx=-(dx/dist)*force;ry=-(dy/dist)*force;
+        } else {
+          // Repel — push away
+          rx=(dx/dist)*force;ry=(dy/dist)*force;
+        }
+      }
+      pa[i*3]+=(bx[i]+rx-pa[i*3])*.1;
+      pa[i*3+1]+=(by[i]+wave+ry-pa[i*3+1])*.1;
+      pa[i*3+2]+=(bz[i]-pa[i*3+2])*.08;
+    }
+    geo.attributes.position.needsUpdate=true;
+    mat.color.setHSL((t*.015)%1,.7,.55);
+    renderer.render(scene,camera);
+  }
+  animate();
+  window.addEventListener('resize',()=>{const{w:nw,h:nh}=sz(wrap);renderer.setSize(nw,nh);camera.aspect=nw/nh;camera.updateProjectionMatrix();});
+})();
+</script>
+</body>
+</html>

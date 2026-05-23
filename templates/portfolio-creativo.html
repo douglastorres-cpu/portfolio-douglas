@@ -1,0 +1,980 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Douglas Torres — Desarrollador Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --bg:        #fafaf9;
+      --surface:   #ffffff;
+      --text:      #1a1916;
+      --text-muted:#6b6860;
+      --accent:    #c4622d;
+      --border:    #e8e6e1;
+      --green:     #2d7a4f;
+
+      --fs-xs:   0.64rem;
+      --fs-sm:   0.80rem;
+      --fs-base: 1rem;
+      --fs-md:   1.25rem;
+      --fs-lg:   1.563rem;
+      --fs-xl:   1.953rem;
+      --fs-2xl:  2.441rem;
+      --fs-3xl:  3.052rem;
+      --fs-4xl:  3.815rem;
+      --fs-5xl:  4.768rem;
+
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease:   cubic-bezier(0.4, 0, 0.2, 1);
+
+      --space-1:  0.25rem;
+      --space-2:  0.5rem;
+      --space-3:  0.75rem;
+      --space-4:  1rem;
+      --space-6:  1.5rem;
+      --space-8:  2rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      --space-24: 6rem;
+      --space-32: 8rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: var(--fs-base);
+      line-height: 1.7;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+    button { cursor: none; border: none; background: none; font: inherit; }
+
+    /* ─── CURSOR ──────────────────────────────────────────── */
+    #cursor-dot {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s var(--spring), opacity 0.3s;
+    }
+    #cursor-ring {
+      position: fixed; top: 0; left: 0; z-index: 9998;
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s var(--ease), width 0.3s var(--spring), height 0.3s var(--spring), opacity 0.3s;
+      opacity: 0.5;
+    }
+    body.cursor-hover #cursor-dot { transform: translate(-50%,-50%) scale(2.5); opacity: 0.8; }
+    body.cursor-hover #cursor-ring { width: 56px; height: 56px; opacity: 0.25; }
+
+    /* ─── NAV ─────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--space-6) var(--space-8);
+      transition: background 0.4s var(--ease), border-bottom 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled {
+      background: rgba(250,250,249,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: var(--border);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: var(--fs-md);
+      letter-spacing: -0.02em;
+    }
+    .nav-links { display: flex; gap: var(--space-8); align-items: center; }
+    .nav-links a {
+      font-size: var(--fs-sm); font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color 0.25s var(--ease);
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0; right: 100%;
+      height: 1px; background: var(--accent);
+      transition: right 0.3s var(--ease);
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { right: 0; }
+
+    /* ─── HERO ────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: var(--space-32) var(--space-8) var(--space-16);
+      position: relative;
+    }
+    .hero-inner { max-width: 860px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      background: rgba(45,122,79,0.1); border: 1px solid rgba(45,122,79,0.25);
+      color: var(--green); font-size: var(--fs-xs); font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: var(--space-1) var(--space-3); border-radius: 100px;
+      margin-bottom: var(--space-6);
+      animation: fadeUp 0.8s var(--spring) both;
+    }
+    .hero-badge::before {
+      content: ''; width: 6px; height: 6px;
+      background: var(--green); border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    .hero-name {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: clamp(var(--fs-3xl), 8vw, var(--fs-5xl));
+      line-height: 1.05; letter-spacing: -0.03em;
+      margin-bottom: var(--space-6);
+      animation: fadeUp 0.9s var(--spring) 0.1s both;
+    }
+    .hero-name em { color: var(--accent); font-style: italic; }
+    .hero-role {
+      font-size: var(--fs-lg); font-weight: 300;
+      color: var(--text-muted); letter-spacing: -0.01em;
+      margin-bottom: var(--space-8);
+      animation: fadeUp 1s var(--spring) 0.2s both;
+    }
+    .hero-cta {
+      display: flex; align-items: center; gap: var(--space-6);
+      animation: fadeUp 1s var(--spring) 0.35s both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      background: var(--text); color: var(--bg);
+      font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.04em;
+      padding: var(--space-3) var(--space-6); border-radius: 100px;
+      transition: transform 0.4s var(--spring), background 0.25s;
+    }
+    .btn-primary:hover { transform: scale(1.05) translateY(-2px); background: var(--accent); }
+    .hero-scroll {
+      position: absolute; bottom: var(--space-8); right: var(--space-8);
+      display: flex; flex-direction: column; align-items: center; gap: var(--space-3);
+      color: var(--text-muted); font-size: var(--fs-xs);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      writing-mode: vertical-rl;
+      animation: fadeUp 1s var(--spring) 0.5s both;
+    }
+    .scroll-line {
+      width: 1px; height: 60px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+      50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      51%  { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+      100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+    }
+
+    /* ─── SECTION UTILITIES ──────────────────────────────── */
+    section { padding: var(--space-24) var(--space-8); }
+    .section-label {
+      font-family: 'JetBrains Mono', monospace; font-size: var(--fs-xs);
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted);
+      display: flex; align-items: center; gap: var(--space-3);
+      margin-bottom: var(--space-12);
+    }
+    .section-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+    .section-title {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: clamp(var(--fs-2xl), 4vw, var(--fs-4xl));
+      letter-spacing: -0.025em; line-height: 1.1;
+      margin-bottom: var(--space-16);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── WORK GRID ───────────────────────────────────────── */
+    #work { max-width: 1200px; margin: 0 auto; }
+    .work-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: var(--border);
+    }
+    .project-card {
+      position: relative; background: var(--surface); overflow: hidden;
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--spring);
+    }
+    .project-card.visible { opacity: 1; transform: translateY(0); }
+    .project-card:nth-child(2) { transition-delay: 0.08s; }
+    .project-card:nth-child(3) { transition-delay: 0.16s; }
+    .project-card:nth-child(4) { transition-delay: 0.24s; }
+    .project-card:nth-child(5) { transition-delay: 0.32s; }
+    .project-card:nth-child(6) { transition-delay: 0.40s; }
+    .project-card:nth-child(7) { transition-delay: 0.48s; }
+    .project-card:nth-child(8) { transition-delay: 0.56s; }
+    .project-card:nth-child(9) { transition-delay: 0.64s; }
+    .project-card:nth-child(10){ transition-delay: 0.72s; }
+
+    .project-thumb {
+      height: 260px; position: relative; overflow: hidden;
+      transition: transform 0.6s var(--spring);
+    }
+    .project-card:hover .project-thumb { transform: scale(1.04); }
+
+    /* Project gradient per card */
+    .project-card:nth-child(1)  .project-thumb { background: linear-gradient(135deg,#cce0d0 0%,#1f5c3a 100%); }
+    .project-card:nth-child(2)  .project-thumb { background: linear-gradient(135deg,#e8d5c4 0%,#c4622d 100%); }
+    .project-card:nth-child(3)  .project-thumb { background: linear-gradient(135deg,#c9d4dc 0%,#2c3e50 100%); }
+    .project-card:nth-child(4)  .project-thumb { background: linear-gradient(135deg,#fdf0d5 0%,#d97706 100%); }
+    .project-card:nth-child(5)  .project-thumb { background: linear-gradient(135deg,#d4d0e8 0%,#5b2c6f 100%); }
+    .project-card:nth-child(6)  .project-thumb { background: linear-gradient(135deg,#0d0d0d 0%,#2d2d2d 50%,#f5f000 100%); }
+    .project-card:nth-child(7)  .project-thumb { background: linear-gradient(135deg,#dce8e4 0%,#2e7d6a 100%); }
+    .project-card:nth-child(8)  .project-thumb { background: linear-gradient(135deg,#e4dcd8 0%,#8b5e52 100%); }
+    .project-card:nth-child(9)  .project-thumb { background: linear-gradient(135deg,#d4e4f0 0%,#1a5276 100%); }
+    .project-card:nth-child(10) .project-thumb { background: linear-gradient(135deg,#e8f0d4 0%,#5a7a35 100%); }
+
+    /* thumb label */
+    .thumb-label {
+      position: absolute; bottom: var(--space-4); left: var(--space-4);
+      font-family: 'JetBrains Mono', monospace; font-size: var(--fs-xs);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      background: rgba(0,0,0,0.3); backdrop-filter: blur(4px);
+      padding: 2px 8px; border-radius: 100px;
+    }
+
+    .project-overlay {
+      position: absolute; inset: 0;
+      background: rgba(26,25,22,0.85);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.35s var(--ease);
+    }
+    .project-card:hover .project-overlay { opacity: 1; }
+    .project-overlay-link {
+      font-size: var(--fs-sm); font-weight: 500; color: var(--bg);
+      letter-spacing: 0.06em;
+      display: flex; align-items: center; gap: var(--space-2);
+      transform: translateY(8px);
+      transition: transform 0.4s var(--spring), color 0.25s;
+    }
+    .project-card:hover .project-overlay-link { transform: translateY(0); color: var(--accent); }
+    .project-meta {
+      padding: var(--space-4) var(--space-6) var(--space-6);
+      display: flex; flex-direction: column; gap: var(--space-2);
+    }
+    .project-number {
+      font-family: 'JetBrains Mono', monospace; font-size: var(--fs-xs);
+      color: var(--text-muted); letter-spacing: 0.08em;
+    }
+    .project-title { font-size: var(--fs-md); font-weight: 600; letter-spacing: -0.02em; }
+    .project-desc { font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.55; }
+    .project-tags { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-1); }
+    .project-tag {
+      display: inline-block; font-family: 'JetBrains Mono', monospace;
+      font-size: var(--fs-xs); letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid currentColor;
+      padding: 2px 8px; border-radius: 100px; width: fit-content;
+    }
+
+    /* ─── EXPERIENCE TIMELINE ────────────────────────────── */
+    #experience { max-width: 1200px; margin: 0 auto; }
+    .timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+    .timeline::before {
+      content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px;
+      width: 1px; background: var(--border);
+    }
+    .timeline-item {
+      display: grid; grid-template-columns: 80px 1fr;
+      gap: var(--space-6); padding-bottom: var(--space-12);
+      opacity: 0; transform: translateX(-16px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--spring);
+    }
+    .timeline-item.visible { opacity: 1; transform: translateX(0); }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-dot-wrap {
+      display: flex; flex-direction: column; align-items: center; padding-top: 6px;
+    }
+    .timeline-dot {
+      width: 15px; height: 15px; border-radius: 50%;
+      background: var(--surface); border: 2px solid var(--accent);
+      flex-shrink: 0; position: relative; z-index: 1;
+    }
+    .timeline-dot.current { background: var(--accent); }
+    .timeline-year {
+      font-family: 'JetBrains Mono', monospace; font-size: var(--fs-xs);
+      color: var(--text-muted); letter-spacing: 0.06em; margin-top: var(--space-2);
+      text-align: center; line-height: 1.2;
+    }
+    .timeline-content {}
+    .timeline-role { font-size: var(--fs-md); font-weight: 600; letter-spacing: -0.02em; margin-bottom: 2px; }
+    .timeline-company { font-size: var(--fs-sm); color: var(--accent); font-weight: 500; margin-bottom: var(--space-3); }
+    .timeline-desc { font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.65; }
+    .timeline-desc li { padding-left: var(--space-4); position: relative; margin-bottom: var(--space-1); }
+    .timeline-desc li::before { content: '—'; position: absolute; left: 0; color: var(--accent); }
+
+    /* ─── ABOUT ───────────────────────────────────────────── */
+    #about { max-width: 1200px; margin: 0 auto; }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1.2fr;
+      gap: var(--space-16); align-items: start;
+    }
+    .about-photo {
+      aspect-ratio: 4/5;
+      background: linear-gradient(160deg,#e2ddd8 0%,#c4b8a8 50%,#a09080 100%);
+      border-radius: 2px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .about-photo::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 60%, rgba(26,25,22,0.15));
+    }
+    .about-photo-initials {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: var(--fs-5xl); color: rgba(255,255,255,0.25);
+      letter-spacing: -0.04em; z-index: 1;
+    }
+    .about-content { padding-top: var(--space-4); }
+    .about-bio {
+      font-size: var(--fs-md); font-weight: 300; line-height: 1.75;
+      color: var(--text-muted); margin-bottom: var(--space-8);
+    }
+    .about-bio strong { color: var(--text); font-weight: 600; }
+    .skills-group { margin-bottom: var(--space-6); }
+    .skills-title {
+      font-family: 'JetBrains Mono', monospace; font-size: var(--fs-xs);
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: var(--space-3);
+    }
+    .skills-list { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+    .skill-item {
+      font-size: var(--fs-sm); font-weight: 500; position: relative; padding-bottom: 2px;
+    }
+    .skill-item::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 100%;
+      height: 1px; background: var(--accent);
+      transition: right 0.35s var(--ease);
+    }
+    .skill-item:hover::after { right: 0; }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      border: 1px solid var(--text); color: var(--text);
+      font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.04em;
+      padding: var(--space-3) var(--space-6); border-radius: 100px;
+      transition: transform 0.4s var(--spring), background 0.25s, color 0.25s;
+    }
+    .btn-outline:hover { transform: scale(1.05) translateY(-2px); background: var(--text); color: var(--bg); }
+
+    /* ─── SERVICES ────────────────────────────────────────── */
+    #services { background: var(--surface); }
+    #services .inner { max-width: 1200px; margin: 0 auto; }
+    .services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-6); }
+    .service-card {
+      border: 1px solid var(--border); padding: var(--space-8); border-radius: 2px;
+      transition: border-color 0.3s var(--ease), transform 0.4s var(--spring);
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 100%;
+      height: 2px; background: var(--accent);
+      transition: right 0.4s var(--ease);
+    }
+    .service-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .service-card:hover::before { right: 0; }
+    .service-icon { font-size: 2rem; display: block; margin-bottom: var(--space-4); }
+    .service-title { font-size: var(--fs-md); font-weight: 600; letter-spacing: -0.02em; margin-bottom: var(--space-3); }
+    .service-desc { font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.65; margin-bottom: var(--space-6); }
+    .service-price { font-family: 'JetBrains Mono', monospace; font-size: var(--fs-sm); color: var(--accent); letter-spacing: 0.04em; }
+
+    /* ─── CONTACT ─────────────────────────────────────────── */
+    #contact .inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.2fr;
+      gap: var(--space-16); align-items: start;
+    }
+    .contact-tagline {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: var(--fs-lg); line-height: 1.4; color: var(--text-muted);
+      margin-bottom: var(--space-8);
+    }
+    .contact-info-item {
+      display: flex; align-items: center; gap: var(--space-3);
+      font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: var(--space-3);
+    }
+    .contact-info-item span { color: var(--accent); }
+    .contact-info-item a { color: var(--text); font-weight: 500; transition: color 0.2s; }
+    .contact-info-item a:hover { color: var(--accent); }
+    form { display: flex; flex-direction: column; gap: var(--space-4); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+    .form-group { display: flex; flex-direction: column; gap: var(--space-1); }
+    .form-group label {
+      font-family: 'JetBrains Mono', monospace; font-size: var(--fs-xs);
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);
+    }
+    .form-group input,
+    .form-group textarea {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 2px;
+      padding: var(--space-3) var(--space-4); font: inherit; font-size: var(--fs-sm);
+      color: var(--text); outline: none; transition: border-color 0.25s var(--ease); cursor: none;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--text); }
+    .form-group input:invalid:not(:placeholder-shown),
+    .form-group textarea:invalid:not(:placeholder-shown) { border-color: #c0392b; background: rgba(192,57,43,0.04); }
+    .form-group textarea { resize: vertical; min-height: 140px; }
+    .btn-send {
+      display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+      background: var(--accent); color: var(--surface);
+      font-size: var(--fs-sm); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: var(--space-4) var(--space-8); border-radius: 100px; border: none;
+      transition: transform 0.4s var(--spring), background 0.25s;
+      align-self: flex-start;
+    }
+    .btn-send:hover { transform: scale(1.05) translateY(-2px); background: #a85226; }
+    .form-success {
+      display: none; background: rgba(45,122,79,0.08); border: 1px solid rgba(45,122,79,0.3);
+      color: var(--green); font-size: var(--fs-sm); padding: var(--space-3) var(--space-4);
+      border-radius: 2px; text-align: center;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: var(--space-6) var(--space-8);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: var(--space-4);
+    }
+    .footer-copy { font-size: var(--fs-xs); color: var(--text-muted); letter-spacing: 0.04em; }
+    .footer-socials { display: flex; gap: var(--space-6); }
+    .footer-socials a {
+      font-size: var(--fs-xs); font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-muted); transition: color 0.25s;
+    }
+    .footer-socials a:hover { color: var(--accent); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: var(--space-4) var(--space-6); }
+      section { padding: var(--space-16) var(--space-6); }
+      #hero { padding: var(--space-24) var(--space-6) var(--space-12); }
+      .about-grid, #contact .inner { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .hero-scroll { display: none; }
+      .timeline-item { grid-template-columns: 60px 1fr; }
+    }
+    @media (max-width: 640px) {
+      .work-grid { grid-template-columns: 1fr; }
+      .nav-links { gap: var(--space-4); }
+      .nav-links a { font-size: 0.7rem; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    a, button, .project-card, .service-card, input, textarea, .skill-item { cursor: none; }
+  </style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;display:flex;align-items:center;gap:12px;padding:10px 20px;background:rgba(8,8,15,0.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.07);font-family:system-ui,sans-serif;">
+  <a href="../index.html" style="display:inline-flex;align-items:center;gap:8px;color:#a855f7;text-decoration:none;font-size:13px;font-weight:500;">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Volver al portafolio
+  </a>
+  <span style="color:rgba(255,255,255,0.15);font-size:12px;">|</span>
+  <span style="color:rgba(255,255,255,0.4);font-size:12px;font-family:monospace;">douglas08pool@gmail.com</span>
+</div>
+<div style="height:44px;"></div>
+
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ─── NAV ─────────────────────────────────── -->
+  <nav id="nav">
+    <a href="#hero" class="nav-logo">Douglas Torres</a>
+    <ul class="nav-links">
+      <li><a href="#work">Proyectos</a></li>
+      <li><a href="#experience">Experiencia</a></li>
+      <li><a href="#about">Sobre mí</a></li>
+      <li><a href="#services">Servicios</a></li>
+      <li><a href="#contact">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <!-- ─── HERO ─────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">Disponible para proyectos</div>
+      <h1 class="hero-name">
+        Código que<br />
+        <em>funciona</em> &amp;<br />
+        se ve bien.
+      </h1>
+      <p class="hero-role">Desarrollador Web Junior · Lima, Perú · 2.5 años de experiencia</p>
+      <div class="hero-cta">
+        <a href="#work" class="btn-primary">Ver proyectos →</a>
+        <a href="#contact" class="btn-outline">Trabajemos juntos</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ─── WORK ──────────────────────────────────── -->
+  <section style="padding-top:0; padding-bottom:var(--space-24);">
+    <div id="work" style="max-width:1200px;margin:0 auto;padding:0 var(--space-8);">
+      <div class="section-label">Proyectos seleccionados</div>
+      <h2 class="section-title">Lo que he construido</h2>
+      <div class="work-grid">
+
+        <div class="project-card">
+          <div class="project-thumb">
+            <span class="thumb-label">Flask · React · MongoDB · AWS</span>
+            <div class="project-overlay"><span class="project-overlay-link">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">01</span>
+            <span class="project-title">Decateca — Plataforma Inmobiliaria</span>
+            <p class="project-desc">Plataforma de búsqueda y gestión de propiedades en producción. Backend Flask con arquitectura MVC, MongoDB con Aggregation Pipeline, integración con AWS SQS y CloudWatch.</p>
+            <div class="project-tags">
+              <span class="project-tag">Python Flask</span>
+              <span class="project-tag">MongoDB</span>
+              <span class="project-tag">AWS</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">
+            <span class="thumb-label">HTML · CSS · JavaScript</span>
+            <div class="project-overlay"><span class="project-overlay-link">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">02</span>
+            <span class="project-title">Landing — Negocio Local</span>
+            <p class="project-desc">Plantilla de landing page para negocios locales: clínicas, gimnasios, estudios. Incluye contadores animados, sección de servicios con 3D tilt, testimoniales y botón WhatsApp flotante.</p>
+            <div class="project-tags">
+              <span class="project-tag">HTML/CSS</span>
+              <span class="project-tag">JavaScript</span>
+              <span class="project-tag">Motion</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">
+            <span class="thumb-label">HTML · CSS · JavaScript</span>
+            <div class="project-overlay"><span class="project-overlay-link">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">03</span>
+            <span class="project-title">Portafolio Creativo</span>
+            <p class="project-desc">Plantilla de portafolio para diseñadores y fotógrafos. Sistema tipográfico Major Third, cursor personalizado con RAF, stagger de proyectos y formulario de contacto validado.</p>
+            <div class="project-tags">
+              <span class="project-tag">HTML/CSS</span>
+              <span class="project-tag">Animaciones</span>
+              <span class="project-tag">Diseño</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">
+            <span class="thumb-label">HTML · CSS · JavaScript</span>
+            <div class="project-overlay"><span class="project-overlay-link">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">04</span>
+            <span class="project-title">Menú Digital QR — Restaurante</span>
+            <p class="project-desc">Menú escaneable por QR para restaurantes y cafés. Carrito funcional con resumen de pedido, botón de pedido por WhatsApp, detección automática de horario (abierto/cerrado).</p>
+            <div class="project-tags">
+              <span class="project-tag">Mobile First</span>
+              <span class="project-tag">JavaScript</span>
+              <span class="project-tag">UX</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">
+            <span class="thumb-label">HTML · CSS · JavaScript</span>
+            <div class="project-overlay"><span class="project-overlay-link">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">05</span>
+            <span class="project-title">Tienda de Producto — Ecommerce</span>
+            <p class="project-desc">Landing de producto único para emprendedores. Galería con miniaturas intercambiables, selector de variantes con spring animation, carrito con badge y accordion de preguntas frecuentes.</p>
+            <div class="project-tags">
+              <span class="project-tag">Ecommerce</span>
+              <span class="project-tag">JavaScript</span>
+              <span class="project-tag">UI/UX</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">
+            <span class="thumb-label">Node.js · Express · JWT</span>
+            <div class="project-overlay"><span class="project-overlay-link">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">06</span>
+            <span class="project-title">API REST con Autenticación JWT</span>
+            <p class="project-desc">API RESTful construida con Node.js y Express. Sistema de autenticación con JSON Web Tokens, middlewares de validación, manejo de errores centralizado y documentación de endpoints.</p>
+            <div class="project-tags">
+              <span class="project-tag">Node.js</span>
+              <span class="project-tag">Express</span>
+              <span class="project-tag">JWT</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">
+            <span class="thumb-label">MongoDB · Aggregation Pipeline</span>
+            <div class="project-overlay"><span class="project-overlay-link">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">07</span>
+            <span class="project-title">Dashboard de KPIs — MongoDB</span>
+            <p class="project-desc">Panel de métricas de negocio construido sobre MongoDB. Aggregation Pipelines con $match, $group, $lookup y $project para generar reportes e indicadores en tiempo real.</p>
+            <div class="project-tags">
+              <span class="project-tag">MongoDB</span>
+              <span class="project-tag">Aggregation</span>
+              <span class="project-tag">Analytics</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">
+            <span class="thumb-label">PHP · MySQL</span>
+            <div class="project-overlay"><span class="project-overlay-link">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">08</span>
+            <span class="project-title">Sistema de Inventario — Incodice</span>
+            <p class="project-desc">Sistema interno de gestión de inventario desarrollado durante la práctica en Incodice. CRUD completo con PHP, esquema relacional MySQL optimizado y panel de reportes exportable.</p>
+            <div class="project-tags">
+              <span class="project-tag">PHP</span>
+              <span class="project-tag">MySQL</span>
+              <span class="project-tag">CRUD</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">
+            <span class="thumb-label">Node.js · AWS SQS</span>
+            <div class="project-overlay"><span class="project-overlay-link">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">09</span>
+            <span class="project-title">Microservicio de Notificaciones</span>
+            <p class="project-desc">Servicio desacoplado de envío de notificaciones usando AWS SQS como cola de mensajes. Procesamiento asíncrono de eventos, reintentos automáticos y monitoreo con CloudWatch.</p>
+            <div class="project-tags">
+              <span class="project-tag">AWS SQS</span>
+              <span class="project-tag">Node.js</span>
+              <span class="project-tag">CloudWatch</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-thumb">
+            <span class="thumb-label">Python · Flask · PostgreSQL</span>
+            <div class="project-overlay"><span class="project-overlay-link">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">10</span>
+            <span class="project-title">Sistema de Reservas Online</span>
+            <p class="project-desc">Backend de gestión de reservas para servicio de citas. Flask con arquitectura MVC (Model, Controller, Repository, Service), validación JWT, integración con PostgreSQL y deploy en AWS.</p>
+            <div class="project-tags">
+              <span class="project-tag">Python Flask</span>
+              <span class="project-tag">PostgreSQL</span>
+              <span class="project-tag">REST API</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── EXPERIENCE ────────────────────────────── -->
+  <section id="experience" style="background:var(--surface);">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div class="section-label">Trayectoria</div>
+      <h2 class="section-title">2 años y medio<br />en producción real.</h2>
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-dot-wrap">
+            <div class="timeline-dot current"></div>
+            <div class="timeline-year">2024<br/>2025</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-role">Desarrollador Web</div>
+            <div class="timeline-company">Decateca · Contratación formal · 1 año</div>
+            <ul class="timeline-desc">
+              <li>Desarrollo frontend y backend de la plataforma con HTML, CSS, JavaScript y Node.js</li>
+              <li>Diseño y optimización de consultas SQL para mejorar el rendimiento del sistema</li>
+              <li>Integración de endpoints de API con el módulo de gestión de inventario</li>
+              <li>Implementación de AWS Secrets Manager, SQS y CloudWatch en producción</li>
+              <li>Revisiones de código y refactorización de módulos existentes bajo metodología Scrum</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot-wrap">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2022<br/>2023</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-role">Practicante de Desarrollo Web</div>
+            <div class="timeline-company">Incodice · 1 año y 6 meses · Ingresé a los 17 años</div>
+            <ul class="timeline-desc">
+              <li>Inicio de carrera profesional en el área de desarrollo web a los 17 años</li>
+              <li>Desarrollo frontend con HTML, CSS y JavaScript bajo supervisión del equipo senior</li>
+              <li>Construcción y mantenimiento de bases de datos SQL y MongoDB</li>
+              <li>Integración de APIs y colaboración en proyectos reales para clientes</li>
+              <li>Experiencia en metodología Scrum y buenas prácticas de desarrollo</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot-wrap">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2021<br/>2023</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-role">Técnico en Desarrollo de Software</div>
+            <div class="timeline-company">Instituto Superior de Tecnología · Lima, Perú</div>
+            <ul class="timeline-desc">
+              <li>JavaScript Moderno — Udemy (2022)</li>
+              <li>Introducción a Bases de Datos con MySQL — Coursera (2022)</li>
+              <li>Node.js y Express: APIs RESTful — Platzi (2023)</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ABOUT ─────────────────────────────────── -->
+  <section id="about">
+    <div class="section-label">Sobre mí</div>
+    <h2 class="section-title">Junior con experiencia<br />en proyectos reales.</h2>
+    <div class="about-grid">
+      <div class="about-photo">
+        <span class="about-photo-initials">DT</span>
+      </div>
+      <div class="about-content">
+        <p class="about-bio">
+          Soy <strong>Douglas Torres</strong>, desarrollador web de 19 años con 2 años y medio de experiencia en producción.
+          Empecé a los 17 como practicante en Incodice, donde aprendí los fundamentos del desarrollo web en proyectos reales.
+          Luego me contrató formalmente Decateca, donde trabajé en una plataforma inmobiliaria completa.
+        </p>
+        <p class="about-bio">
+          Manejo tanto <strong>frontend</strong> (HTML, CSS, JavaScript) como <strong>backend</strong> (Python/Flask, Node.js, PHP),
+          bases de datos relacionales y NoSQL, y servicios de <strong>AWS en producción</strong>.
+          Busco seguir creciendo en proyectos con impacto real.
+        </p>
+
+        <div class="skills-group">
+          <p class="skills-title">Frontend</p>
+          <ul class="skills-list">
+            <li class="skill-item">HTML5 & CSS3</li>
+            <li class="skill-item">JavaScript ES6+</li>
+            <li class="skill-item">Flexbox & Grid</li>
+            <li class="skill-item">Diseño Responsivo</li>
+          </ul>
+        </div>
+        <div class="skills-group">
+          <p class="skills-title">Backend</p>
+          <ul class="skills-list">
+            <li class="skill-item">Python / Flask</li>
+            <li class="skill-item">Node.js / Express</li>
+            <li class="skill-item">PHP</li>
+            <li class="skill-item">JWT / Auth</li>
+            <li class="skill-item">APIs RESTful</li>
+          </ul>
+        </div>
+        <div class="skills-group">
+          <p class="skills-title">Bases de datos & Cloud</p>
+          <ul class="skills-list">
+            <li class="skill-item">MongoDB</li>
+            <li class="skill-item">MySQL / PostgreSQL</li>
+            <li class="skill-item">AWS SQS</li>
+            <li class="skill-item">AWS CloudWatch</li>
+            <li class="skill-item">Git & GitHub</li>
+            <li class="skill-item">Scrum</li>
+          </ul>
+        </div>
+
+        <a href="mailto:douglas08pool@gmail.com" class="btn-outline">Contactar ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SERVICES ──────────────────────────────── -->
+  <section id="services">
+    <div class="inner">
+      <div class="section-label">Servicios</div>
+      <h2 class="section-title">¿En qué puedo ayudarte?</h2>
+      <div class="services-grid">
+
+        <div class="service-card">
+          <span class="service-icon">⚡</span>
+          <h3 class="service-title">Landing Pages & Webs</h3>
+          <p class="service-desc">
+            Páginas web completas con diseño profesional, animaciones con spring physics, completamente responsivas y optimizadas para conversión. Entrego en HTML puro o integrado a tu CMS.
+          </p>
+          <span class="service-price">Desde S/500</span>
+        </div>
+
+        <div class="service-card">
+          <span class="service-icon">⚙️</span>
+          <h3 class="service-title">Backend & APIs REST</h3>
+          <p class="service-desc">
+            Desarrollo de APIs RESTful con Python/Flask o Node.js. Autenticación JWT, arquitectura MVC limpia, integración con MongoDB o SQL, deploy en AWS. Código ordenado y documentado.
+          </p>
+          <span class="service-price">Desde S/800</span>
+        </div>
+
+        <div class="service-card">
+          <span class="service-icon">🗄️</span>
+          <h3 class="service-title">Base de Datos & Reportes</h3>
+          <p class="service-desc">
+            Diseño y optimización de esquemas SQL y NoSQL. Aggregation Pipelines en MongoDB para reportes y KPIs. Consultas optimizadas para alto rendimiento en colecciones de gran escala.
+          </p>
+          <span class="service-price">Desde S/400</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT ───────────────────────────────── -->
+  <section id="contact">
+    <div class="inner">
+      <div class="section-label">Contacto</div>
+      <h2 class="section-title" style="margin-bottom:var(--space-12)">Trabajemos juntos.</h2>
+      <div>
+        <div class="contact-left" style="margin-bottom:var(--space-12);">
+          <p class="contact-tagline">
+            "Cuéntame tu proyecto. Me tomo el tiempo de entender qué necesitas antes de proponer cualquier solución."
+          </p>
+          <div class="contact-info-item">
+            <span>✉</span>
+            <a href="mailto:douglas08pool@gmail.com">douglas08pool@gmail.com</a>
+          </div>
+          <div class="contact-info-item">
+            <span>◎</span>
+            <span>Lima, Perú — disponible para trabajo remoto</span>
+          </div>
+          <div class="contact-info-item">
+            <span>◈</span>
+            <span>Inglés técnico · Español nativo</span>
+          </div>
+        </div>
+
+        <form id="contact-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Nombre</label>
+              <input type="text" id="name" name="name" placeholder="Tu nombre completo" required minlength="2" />
+            </div>
+            <div class="form-group">
+              <label for="email">Correo electrónico</label>
+              <input type="email" id="email" name="email" placeholder="tu@email.com" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="message">Mensaje</label>
+            <textarea id="message" name="message" placeholder="Cuéntame sobre tu proyecto..." required minlength="20"></textarea>
+          </div>
+          <button type="submit" class="btn-send">Enviar mensaje →</button>
+          <div class="form-success" id="form-success">
+            Mensaje recibido. Te respondo en menos de 48 horas.
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ────────────────────────────────── -->
+  <footer>
+    <span class="footer-copy">© 2026 Douglas Torres. Lima, Perú.</span>
+    <nav class="footer-socials">
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="mailto:douglas08pool@gmail.com">Email</a>
+    </nav>
+  </footer>
+
+  <script>
+    /* ── Cursor ── */
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let rx = 0, ry = 0, mx = 0, my = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    });
+    (function raf() {
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(raf);
+    })();
+    document.querySelectorAll('a,button,.project-card,.service-card,input,textarea,.skill-item,.timeline-item').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+    });
+
+    /* ── Nav scroll ── */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40), { passive: true });
+
+    /* ── IntersectionObserver stagger ── */
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.project-card, .timeline-item').forEach(el => io.observe(el));
+
+    /* ── Form ── */
+    const form = document.getElementById('contact-form');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      let ok = true;
+      form.querySelectorAll('[required]').forEach(f => { if (!f.checkValidity()) { f.reportValidity(); ok = false; } });
+      if (!ok) return;
+      const btn = form.querySelector('.btn-send');
+      btn.textContent = 'Enviando…'; btn.disabled = true;
+      setTimeout(() => {
+        form.reset(); btn.style.display = 'none';
+        document.getElementById('form-success').style.display = 'block';
+      }, 900);
+    });
+  </script>
+</body>
+</html>
+

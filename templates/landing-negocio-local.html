@@ -1,0 +1,1728 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>García &amp; Asociados — Estudio Jurídico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── CSS CUSTOM PROPERTIES (default: navy) ─── */
+    :root {
+      --c-brand: #0d1b4b;
+      --c-brand-dark: #070f2b;
+      --c-accent: #c9a84c;
+      --c-bg: #f8f7f4;
+      --c-surface: #f0ede6;
+      --c-text: #1a1a1a;
+      --c-text-muted: #666;
+      --c-white: #ffffff;
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md: 0 8px 32px rgba(0,0,0,0.12);
+      --shadow-lg: 0 24px 64px rgba(0,0,0,0.16);
+    }
+
+    /* ─── RESET & BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--c-bg);
+      color: var(--c-text);
+      line-height: 1.6;
+      transition: background 0.4s ease, color 0.4s ease;
+      padding-top: 36px;
+    }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ─── PALETTE SWITCHER BAR ─── */
+    #palette-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: #0a0a0a;
+      color: #fff;
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.04em;
+    }
+    #palette-bar .label { opacity: 0.7; white-space: nowrap; }
+    .palette-swatches { display: flex; gap: 10px; align-items: center; }
+    .swatch {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.3s var(--spring);
+      border: 2px solid transparent;
+      outline: none;
+    }
+    .swatch:hover { transform: scale(1.25); }
+    .swatch.active { box-shadow: 0 0 0 3px #fff; }
+    .swatch[data-palette="navy"]     { background: #0d1b4b; }
+    .swatch[data-palette="carbon"]   { background: #1c1c1e; }
+    .swatch[data-palette="forest"]   { background: #1a3a2a; }
+    .swatch[data-palette="burgundy"] { background: #5c1a2e; }
+
+    /* ─── NAVIGATION ─── */
+    #main-nav {
+      position: fixed;
+      top: 36px;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      padding: 20px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
+    }
+    #main-nav.scrolled {
+      background: var(--c-brand);
+      padding: 14px 48px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--c-white);
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+    .nav-logo span {
+      display: block;
+      font-size: 0.65rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      margin-top: 1px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.25s ease;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--c-accent);
+      transform: scaleX(0);
+      transition: transform 0.3s var(--spring);
+      transform-origin: left;
+    }
+    .nav-links a:hover { color: var(--c-accent); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-cta {
+      background: var(--c-accent) !important;
+      color: var(--c-brand-dark) !important;
+      padding: 10px 22px !important;
+      border-radius: 2px;
+      font-weight: 600 !important;
+      transition: transform 0.3s var(--spring), box-shadow 0.3s ease !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover {
+      transform: translateY(-2px) scale(1.04) !important;
+      box-shadow: 0 6px 20px rgba(201,168,76,0.4);
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=85&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 20, 60, 0.72);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 120px 24px 80px;
+      max-width: 900px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.4);
+      color: var(--c-accent);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+      animation: fadeInDown 0.8s var(--ease-out) both;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--c-accent);
+    }
+    .hero-headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 600;
+      color: var(--c-white);
+      line-height: 1.1;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.9s var(--ease-out) 0.15s both;
+    }
+    .hero-headline em {
+      font-style: italic;
+      color: var(--c-accent);
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+      max-width: 560px;
+      margin: 0 auto 48px;
+      font-weight: 300;
+      line-height: 1.8;
+      animation: fadeInUp 1s var(--ease-out) 0.3s both;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 1s var(--ease-out) 0.45s both;
+    }
+    .btn-primary {
+      background: var(--c-accent);
+      color: var(--c-brand-dark);
+      padding: 16px 36px;
+      border-radius: 2px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      transition: transform 0.3s var(--spring), box-shadow 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 12px 40px rgba(201,168,76,0.45);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--c-white);
+      border: 1.5px solid rgba(255,255,255,0.5);
+      padding: 16px 36px;
+      border-radius: 2px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s var(--spring);
+    }
+    .btn-outline:hover {
+      border-color: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-2px);
+    }
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      animation: fadeIn 2s 1s both;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* ─── WHATSAPP FLOATING BUTTON ─── */
+    #wa-btn {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 9000;
+      width: 60px;
+      height: 60px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+      transition: transform 0.3s var(--spring), box-shadow 0.3s ease;
+      animation: waPulse 2.5s ease-in-out infinite;
+    }
+    #wa-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 8px 32px rgba(37,211,102,0.6);
+      animation: none;
+    }
+    #wa-btn svg { width: 30px; height: 30px; fill: white; }
+
+    /* ─── STATS BAR ─── */
+    #stats {
+      background: var(--c-brand);
+      padding: 64px 48px;
+    }
+    .stats-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 32px 24px;
+      position: relative;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s var(--ease-out);
+    }
+    .stat-item.visible { opacity: 1; transform: translateY(0); }
+    .stat-item + .stat-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 20%;
+      height: 60%;
+      width: 1px;
+      background: rgba(201,168,76,0.25);
+    }
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--c-accent);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    /* ─── SECTION SHARED STYLES ─── */
+    section { padding: 100px 48px; }
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      margin-bottom: 16px;
+      position: relative;
+      padding: 0 32px;
+    }
+    .section-tag::before,
+    .section-tag::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 24px;
+      height: 1px;
+      background: var(--c-accent);
+      opacity: 0.6;
+    }
+    .section-tag::before { right: 100%; margin-right: -28px; }
+    .section-tag::after  { left: 100%;  margin-left: -28px; }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 600;
+      color: var(--c-brand);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 1rem;
+      color: var(--c-text-muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* scroll-in animation base */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s var(--ease-out);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── ABOUT / INTRO STRIP ─── */
+    #about {
+      background: var(--c-bg);
+      padding: 100px 48px;
+    }
+    .about-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-img-wrap { position: relative; }
+    .about-img-wrap img {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+    .about-badge-float {
+      position: absolute;
+      bottom: -24px;
+      right: -24px;
+      background: var(--c-accent);
+      color: var(--c-brand-dark);
+      padding: 24px 28px;
+      font-family: 'Cormorant Garamond', serif;
+      text-align: center;
+      border-radius: 2px;
+      box-shadow: var(--shadow-lg);
+    }
+    .about-badge-float .num {
+      display: block;
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .about-badge-float .txt {
+      display: block;
+      font-size: 0.7rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .about-text .section-tag { text-align: left; padding-left: 0; }
+    .about-text .section-tag::before { display: none; }
+    .about-text .section-title { text-align: left; }
+    .about-body {
+      font-size: 0.95rem;
+      color: var(--c-text-muted);
+      line-height: 1.9;
+      margin-bottom: 20px;
+    }
+    .about-vals { display: flex; flex-direction: column; gap: 14px; margin-top: 32px; }
+    .about-val {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--c-text);
+    }
+    .about-val-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--c-accent);
+      flex-shrink: 0;
+    }
+
+    /* ─── SERVICES ─── */
+    #servicios {
+      background: var(--c-surface);
+      position: relative;
+      overflow: hidden;
+    }
+    .services-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1575505586569-646b2ca898fc?w=900&q=80&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+    .services-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      position: relative;
+    }
+    .service-card {
+      background: var(--c-bg);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 2px;
+      padding: 40px 36px;
+      transition: transform 0.4s var(--spring), box-shadow 0.4s ease, border-color 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--c-accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s var(--spring);
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: transparent;
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--c-surface);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      color: var(--c-accent);
+      transition: background 0.3s ease, transform 0.4s var(--spring), color 0.3s ease;
+    }
+    .service-card:hover .service-icon {
+      background: var(--c-accent);
+      color: var(--c-brand-dark);
+      transform: scale(1.1) rotate(-3deg);
+    }
+    .service-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--c-brand);
+      margin-bottom: 12px;
+    }
+    .service-desc {
+      font-size: 0.875rem;
+      color: var(--c-text-muted);
+      line-height: 1.85;
+    }
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .service-tag {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.2);
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+
+    /* ─── TEAM ─── */
+    #equipo { background: var(--c-bg); }
+    .team-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .team-card {
+      background: var(--c-surface);
+      border-radius: 2px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: transform 0.4s var(--spring), box-shadow 0.4s ease;
+      text-align: center;
+    }
+    .team-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow-lg);
+    }
+    .team-avatar-wrap {
+      position: relative;
+      height: 280px;
+      overflow: hidden;
+    }
+    .team-avatar-initials {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.12);
+      letter-spacing: -0.02em;
+    }
+    .team-avatar-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .team-avatar-icon svg {
+      width: 96px;
+      height: 96px;
+      fill: rgba(201,168,76,0.28);
+    }
+    .team-accent-bar { height: 3px; background: var(--c-accent); }
+    .team-info { padding: 28px 24px 32px; }
+    .team-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--c-brand);
+      margin-bottom: 6px;
+    }
+    .team-role {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      margin-bottom: 16px;
+    }
+    .team-bio {
+      font-size: 0.85rem;
+      color: var(--c-text-muted);
+      line-height: 1.8;
+    }
+    .team-social {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .team-social a {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--c-text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      transition: background 0.3s ease, color 0.3s ease, transform 0.3s var(--spring), border-color 0.3s ease;
+    }
+    .team-social a:hover {
+      background: var(--c-accent);
+      color: var(--c-brand-dark);
+      border-color: var(--c-accent);
+      transform: scale(1.15);
+    }
+
+    /* ─── TESTIMONIALS ─── */
+    #testimonios { background: var(--c-surface); }
+    .testimonials-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .testimonial-card {
+      background: var(--c-bg);
+      border-radius: 2px;
+      padding: 36px 32px;
+      border: 1px solid rgba(0,0,0,0.05);
+      position: relative;
+      transition: transform 0.4s var(--spring), box-shadow 0.4s ease;
+    }
+    .testimonial-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-md);
+    }
+    .testimonial-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem;
+      line-height: 0.8;
+      color: var(--c-accent);
+      opacity: 0.5;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .testimonial-text {
+      font-size: 0.9rem;
+      color: var(--c-text);
+      line-height: 1.9;
+      font-style: italic;
+      margin-bottom: 28px;
+    }
+    .testimonial-stars { display: flex; gap: 3px; margin-bottom: 20px; }
+    .star { color: var(--c-accent); font-size: 0.9rem; }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      padding-top: 20px;
+    }
+    .author-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--c-brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--c-accent);
+      flex-shrink: 0;
+    }
+    .author-name { font-weight: 600; font-size: 0.9rem; color: var(--c-brand); }
+    .author-title { font-size: 0.75rem; color: var(--c-text-muted); margin-top: 2px; }
+
+    /* ─── CTA / CONTACT ─── */
+    #contacto {
+      position: relative;
+      overflow: hidden;
+      padding: 100px 48px;
+    }
+    .cta-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1554469384-e58fac16e23a?w=1200&q=80&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    .cta-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(7, 15, 43, 0.88);
+    }
+    .cta-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .cta-left .section-tag { text-align: left; padding-left: 0; }
+    .cta-left .section-tag::before { display: none; }
+    .cta-free-badge {
+      display: inline-block;
+      background: var(--c-accent);
+      color: var(--c-brand-dark);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    .cta-desc {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.95rem;
+      line-height: 1.9;
+      margin-bottom: 40px;
+    }
+    .cta-info-list { display: flex; flex-direction: column; gap: 20px; }
+    .cta-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      color: rgba(255,255,255,0.75);
+      font-size: 0.875rem;
+    }
+    .cta-info-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--c-accent);
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .cta-info-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* FORM */
+    .contact-form {
+      background: var(--c-bg);
+      border-radius: 4px;
+      padding: 40px 36px;
+    }
+    .form-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--c-brand);
+      margin-bottom: 28px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: span 2; }
+    .form-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--c-text);
+      background: var(--c-surface);
+      border: 1.5px solid rgba(0,0,0,0.08);
+      border-radius: 2px;
+      padding: 12px 16px;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%;
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: var(--c-accent);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+    }
+    .form-textarea { resize: vertical; min-height: 110px; }
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-color: var(--c-surface);
+    }
+    .form-submit {
+      width: 100%;
+      background: var(--c-accent);
+      color: var(--c-brand-dark);
+      padding: 15px 24px;
+      border-radius: 2px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      transition: transform 0.3s var(--spring), box-shadow 0.3s ease;
+      margin-top: 4px;
+      cursor: pointer;
+      border: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .form-submit:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 28px rgba(201,168,76,0.4);
+    }
+    .form-success {
+      display: none;
+      background: rgba(37, 211, 102, 0.1);
+      border: 1px solid rgba(37, 211, 102, 0.3);
+      color: #1a7a3a;
+      padding: 16px 20px;
+      border-radius: 2px;
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    /* ─── FOOTER ─── */
+    #footer {
+      background: var(--c-brand-dark);
+      color: rgba(255,255,255,0.65);
+      padding: 60px 48px 36px;
+    }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-brand .nav-logo { margin-bottom: 16px; }
+    .footer-desc {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      margin-bottom: 24px;
+      max-width: 280px;
+    }
+    .footer-col-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      margin-bottom: 20px;
+    }
+    .footer-links { display: flex; flex-direction: column; gap: 12px; }
+    .footer-links a {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      transition: color 0.25s ease, transform 0.25s ease;
+      display: inline-block;
+    }
+    .footer-links a:hover { color: var(--c-accent); transform: translateX(4px); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+    }
+    .footer-copy { opacity: 0.4; }
+    .footer-bottom-links { display: flex; gap: 24px; }
+    .footer-bottom-links a {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.78rem;
+      transition: color 0.25s ease;
+    }
+    .footer-bottom-links a:hover { color: var(--c-accent); }
+    .footer-divider {
+      width: 48px;
+      height: 2px;
+      background: var(--c-accent);
+      margin: 16px 0 24px;
+      opacity: 0.6;
+    }
+
+    /* ─── KEYFRAMES ─── */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50%       { opacity: 0.9; transform: scaleY(0.7); }
+    }
+    @keyframes waPulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.45); }
+      50%       { box-shadow: 0 4px 40px rgba(37,211,102,0.7), 0 0 0 10px rgba(37,211,102,0.1); }
+    }
+
+    /* ─── STAGGER DELAYS ─── */
+    .stat-item:nth-child(1)        { transition-delay: 0s; }
+    .stat-item:nth-child(2)        { transition-delay: 0.1s; }
+    .stat-item:nth-child(3)        { transition-delay: 0.2s; }
+    .stat-item:nth-child(4)        { transition-delay: 0.3s; }
+    .service-card:nth-child(1)     { transition-delay: 0s; }
+    .service-card:nth-child(2)     { transition-delay: 0.1s; }
+    .service-card:nth-child(3)     { transition-delay: 0.2s; }
+    .service-card:nth-child(4)     { transition-delay: 0.3s; }
+    .team-card:nth-child(1)        { transition-delay: 0s; }
+    .team-card:nth-child(2)        { transition-delay: 0.12s; }
+    .team-card:nth-child(3)        { transition-delay: 0.24s; }
+    .testimonial-card:nth-child(1) { transition-delay: 0s; }
+    .testimonial-card:nth-child(2) { transition-delay: 0.1s; }
+    .testimonial-card:nth-child(3) { transition-delay: 0.2s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      section { padding: 80px 32px; }
+      #stats  { padding: 48px 32px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stat-item + .stat-item::before { display: none; }
+      .about-inner { grid-template-columns: 1fr; gap: 48px; }
+      .about-img-wrap img { height: 380px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .cta-inner { grid-template-columns: 1fr; gap: 48px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .nav-links { gap: 20px; }
+      #main-nav { padding: 18px 32px; }
+      #main-nav.scrolled { padding: 14px 32px; }
+    }
+    @media (max-width: 768px) {
+      #main-nav { padding: 14px 20px; }
+      #main-nav.scrolled { padding: 10px 20px; }
+      .nav-links { display: none; }
+      section { padding: 64px 20px; }
+      #stats  { padding: 40px 20px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .team-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+      .cta-inner { gap: 32px; }
+      .contact-form { padding: 28px 20px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: span 1; }
+      .about-badge-float { right: 0; bottom: -16px; }
+      #wa-btn { width: 52px; height: 52px; bottom: 20px; right: 20px; }
+    }
+  </style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;display:flex;align-items:center;gap:12px;padding:10px 20px;background:rgba(8,8,15,0.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.07);font-family:system-ui,sans-serif;">
+  <a href="../index.html" style="display:inline-flex;align-items:center;gap:8px;color:#a855f7;text-decoration:none;font-size:13px;font-weight:500;">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Volver al portafolio
+  </a>
+  <span style="color:rgba(255,255,255,0.15);font-size:12px;">|</span>
+  <span style="color:rgba(255,255,255,0.4);font-size:12px;font-family:monospace;">douglas08pool@gmail.com</span>
+</div>
+<div style="height:44px;"></div>
+
+  <!-- ═══════════════════════════════════
+       1. PALETTE SWITCHER BAR
+  ════════════════════════════════════ -->
+  <div id="palette-bar">
+    <span class="label">Elige tu paleta:</span>
+    <div class="palette-swatches">
+      <button class="swatch active" data-palette="navy"     title="Navy Gold"   aria-label="Paleta Navy"></button>
+      <button class="swatch"        data-palette="carbon"   title="Carbon"      aria-label="Paleta Carbon"></button>
+      <button class="swatch"        data-palette="forest"   title="Forest"      aria-label="Paleta Forest"></button>
+      <button class="swatch"        data-palette="burgundy" title="Burgundy"    aria-label="Paleta Burgundy"></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       2. NAVIGATION
+  ════════════════════════════════════ -->
+  <nav id="main-nav" aria-label="Navegación principal">
+    <a href="#hero" class="nav-logo" aria-label="García &amp; Asociados — Inicio">
+      García &amp; Asociados
+      <span>Estudio Jurídico</span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="#hero">Inicio</a></li>
+      <li><a href="#servicios">Práctica</a></li>
+      <li><a href="#equipo">Equipo</a></li>
+      <li><a href="#testimonios">Testimonios</a></li>
+      <li><a href="#contacto" class="nav-cta">Consulta Gratuita</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══════════════════════════════════
+       3. HERO
+  ════════════════════════════════════ -->
+  <section id="hero" aria-label="Inicio">
+    <div class="hero-bg" role="img" aria-label="Oficina corporativa moderna"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge">Más de 20 años de experiencia</div>
+      <h1 class="hero-headline">
+        Protegemos sus intereses<br />con <em>precisión jurídica.</em>
+      </h1>
+      <p class="hero-sub">
+        Estudio jurídico especializado en derecho corporativo, inmobiliario y civil. Soluciones legales a medida para empresas y particulares.
+      </p>
+      <div class="hero-ctas">
+        <a href="#contacto" class="btn-primary">Consulta gratuita &rarr;</a>
+        <a href="#servicios" class="btn-outline">Nuestras áreas &rarr;</a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint" aria-hidden="true">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       4. STATS BAR
+  ════════════════════════════════════ -->
+  <div id="stats" aria-label="Estadísticas del estudio">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number"><span class="counter" data-target="20">0</span>+</div>
+        <div class="stat-label">Años de experiencia</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number"><span class="counter" data-target="500">0</span>+</div>
+        <div class="stat-label">Casos ganados</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number"><span class="counter" data-target="98">0</span>%</div>
+        <div class="stat-label">Tasa de éxito</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number"><span class="counter" data-target="3">0</span></div>
+        <div class="stat-label">Socios especializados</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       ABOUT
+  ════════════════════════════════════ -->
+  <section id="about" aria-label="Quiénes somos">
+    <div class="about-inner">
+      <div class="about-img-wrap reveal">
+        <img
+          src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&q=80&auto=format&fit=crop"
+          alt="Equipo García &amp; Asociados en reunión"
+          loading="lazy"
+        />
+        <div class="about-badge-float" aria-hidden="true">
+          <span class="num">20+</span>
+          <span class="txt">Años de<br>excelencia</span>
+        </div>
+      </div>
+      <div class="about-text reveal">
+        <p class="section-tag">Quiénes somos</p>
+        <h2 class="section-title">Un estudio jurídico<br />construido sobre la confianza.</h2>
+        <p class="about-body">
+          García &amp; Asociados nació en Lima con la misión de ofrecer asesoría legal de primer nivel. Combinamos la profundidad del análisis jurídico con un trato cercano y transparente, garantizando que cada cliente entienda cada decisión que toma con nosotros.
+        </p>
+        <p class="about-body">
+          Nuestro equipo de abogados, con formación en las mejores universidades del país y del exterior, trabaja de forma coordinada para ofrecer soluciones integrales en cada caso, sin importar la complejidad.
+        </p>
+        <div class="about-vals">
+          <div class="about-val"><div class="about-val-dot"></div> Confidencialidad y ética profesional absoluta</div>
+          <div class="about-val"><div class="about-val-dot"></div> Estrategia legal personalizada para cada cliente</div>
+          <div class="about-val"><div class="about-val-dot"></div> Respuesta ágil y comunicación constante</div>
+          <div class="about-val"><div class="about-val-dot"></div> Red de especialistas asociados a nivel nacional</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       5. AREAS DE PRÁCTICA
+  ════════════════════════════════════ -->
+  <section id="servicios" aria-label="Áreas de práctica">
+    <div class="services-bg" role="img" aria-hidden="true"></div>
+    <div class="section-header reveal">
+      <p class="section-tag">Áreas de práctica</p>
+      <h2 class="section-title">Soluciones para cada necesidad jurídica</h2>
+      <p class="section-subtitle">Ofrecemos asesoría especializada en las ramas del derecho más relevantes para empresas y personas naturales.</p>
+    </div>
+    <div class="services-grid">
+
+      <!-- Corporativo -->
+      <div class="service-card reveal">
+        <div class="service-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+        </div>
+        <h3 class="service-title">Derecho Corporativo</h3>
+        <p class="service-desc">Asesoramos a empresas en todas las etapas de su ciclo de vida: constitución, gobierno corporativo, fusiones y adquisiciones, compliance regulatorio, contratos comerciales y restructuraciones societarias. Protegemos sus intereses en cada transacción.</p>
+        <div class="service-tags">
+          <span class="service-tag">Contratos</span>
+          <span class="service-tag">M&amp;A</span>
+          <span class="service-tag">Compliance</span>
+          <span class="service-tag">Societario</span>
+        </div>
+      </div>
+
+      <!-- Inmobiliario -->
+      <div class="service-card reveal">
+        <div class="service-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <h3 class="service-title">Derecho Inmobiliario</h3>
+        <p class="service-desc">Gestionamos operaciones inmobiliarias de toda escala: compraventa de inmuebles, due diligence registral y urbanístico, contratos de arrendamiento, proyectos de desarrollo e inversión, y financiamiento hipotecario. Seguridad en cada operación.</p>
+        <div class="service-tags">
+          <span class="service-tag">Compraventa</span>
+          <span class="service-tag">Due Diligence</span>
+          <span class="service-tag">Arrendamientos</span>
+        </div>
+      </div>
+
+      <!-- Civil -->
+      <div class="service-card reveal">
+        <div class="service-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3 class="service-title">Derecho Civil</h3>
+        <p class="service-desc">Atendemos asuntos civiles con profundidad y sensibilidad: sucesiones y herencias, derecho de familia, elaboración y revisión de contratos civiles, responsabilidad civil extracontractual y declaraciones judiciales. Siempre a su lado.</p>
+        <div class="service-tags">
+          <span class="service-tag">Sucesiones</span>
+          <span class="service-tag">Familia</span>
+          <span class="service-tag">Contratos</span>
+        </div>
+      </div>
+
+      <!-- Litigacion -->
+      <div class="service-card reveal">
+        <div class="service-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+        </div>
+        <h3 class="service-title">Litigación y Arbitraje</h3>
+        <p class="service-desc">Representamos a nuestros clientes con firmeza en sede judicial y arbitral. Contamos con árbitros certificados por centros de arbitraje nacionales e internacionales y amplia experiencia en litigación compleja de alto valor. Defensa sin concesiones.</p>
+        <div class="service-tags">
+          <span class="service-tag">Defensa Judicial</span>
+          <span class="service-tag">Arbitraje</span>
+          <span class="service-tag">Mediación</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       6. EQUIPO
+  ════════════════════════════════════ -->
+  <section id="equipo" aria-label="Nuestro equipo">
+    <div class="section-header reveal">
+      <p class="section-tag">Nuestro equipo</p>
+      <h2 class="section-title">Abogados de excelencia a su servicio</h2>
+      <p class="section-subtitle">Socios con formación internacional y décadas de práctica en sus áreas de especialización.</p>
+    </div>
+    <div class="team-grid">
+
+      <!-- Dr. Ricardo García -->
+      <div class="team-card reveal">
+        <div class="team-avatar-wrap" style="background: linear-gradient(135deg, #1a2d6b 0%, #070f2b 100%);">
+          <div class="team-avatar-initials" aria-hidden="true">RG</div>
+          <div class="team-avatar-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="team-accent-bar"></div>
+        <div class="team-info">
+          <h3 class="team-name">Dr. Ricardo García</h3>
+          <p class="team-role">Socio Fundador &mdash; Derecho Corporativo</p>
+          <p class="team-bio">Abogado por la PUCP con LLM en Harvard Law School. Más de 20 años asesorando operaciones corporativas transfronterizas y proyectos de inversión en el sector privado peruano e internacional.</p>
+          <div class="team-social">
+            <a href="#" title="LinkedIn" aria-label="LinkedIn Dr. Ricardo García">in</a>
+            <a href="#" title="Email" aria-label="Correo Dr. Ricardo García">&#9993;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dra. Mariana Acosta -->
+      <div class="team-card reveal">
+        <div class="team-avatar-wrap" style="background: linear-gradient(135deg, #1e3260 0%, #070f2b 100%);">
+          <div class="team-avatar-initials" aria-hidden="true">MA</div>
+          <div class="team-avatar-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="team-accent-bar"></div>
+        <div class="team-info">
+          <h3 class="team-name">Dra. Mariana Acosta</h3>
+          <p class="team-role">Socia &mdash; Derecho Inmobiliario</p>
+          <p class="team-bio">Especialista en transacciones inmobiliarias y proyectos de desarrollo urbano. Máster en Derecho Urbanístico por la Universidad de Salamanca. Referente del sector en Lima con más de 15 años de trayectoria.</p>
+          <div class="team-social">
+            <a href="#" title="LinkedIn" aria-label="LinkedIn Dra. Mariana Acosta">in</a>
+            <a href="#" title="Email" aria-label="Correo Dra. Mariana Acosta">&#9993;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dr. Jorge Paredes -->
+      <div class="team-card reveal">
+        <div class="team-avatar-wrap" style="background: linear-gradient(135deg, #162550 0%, #070f2b 100%);">
+          <div class="team-avatar-initials" aria-hidden="true">JP</div>
+          <div class="team-avatar-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="team-accent-bar"></div>
+        <div class="team-info">
+          <h3 class="team-name">Dr. Jorge Paredes</h3>
+          <p class="team-role">Socio &mdash; Litigación y Arbitraje</p>
+          <p class="team-bio">Árbitro certificado ante el Centro de Arbitraje de la CCL y el CARC. Más de 15 años de trayectoria en litigación compleja y resolución de controversias comerciales de alto valor económico.</p>
+          <div class="team-social">
+            <a href="#" title="LinkedIn" aria-label="LinkedIn Dr. Jorge Paredes">in</a>
+            <a href="#" title="Email" aria-label="Correo Dr. Jorge Paredes">&#9993;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       7. TESTIMONIALS
+  ════════════════════════════════════ -->
+  <section id="testimonios" aria-label="Testimonios de clientes">
+    <div class="section-header reveal">
+      <p class="section-tag">Testimonios</p>
+      <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+      <p class="section-subtitle">La confianza de quienes nos eligieron es el mayor reconocimiento a nuestro trabajo.</p>
+    </div>
+    <div class="testimonials-grid">
+
+      <!-- Testimonial 1 -->
+      <div class="testimonial-card reveal">
+        <span class="testimonial-quote" aria-hidden="true">&ldquo;</span>
+        <div class="testimonial-stars" aria-label="Calificación: 5 estrellas">
+          <span class="star" aria-hidden="true">&#9733;</span>
+          <span class="star" aria-hidden="true">&#9733;</span>
+          <span class="star" aria-hidden="true">&#9733;</span>
+          <span class="star" aria-hidden="true">&#9733;</span>
+          <span class="star" aria-hidden="true">&#9733;</span>
+        </div>
+        <p class="testimonial-text">"García &amp; Asociados manejó la adquisición de nuestras nuevas instalaciones con una diligencia impecable. Detectaron riesgos registrales que nosotros nunca hubiéramos identificado. La inversión en su asesoría claramente valió cada sol."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" aria-hidden="true">CB</div>
+          <div>
+            <div class="author-name">Carlos Benavides</div>
+            <div class="author-title">CEO &mdash; Grupo Inversiones Andinas</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 2 -->
+      <div class="testimonial-card reveal">
+        <span class="testimonial-quote" aria-hidden="true">&ldquo;</span>
+        <div class="testimonial-stars" aria-label="Calificación: 5 estrellas">
+          <span class="star" aria-hidden="true">&#9733;</span>
+          <span class="star" aria-hidden="true">&#9733;</span>
+          <span class="star" aria-hidden="true">&#9733;</span>
+          <span class="star" aria-hidden="true">&#9733;</span>
+          <span class="star" aria-hidden="true">&#9733;</span>
+        </div>
+        <p class="testimonial-text">"El Dr. Paredes nos representó en un arbitraje de casi dos millones de dólares. Su preparación, su dominio del proceso y su capacidad de análisis estratégico fueron determinantes para el resultado favorable que obtuvimos."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" aria-hidden="true">LV</div>
+          <div>
+            <div class="author-name">Laura Villanueva</div>
+            <div class="author-title">Directora Financiera &mdash; Constructora Meridional</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 3 — with image -->
+      <div class="testimonial-card reveal" style="padding:0; overflow:hidden;">
+        <img
+          src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80&auto=format&fit=crop"
+          alt="Sala de audiencias de justicia"
+          style="width:100%; height:200px; object-fit:cover; display:block;"
+          loading="lazy"
+        />
+        <div style="padding:28px 28px 32px; background:var(--c-bg);">
+          <span class="testimonial-quote" aria-hidden="true">&ldquo;</span>
+          <div class="testimonial-stars" aria-label="Calificación: 5 estrellas">
+            <span class="star" aria-hidden="true">&#9733;</span>
+            <span class="star" aria-hidden="true">&#9733;</span>
+            <span class="star" aria-hidden="true">&#9733;</span>
+            <span class="star" aria-hidden="true">&#9733;</span>
+            <span class="star" aria-hidden="true">&#9733;</span>
+          </div>
+          <p class="testimonial-text">"La Dra. Acosta asesoró todo el proceso sucesorio de mi familia con una paciencia y claridad extraordinarias. En un momento difícil, su profesionalismo y calidez humana marcaron la diferencia."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" aria-hidden="true">PM</div>
+            <div>
+              <div class="author-name">Patricia Morales</div>
+              <div class="author-title">Cliente particular &mdash; Sucesión familiar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       8. CONTACTO / CTA
+  ════════════════════════════════════ -->
+  <section id="contacto" aria-label="Contacto y consulta gratuita">
+    <div class="cta-bg" role="img" aria-label="Biblioteca jurídica"></div>
+    <div class="cta-overlay"></div>
+    <div class="cta-inner">
+
+      <!-- Left: info -->
+      <div class="cta-left reveal">
+        <span class="cta-free-badge">Primera consulta sin costo</span>
+        <p class="section-tag" style="color:var(--c-accent); text-align:left; padding-left:0;">Contáctenos</p>
+        <h2 class="section-title" style="color:#fff; text-align:left; margin-bottom:20px;">
+          ¿Necesita asesoría<br />jurídica? <em style="font-style:italic; color:var(--c-accent);">Estamos aquí.</em>
+        </h2>
+        <p class="cta-desc">
+          Cuéntenos su situación y uno de nuestros socios se comunicará con usted en menos de 24 horas hábiles. La primera consulta es completamente gratuita y sin ningún tipo de compromiso.
+        </p>
+        <div class="cta-info-list">
+          <div class="cta-info-item">
+            <div class="cta-info-icon" aria-hidden="true">&#128205;</div>
+            <div>
+              <span class="cta-info-label">Dirección</span>
+              Av. Jorge Basadre 595, Of. 601<br />San Isidro, Lima 27, Perú
+            </div>
+          </div>
+          <div class="cta-info-item">
+            <div class="cta-info-icon" aria-hidden="true">&#128222;</div>
+            <div>
+              <span class="cta-info-label">Teléfono</span>
+              +51 (01) 445-7890 &nbsp;&bull;&nbsp; +51 999 999 999
+            </div>
+          </div>
+          <div class="cta-info-item">
+            <div class="cta-info-icon" aria-hidden="true">&#9993;</div>
+            <div>
+              <span class="cta-info-label">Email</span>
+              contacto@garciayasociados.pe
+            </div>
+          </div>
+          <div class="cta-info-item">
+            <div class="cta-info-icon" aria-hidden="true">&#128337;</div>
+            <div>
+              <span class="cta-info-label">Horario de atención</span>
+              Lunes a Viernes: 9:00 am &ndash; 7:00 pm<br />Sábados: 9:00 am &ndash; 1:00 pm
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: form -->
+      <div class="contact-form reveal">
+        <h3 class="form-title">Envíenos un mensaje</h3>
+        <form id="contact-form" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="f-name">Nombre completo</label>
+              <input class="form-input" type="text" id="f-name" name="name" placeholder="Juan Pérez" required autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-email">Correo electrónico</label>
+              <input class="form-input" type="email" id="f-email" name="email" placeholder="juan@empresa.com" required autocomplete="email" />
+            </div>
+            <div class="form-group full">
+              <label class="form-label" for="f-area">Área jurídica</label>
+              <select class="form-select" id="f-area" name="area" required>
+                <option value="" disabled selected>Seleccione un área...</option>
+                <option value="corporativo">Derecho Corporativo</option>
+                <option value="inmobiliario">Derecho Inmobiliario</option>
+                <option value="civil">Derecho Civil</option>
+                <option value="litigacion">Litigación y Arbitraje</option>
+                <option value="otro">Otro / No estoy seguro</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label" for="f-msg">Descripción breve de su caso</label>
+              <textarea class="form-textarea" id="f-msg" name="message" placeholder="Cuéntenos brevemente su situación jurídica..." required></textarea>
+            </div>
+          </div>
+          <button type="submit" class="form-submit">Enviar consulta &rarr;</button>
+          <div class="form-success" id="form-success" role="alert" aria-live="polite">
+            &#10003;&nbsp; Mensaje enviado con éxito. Un abogado se comunicará con usted en las próximas 24 horas hábiles.
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       9. FOOTER
+  ════════════════════════════════════ -->
+  <footer id="footer" aria-label="Pie de página">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="nav-logo">
+            García &amp; Asociados
+            <span>Estudio Jurídico</span>
+          </div>
+          <div class="footer-divider"></div>
+          <p class="footer-desc">Más de dos décadas protegiendo los intereses de nuestros clientes con rigor jurídico, ética profesional y dedicación absoluta a cada caso.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Áreas</p>
+          <ul class="footer-links" role="list">
+            <li><a href="#servicios">Derecho Corporativo</a></li>
+            <li><a href="#servicios">Derecho Inmobiliario</a></li>
+            <li><a href="#servicios">Derecho Civil</a></li>
+            <li><a href="#servicios">Litigación y Arbitraje</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Estudio</p>
+          <ul class="footer-links" role="list">
+            <li><a href="#about">Quiénes somos</a></li>
+            <li><a href="#equipo">Nuestro equipo</a></li>
+            <li><a href="#testimonios">Testimonios</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Contacto</p>
+          <ul class="footer-links" role="list">
+            <li><a href="tel:+5114457890">+51 (01) 445-7890</a></li>
+            <li><a href="mailto:contacto@garciayasociados.pe">contacto@garciayasociados.pe</a></li>
+            <li><a href="https://wa.me/51999999999" target="_blank" rel="noopener">WhatsApp directo</a></li>
+            <li><a href="#contacto">San Isidro, Lima, Perú</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2025 García &amp; Asociados &mdash; Estudio Jurídico. Todos los derechos reservados.</span>
+        <div class="footer-bottom-links">
+          <a href="#">Política de privacidad</a>
+          <a href="#">Términos de uso</a>
+          <a href="#">Aviso legal</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════
+       WHATSAPP FLOATING BUTTON
+  ════════════════════════════════════ -->
+  <a id="wa-btn" href="https://wa.me/51999999999" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <!-- ═══════════════════════════════════
+       JAVASCRIPT
+  ════════════════════════════════════ -->
+  <script>
+    'use strict';
+
+    /* ─── PALETTE SWITCHER ───────────────────────────────── */
+    const PALETTES = {
+      navy:     { '--c-brand':'#0d1b4b', '--c-brand-dark':'#070f2b', '--c-accent':'#c9a84c', '--c-bg':'#f8f7f4', '--c-surface':'#f0ede6', '--c-text':'#1a1a1a', '--c-text-muted':'#666' },
+      carbon:   { '--c-brand':'#1c1c1e', '--c-brand-dark':'#000000', '--c-accent':'#d4a76a', '--c-bg':'#fafafa',  '--c-surface':'#f2f2f2', '--c-text':'#111',    '--c-text-muted':'#555' },
+      forest:   { '--c-brand':'#1a3a2a', '--c-brand-dark':'#0d1f17', '--c-accent':'#c5a85a', '--c-bg':'#f7f9f7', '--c-surface':'#ecf0ec', '--c-text':'#1a1a1a', '--c-text-muted':'#5a6a5a' },
+      burgundy: { '--c-brand':'#5c1a2e', '--c-brand-dark':'#3b0f1c', '--c-accent':'#c0b080', '--c-bg':'#faf8f5', '--c-surface':'#f3ede7', '--c-text':'#1a1a1a', '--c-text-muted':'#7a6060' },
+    };
+
+    function applyPalette(name) {
+      const vars = PALETTES[name];
+      if (!vars) return;
+      const root = document.documentElement;
+      Object.entries(vars).forEach(function([prop, val]) {
+        root.style.setProperty(prop, val);
+      });
+      document.querySelectorAll('.swatch').forEach(function(s) {
+        s.classList.toggle('active', s.dataset.palette === name);
+      });
+    }
+
+    document.querySelectorAll('.swatch').forEach(function(swatch) {
+      swatch.addEventListener('click', function() {
+        applyPalette(swatch.dataset.palette);
+      });
+    });
+
+    // Apply default palette on load
+    applyPalette('navy');
+
+    /* ─── STICKY NAV ─────────────────────────────────────── */
+    const nav = document.getElementById('main-nav');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', function() {
+      const scrollY = window.scrollY;
+      nav.classList.toggle('scrolled', scrollY > 60);
+      lastScroll = scrollY;
+    }, { passive: true });
+
+    /* ─── COUNTER ANIMATION ──────────────────────────────── */
+    function easeOutCubic(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function animateCounter(el, target, duration) {
+      var start = null;
+      function step(timestamp) {
+        if (!start) start = timestamp;
+        var elapsed = timestamp - start;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased = easeOutCubic(progress);
+        el.textContent = Math.floor(eased * target);
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          el.textContent = target;
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    /* ─── INTERSECTION OBSERVER ──────────────────────────── */
+    var countersTriggered = false;
+
+    var ioOptions = { threshold: 0.15, rootMargin: '0px 0px -60px 0px' };
+
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, ioOptions);
+
+    // Observe all .reveal elements
+    document.querySelectorAll('.reveal').forEach(function(el) {
+      revealObserver.observe(el);
+    });
+
+    // Observe stat items for staggered fade
+    document.querySelectorAll('.stat-item').forEach(function(el) {
+      revealObserver.observe(el);
+    });
+
+    // Separate observer for counters
+    var statsSection = document.getElementById('stats');
+    var counterObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && !countersTriggered) {
+          countersTriggered = true;
+          document.querySelectorAll('.counter').forEach(function(counter) {
+            var target = parseInt(counter.dataset.target, 10);
+            animateCounter(counter, target, 1800);
+          });
+          counterObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+
+    counterObserver.observe(statsSection);
+
+    /* ─── FORM SUBMIT ────────────────────────────────────── */
+    var contactForm = document.getElementById('contact-form');
+    var successMsg  = document.getElementById('form-success');
+    var submitBtn;
+
+    if (contactForm) {
+      submitBtn = contactForm.querySelector('.form-submit');
+
+      contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Basic validation
+        var name  = document.getElementById('f-name').value.trim();
+        var email = document.getElementById('f-email').value.trim();
+        var area  = document.getElementById('f-area').value;
+        var msg   = document.getElementById('f-msg').value.trim();
+
+        if (!name || !email || !area || !msg) {
+          return; // HTML5 validation handles error display
+        }
+
+        // Show loading state
+        submitBtn.textContent = 'Enviando...';
+        submitBtn.disabled = true;
+
+        // Simulate network request
+        setTimeout(function() {
+          successMsg.style.display = 'block';
+          contactForm.reset();
+          submitBtn.textContent = 'Enviar consulta →';
+          submitBtn.disabled = false;
+
+          // Auto-hide success message after 7 seconds
+          setTimeout(function() {
+            successMsg.style.display = 'none';
+          }, 7000);
+        }, 1200);
+      });
+    }
+
+    /* ─── SMOOTH ANCHOR OFFSET (palette bar + nav) ────── */
+    document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+      anchor.addEventListener('click', function(e) {
+        var targetId = anchor.getAttribute('href').slice(1);
+        if (!targetId) return;
+        var target = document.getElementById(targetId);
+        if (!target) return;
+        e.preventDefault();
+        var offset = 36 + 72; // palette bar + nav
+        var top = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
+

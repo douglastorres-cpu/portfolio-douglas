@@ -1,0 +1,1952 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hotel Miradores — Colección de Lujo | Lima, Perú</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --c-brand: #2d4a3e;
+      --c-brand-dark: #1a2e26;
+      --c-accent: #c9a84c;
+      --c-bg: #fdf9f4;
+      --c-surface: #f2ece3;
+      --c-text: #1a1a0f;
+      --c-text-muted: #7a7060;
+      --spring: cubic-bezier(0.34,1.56,0.64,1);
+      --ease: cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--c-bg);color:var(--c-text);overflow-x:hidden}
+    img{display:block;width:100%;object-fit:cover}
+    a{text-decoration:none;color:inherit}
+    button{cursor:pointer;border:none;background:none;font-family:inherit}
+
+    /* ── PALETTE BAR ── */
+    #palette-bar {
+      background: var(--c-brand);
+      padding: 0 2rem;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 200;
+      transition: background 0.4s var(--ease);
+    }
+    #palette-bar .pb-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      font-weight: 500;
+    }
+    #palette-bar .pb-swatches {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .pb-swatch {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: all 0.25s var(--ease);
+      background: rgba(255,255,255,0.06);
+    }
+    .pb-swatch:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.4); }
+    .pb-swatch.active { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.6); }
+    .pb-swatch-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .pb-swatch span {
+      font-size: 11px;
+      color: rgba(255,255,255,0.75);
+      letter-spacing: 0.06em;
+      font-weight: 500;
+    }
+    #palette-bar .pb-right {
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── NAV ── */
+    #nav {
+      position: fixed;
+      top: 42px;
+      left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 72px;
+      transition: background 0.4s var(--ease), box-shadow 0.4s var(--ease), top 0.3s var(--ease);
+    }
+    #nav.scrolled {
+      background: var(--c-bg);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.08), 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #fff;
+      transition: color 0.4s var(--ease);
+    }
+    #nav.scrolled .nav-logo { color: var(--c-brand); }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: rgba(255,255,255,0.85);
+      transition: color 0.25s;
+    }
+    #nav.scrolled .nav-links a { color: var(--c-text-muted); }
+    .nav-links a:hover { color: var(--c-accent); }
+    .nav-cta {
+      background: var(--c-accent);
+      color: #fff !important;
+      padding: 9px 22px;
+      border-radius: 2px;
+      font-size: 0.75rem !important;
+      letter-spacing: 0.12em !important;
+      font-weight: 600 !important;
+      transition: background 0.25s, transform 0.2s var(--spring) !important;
+    }
+    .nav-cta:hover { background: #b8942e !important; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      min-height: 700px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600&q=85&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.08);
+      transition: transform 0.1s linear;
+      will-change: transform;
+    }
+    #hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10,20,15,0.42);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 2rem;
+      margin-top: -80px;
+    }
+    .hero-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      border: 1px solid rgba(201,168,76,0.5);
+      padding: 6px 18px;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      font-weight: 300;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.01em;
+    }
+    .hero-sub {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.75);
+      letter-spacing: 0.04em;
+      font-weight: 300;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── INLINE RESERVATION WIDGET ── */
+    #hero-widget {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(50%);
+      z-index: 10;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      padding: 2rem 2.5rem;
+      width: min(900px, calc(100vw - 4rem));
+    }
+    .widget-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      margin-bottom: 1.25rem;
+      font-weight: 500;
+    }
+    .widget-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr auto;
+      gap: 1rem;
+      align-items: end;
+    }
+    .widget-field label {
+      display: block;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .widget-field input, .widget-field select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e0d8cc;
+      border-radius: 2px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: var(--c-text);
+      background: #fafaf8;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .widget-field input:focus, .widget-field select:focus {
+      border-color: var(--c-accent);
+    }
+    .widget-btn {
+      background: var(--c-accent);
+      color: #fff;
+      padding: 11px 22px;
+      border-radius: 2px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background 0.25s, transform 0.2s var(--spring);
+      font-family: 'Inter', sans-serif;
+    }
+    .widget-btn:hover { background: #b8942e; transform: translateY(-2px); }
+
+    /* ── TRUST STRIP ── */
+    #trust {
+      margin-top: 100px;
+      padding: 2rem 0;
+      overflow: hidden;
+      border-top: 1px solid #e8e0d4;
+      border-bottom: 1px solid #e8e0d4;
+      background: var(--c-surface);
+    }
+    .trust-scroll {
+      display: flex;
+      gap: 3rem;
+      padding: 0 3rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .trust-scroll::-webkit-scrollbar { display: none; }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      opacity: 0.75;
+      transition: opacity 0.2s;
+    }
+    .trust-item:hover { opacity: 1; }
+    .trust-icon { font-size: 1.4rem; }
+    .trust-text strong {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--c-text);
+    }
+    .trust-text span {
+      font-size: 0.68rem;
+      color: var(--c-text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── SECTION COMMONS ── */
+    section { padding: 6rem 0; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .section-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--c-text);
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      font-size: 0.9rem;
+      color: var(--c-text-muted);
+      line-height: 1.7;
+      max-width: 520px;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── ROOMS ── */
+    #habitaciones { background: var(--c-bg); }
+    .rooms-header { text-align: center; margin-bottom: 3.5rem; }
+    .rooms-header .section-sub { margin: 0 auto; }
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .room-card {
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: transform 0.35s var(--spring), box-shadow 0.35s var(--ease);
+      cursor: pointer;
+    }
+    .room-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+    }
+    .room-photo { height: 240px; position: relative; overflow: hidden; }
+    .room-photo img { height: 100%; transition: transform 0.6s var(--ease); }
+    .room-card:hover .room-photo img { transform: scale(1.04); }
+    .room-badge {
+      position: absolute;
+      top: 14px; left: 14px;
+      background: var(--c-accent);
+      color: #fff;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 2px;
+    }
+    .room-body { padding: 1.5rem; }
+    .room-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.45rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--c-text);
+    }
+    .room-desc {
+      font-size: 0.82rem;
+      color: var(--c-text-muted);
+      line-height: 1.65;
+      margin-bottom: 1rem;
+    }
+    .room-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 1.2rem;
+    }
+    .room-feature {
+      font-size: 0.7rem;
+      color: var(--c-text-muted);
+      background: var(--c-surface);
+      padding: 3px 9px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+    }
+    .room-meta {
+      display: flex;
+      gap: 1.2rem;
+      font-size: 0.75rem;
+      color: var(--c-text-muted);
+      margin-bottom: 1.2rem;
+    }
+    .room-meta span { display: flex; align-items: center; gap: 5px; }
+    .room-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid var(--c-surface);
+    }
+    .room-price { font-family: 'Cormorant Garamond', serif; }
+    .room-price strong { font-size: 1.6rem; color: var(--c-brand); font-weight: 600; }
+    .room-price span { font-size: 0.75rem; color: var(--c-text-muted); }
+    .room-actions { display: flex; gap: 8px; }
+    .btn-ghost {
+      padding: 8px 14px;
+      border: 1px solid var(--c-brand);
+      color: var(--c-brand);
+      border-radius: 2px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-ghost:hover { background: var(--c-brand); color: #fff; }
+    .btn-primary {
+      padding: 8px 16px;
+      background: var(--c-brand);
+      color: #fff;
+      border-radius: 2px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.2s var(--spring);
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-primary:hover { background: var(--c-brand-dark); transform: translateY(-1px); }
+
+    /* ── STATS ── */
+    #stats { background: var(--c-brand); padding: 4rem 0; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 2rem;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.2rem;
+      font-weight: 300;
+      color: var(--c-accent);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      font-weight: 500;
+    }
+
+    /* ── EXPERIENCIAS ── */
+    #experiencias { background: var(--c-surface); }
+    .exp-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; }
+    .exp-card { position: relative; height: 460px; border-radius: 4px; overflow: hidden; cursor: pointer; }
+    .exp-card img { height: 100%; transition: transform 0.7s var(--ease); }
+    .exp-card:hover img { transform: scale(1.06); }
+    .exp-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,20,15,0.72) 0%, transparent 55%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 2rem;
+    }
+    .exp-cat {
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .exp-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      color: #fff;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+    .exp-desc { font-size: 0.8rem; color: rgba(255,255,255,0.7); line-height: 1.6; }
+
+    /* ── RESTAURANTE ── */
+    #restaurante { background: var(--c-bg); }
+    .rest-split { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .rest-photo { height: 580px; border-radius: 4px; overflow: hidden; }
+    .rest-photo img { height: 100%; }
+    .menu-section { margin-bottom: 1.8rem; }
+    .menu-section-title {
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--c-surface);
+    }
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.5rem 0;
+      border-bottom: 1px dashed #e8e0d4;
+    }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item-name { font-size: 0.85rem; color: var(--c-text); font-weight: 500; }
+    .menu-item-desc { font-size: 0.75rem; color: var(--c-text-muted); }
+    .menu-item-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--c-brand);
+      font-weight: 600;
+      flex-shrink: 0;
+      margin-left: 1rem;
+    }
+
+    /* ── UBICACIÓN ── */
+    #ubicacion { background: var(--c-surface); }
+    .ubicacion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .map-embed {
+      height: 400px;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid #e0d8cc;
+      background: #e8e4de;
+    }
+    .map-embed iframe { width: 100%; height: 100%; border: none; }
+    .how-to-arrive h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      color: var(--c-text);
+    }
+    .arrive-item { display: flex; gap: 1rem; margin-bottom: 1.2rem; align-items: flex-start; }
+    .arrive-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--c-brand);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .arrive-text strong { display: block; font-size: 0.82rem; font-weight: 600; color: var(--c-text); margin-bottom: 2px; }
+    .arrive-text span { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.5; }
+
+    /* ── TESTIMONIOS ── */
+    #testimonios { background: var(--c-bg); }
+    .test-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 2rem; }
+    .test-card {
+      background: #fff;
+      border-radius: 4px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--c-surface);
+    }
+    .test-stars { color: var(--c-accent); font-size: 0.85rem; letter-spacing: 2px; margin-bottom: 1rem; }
+    .test-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--c-text);
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+    .test-author { display: flex; align-items: center; gap: 12px; }
+    .test-flag { font-size: 1.2rem; }
+    .test-author-name { font-size: 0.82rem; font-weight: 600; color: var(--c-text); }
+    .test-author-from { font-size: 0.72rem; color: var(--c-text-muted); }
+    .test-ta {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--c-surface);
+      font-size: 0.7rem;
+      color: var(--c-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ── FOOTER ── */
+    #footer { background: var(--c-brand-dark); color: rgba(255,255,255,0.7); padding: 5rem 0 2.5rem; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 3rem; margin-bottom: 3rem; }
+    .footer-brand .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.22em;
+      color: #fff;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .footer-brand p { font-size: 0.82rem; line-height: 1.7; color: rgba(255,255,255,0.5); max-width: 280px; }
+    .footer-socials { display: flex; gap: 10px; margin-top: 1.5rem; }
+    .footer-social {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .footer-social:hover { border-color: var(--c-accent); background: rgba(201,168,76,0.15); }
+    .footer-col h4 {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.6rem; }
+    .footer-col ul li a { font-size: 0.82rem; color: rgba(255,255,255,0.55); transition: color 0.2s; }
+    .footer-col ul li a:hover { color: var(--c-accent); }
+    .footer-contact-item { display: flex; gap: 10px; margin-bottom: 0.8rem; align-items: flex-start; }
+    .footer-contact-item span:first-child { font-size: 0.9rem; flex-shrink: 0; margin-top: 1px; }
+    .footer-contact-item span:last-child { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ── MODAL ── */
+    #modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s var(--ease);
+      backdrop-filter: blur(4px);
+    }
+    #modal-overlay.open { opacity: 1; pointer-events: all; }
+    #modal {
+      background: var(--c-bg);
+      width: min(680px, calc(100vw - 2rem));
+      max-height: calc(100vh - 4rem);
+      border-radius: 4px;
+      overflow-y: auto;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.35s var(--spring);
+      position: relative;
+    }
+    #modal-overlay.open #modal { transform: none; }
+    .modal-close {
+      position: absolute;
+      top: 1.25rem; right: 1.25rem;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--c-surface);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      color: var(--c-text-muted);
+      z-index: 10;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: #e0d8cc; }
+    .modal-header { background: var(--c-brand); padding: 2rem; color: #fff; }
+    .modal-header-eyebrow {
+      font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55); margin-bottom: 0.4rem;
+    }
+    .modal-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem; font-weight: 400; margin-bottom: 1.5rem;
+    }
+    .progress-bar { display: flex; gap: 0; }
+    .progress-step { flex: 1; text-align: center; position: relative; }
+    .progress-step::before {
+      content: '';
+      position: absolute;
+      top: 14px; left: 50%; right: -50%;
+      height: 2px;
+      background: rgba(255,255,255,0.2);
+    }
+    .progress-step:last-child::before { display: none; }
+    .step-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      margin: 0 auto 6px;
+      position: relative; z-index: 1;
+      transition: all 0.3s;
+    }
+    .progress-step.active .step-dot,
+    .progress-step.done .step-dot { background: var(--c-accent); border-color: var(--c-accent); color: #fff; }
+    .step-label { font-size: 0.65rem; letter-spacing: 0.08em; color: rgba(255,255,255,0.45); text-transform: uppercase; }
+    .progress-step.active .step-label { color: rgba(255,255,255,0.85); }
+    .modal-body { padding: 2rem; }
+    .modal-room-card {
+      display: flex; gap: 1rem;
+      background: var(--c-surface);
+      border-radius: 3px; overflow: hidden;
+      margin-bottom: 1.5rem;
+      border: 1px solid #e0d8cc;
+    }
+    .modal-room-card img { width: 100px; height: 80px; object-fit: cover; flex-shrink: 0; }
+    .modal-room-info { padding: 0.75rem 1rem; display: flex; flex-direction: column; justify-content: center; }
+    .modal-room-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 500; color: var(--c-text); }
+    .modal-room-price { font-size: 0.8rem; color: var(--c-text-muted); margin-top: 3px; }
+    .modal-room-price strong { color: var(--c-brand); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-row.one { grid-template-columns: 1fr; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label {
+      font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--c-text-muted); font-weight: 600; margin-bottom: 6px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 12px; border: 1px solid #e0d8cc; border-radius: 2px;
+      font-family: 'Inter', sans-serif; font-size: 0.85rem;
+      color: var(--c-text); background: #fff; outline: none; transition: border-color 0.2s;
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--c-accent); }
+    .nights-summary {
+      background: var(--c-brand); color: #fff;
+      padding: 1rem 1.25rem; border-radius: 3px; margin-bottom: 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nights-summary span { font-size: 0.82rem; color: rgba(255,255,255,0.7); }
+    .nights-summary strong { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--c-accent); }
+    .payment-options { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+    .payment-option {
+      flex: 1; border: 2px solid #e0d8cc; border-radius: 3px;
+      padding: 1rem; cursor: pointer; text-align: center; transition: border-color 0.2s, background 0.2s;
+    }
+    .payment-option.selected { border-color: var(--c-accent); background: rgba(201,168,76,0.05); }
+    .payment-option input[type=radio] { display: none; }
+    .payment-option-icon { font-size: 1.5rem; margin-bottom: 5px; }
+    .payment-option-label { font-size: 0.78rem; font-weight: 600; color: var(--c-text); }
+    .price-breakdown { background: var(--c-surface); border-radius: 3px; padding: 1.25rem; margin-bottom: 1.5rem; }
+    .price-line { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--c-text-muted); margin-bottom: 0.5rem; }
+    .price-line.total {
+      font-size: 0.95rem; font-weight: 700; color: var(--c-text);
+      border-top: 1px solid #e0d8cc; padding-top: 0.75rem; margin-top: 0.5rem;
+    }
+    .price-line.total span:last-child { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--c-brand); }
+    .modal-step { display: none; }
+    .modal-step.active { display: block; }
+    .modal-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 1.5rem; border-top: 1px solid var(--c-surface); margin-top: 1rem;
+    }
+    .modal-footer .btn-back {
+      font-size: 0.78rem; color: var(--c-text-muted); letter-spacing: 0.06em;
+      padding: 10px 16px; border: 1px solid #e0d8cc; border-radius: 2px;
+      font-family: 'Inter', sans-serif; transition: all 0.2s;
+    }
+    .modal-footer .btn-back:hover { border-color: var(--c-text-muted); color: var(--c-text); }
+    .modal-footer .btn-next {
+      background: var(--c-accent); color: #fff;
+      padding: 11px 26px; border-radius: 2px;
+      font-size: 0.8rem; letter-spacing: 0.1em; font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s, transform 0.2s var(--spring);
+    }
+    .modal-footer .btn-next:hover { background: #b8942e; transform: translateY(-1px); }
+
+    /* Confirmation */
+    .confirmation-box { text-align: center; padding: 2rem 1rem; }
+    .confirm-check { width: 72px; height: 72px; margin: 0 auto 1.5rem; }
+    .confirm-check svg circle { stroke-dasharray: 200; stroke-dashoffset: 200; animation: drawCircle 0.6s 0.2s forwards ease-out; }
+    .confirm-check svg path { stroke-dasharray: 80; stroke-dashoffset: 80; animation: drawCheck 0.4s 0.8s forwards ease-out; }
+    @keyframes drawCircle { to { stroke-dashoffset: 0; } }
+    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+    .confirmation-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--c-text); margin-bottom: 0.5rem; }
+    .confirmation-box p { font-size: 0.85rem; color: var(--c-text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
+    .confirm-summary { background: var(--c-surface); border-radius: 3px; padding: 1.25rem; text-align: left; margin-bottom: 1.5rem; }
+    .confirm-row { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--c-text-muted); }
+    .confirm-row strong { color: var(--c-text); font-weight: 500; }
+    .confirm-booking-num { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--c-accent); font-weight: 600; }
+    .confirm-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-outline-gold {
+      padding: 10px 22px; border: 2px solid var(--c-accent); color: var(--c-accent);
+      border-radius: 2px; font-size: 0.78rem; letter-spacing: 0.08em; font-weight: 600;
+      font-family: 'Inter', sans-serif; transition: all 0.2s;
+    }
+    .btn-outline-gold:hover { background: var(--c-accent); color: #fff; }
+
+    /* Room Detail Modal */
+    #room-detail-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s var(--ease);
+      backdrop-filter: blur(4px);
+    }
+    #room-detail-overlay.open { opacity: 1; pointer-events: all; }
+    #room-detail-modal {
+      background: var(--c-bg);
+      width: min(780px, calc(100vw - 2rem));
+      max-height: calc(100vh - 4rem);
+      border-radius: 4px;
+      overflow-y: auto;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.35s var(--spring);
+    }
+    #room-detail-overlay.open #room-detail-modal { transform: none; }
+    .rd-photo { height: 340px; position: relative; }
+    .rd-photo img { height: 100%; }
+    .rd-badge {
+      position: absolute; top: 1rem; left: 1rem;
+      background: var(--c-accent); color: #fff;
+      font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 600; padding: 5px 12px; border-radius: 2px;
+    }
+    .rd-body { padding: 2.5rem; }
+    .rd-body h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 400; margin-bottom: 0.75rem; }
+    .rd-body p { font-size: 0.88rem; color: var(--c-text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+    .rd-features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 2rem; }
+    .rd-feature {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.8rem; color: var(--c-text-muted);
+      background: var(--c-surface); padding: 8px 12px; border-radius: 3px;
+    }
+    .rd-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 1.5rem; border-top: 1px solid var(--c-surface);
+    }
+    .rd-footer-price { font-family: 'Cormorant Garamond', serif; }
+    .rd-footer-price strong { font-size: 2.2rem; color: var(--c-brand); font-weight: 600; }
+    .rd-footer-price span { font-size: 0.8rem; color: var(--c-text-muted); }
+
+    /* WhatsApp */
+    #wa-btn {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 500;
+      width: 54px; height: 54px; background: #25d366; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+      transition: transform 0.3s var(--spring);
+      animation: waPulse 2.5s ease-in-out infinite;
+    }
+    #wa-btn:hover { transform: scale(1.1); animation: none; }
+    @keyframes waPulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.45); }
+      50% { box-shadow: 0 4px 32px rgba(37,211,102,0.7); }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .rooms-grid, .exp-grid { grid-template-columns: 1fr 1fr; }
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .rest-split, .ubicacion-grid, .test-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .widget-fields { grid-template-columns: 1fr 1fr; }
+      #hero-widget { position: static; transform: none; margin: 0 auto; border-radius: 0; }
+      #hero { height: auto; padding-bottom: 2rem; }
+      .hero-content { margin-top: 120px; margin-bottom: 3rem; }
+    }
+    @media (max-width: 600px) {
+      .rooms-grid, .exp-grid, .test-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .widget-fields { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .pb-swatches .pb-swatch span { display: none; }
+      .rd-features-grid { grid-template-columns: 1fr 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;display:flex;align-items:center;gap:12px;padding:10px 20px;background:rgba(8,8,15,0.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.07);font-family:system-ui,sans-serif;">
+  <a href="../index.html" style="display:inline-flex;align-items:center;gap:8px;color:#a855f7;text-decoration:none;font-size:13px;font-weight:500;">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Volver al portafolio
+  </a>
+  <span style="color:rgba(255,255,255,0.15);font-size:12px;">|</span>
+  <span style="color:rgba(255,255,255,0.4);font-size:12px;font-family:monospace;">douglas08pool@gmail.com</span>
+</div>
+<div style="height:44px;"></div>
+
+<!-- PALETTE BAR -->
+<div id="palette-bar">
+  <span class="pb-label">Tema de color</span>
+  <div class="pb-swatches">
+    <button class="pb-swatch active" data-palette="forest">
+      <span class="pb-swatch-dot" style="background:#2d4a3e"></span>
+      <span>Forest</span>
+    </button>
+    <button class="pb-swatch" data-palette="navy">
+      <span class="pb-swatch-dot" style="background:#1a2744"></span>
+      <span>Navy</span>
+    </button>
+    <button class="pb-swatch" data-palette="sand">
+      <span class="pb-swatch-dot" style="background:#7a5c3c"></span>
+      <span>Sand</span>
+    </button>
+    <button class="pb-swatch" data-palette="noir">
+      <span class="pb-swatch-dot" style="background:#1a1a1a"></span>
+      <span>Noir</span>
+    </button>
+  </div>
+  <span class="pb-right">Lima · Miraflores</span>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Miradores</a>
+  <ul class="nav-links">
+    <li><a href="#habitaciones">Habitaciones</a></li>
+    <li><a href="#experiencias">Experiencias</a></li>
+    <li><a href="#restaurante">Restaurante</a></li>
+    <li><a href="#spa">Spa</a></li>
+    <li><a href="#habitaciones" class="nav-cta" onclick="openModal(null)">Reservar ahora</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div id="hero-bg"></div>
+  <div id="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">⭐⭐⭐⭐⭐ · The Leading Hotels of the World</div>
+    <h1 class="hero-title">Donde Lima se convierte<br>en horizonte.</h1>
+    <p class="hero-sub">Vista al Pacífico. 5 pisos sobre el acantilado de Miraflores.</p>
+  </div>
+  <div id="hero-widget">
+    <div class="widget-title">Verificar disponibilidad</div>
+    <div class="widget-fields">
+      <div class="widget-field">
+        <label>Check-in</label>
+        <input type="date" id="w-checkin"/>
+      </div>
+      <div class="widget-field">
+        <label>Check-out</label>
+        <input type="date" id="w-checkout"/>
+      </div>
+      <div class="widget-field">
+        <label>Huéspedes</label>
+        <select id="w-guests">
+          <option>1 huésped</option>
+          <option selected>2 huéspedes</option>
+          <option>3 huéspedes</option>
+          <option>4 huéspedes</option>
+          <option>5 huéspedes</option>
+          <option>6 huéspedes</option>
+          <option>7 huéspedes</option>
+          <option>8 huéspedes</option>
+        </select>
+      </div>
+      <div class="widget-field">
+        <label>Habitación</label>
+        <select id="w-room">
+          <option value="">Todas las habitaciones</option>
+          <option value="0">Habitación Deluxe</option>
+          <option value="1">Junior Suite</option>
+          <option value="2">Suite Océano</option>
+        </select>
+      </div>
+      <button class="widget-btn" id="widget-search-btn">Verificar disponibilidad →</button>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div id="trust">
+  <div class="trust-scroll">
+    <div class="trust-item">
+      <div class="trust-icon">🏆</div>
+      <div class="trust-text">
+        <strong>Condé Nast Traveler 2024</strong>
+        <span>Hot List — Top Hotels Peru</span>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">🌟</div>
+      <div class="trust-text">
+        <strong>TripAdvisor</strong>
+        <span>Certificate of Excellence</span>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">📊</div>
+      <div class="trust-text">
+        <strong>Booking.com 9.4</strong>
+        <span>Highly Rated by Guests</span>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">🥇</div>
+      <div class="trust-text">
+        <strong>#1 Hotel Lima</strong>
+        <span>TripAdvisor · 2023 &amp; 2024</span>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">✈️</div>
+      <div class="trust-text">
+        <strong>Forbes Travel Guide</strong>
+        <span>4-Star Recommended</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-num"><span class="counter" data-target="25">0</span>+</div>
+        <div class="stat-label">Años de experiencia</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-num"><span class="counter" data-target="48">0</span></div>
+        <div class="stat-label">Suites &amp; habitaciones</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-num"><span class="counter" data-target="98">0</span>%</div>
+        <div class="stat-label">Satisfacción de huéspedes</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-num"><span class="counter" data-target="12">0</span></div>
+        <div class="stat-label">Premios internacionales</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HABITACIONES -->
+<section id="habitaciones">
+  <div class="container">
+    <div class="rooms-header reveal">
+      <p class="section-eyebrow">Nuestras habitaciones</p>
+      <h2 class="section-title">Espacios diseñados para el descanso absoluto</h2>
+      <p class="section-sub">Cada habitación ha sido concebida como un refugio personal. Materiales nobles, vista al Pacífico y atención de mayordomo las 24 horas.</p>
+    </div>
+    <div class="rooms-grid">
+      <div class="room-card reveal" data-delay="0">
+        <div class="room-photo">
+          <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=80&auto=format&fit=crop" alt="Habitación Deluxe" loading="lazy"/>
+          <span class="room-badge">Deluxe</span>
+        </div>
+        <div class="room-body">
+          <div class="room-name">Habitación Deluxe</div>
+          <div class="room-desc">Elegancia clásica con detalles contemporáneos. Cama king size, escritorio y baño en mármol con ducha de lluvia.</div>
+          <div class="room-features">
+            <span class="room-feature">🛏 King size</span>
+            <span class="room-feature">🛁 Bañera</span>
+            <span class="room-feature">📶 WiFi</span>
+            <span class="room-feature">❄️ Minibar</span>
+            <span class="room-feature">🌿 Vista jardín</span>
+          </div>
+          <div class="room-meta">
+            <span>👤 1–2 personas</span>
+            <span>📐 35 m²</span>
+          </div>
+          <div class="room-footer">
+            <div class="room-price">
+              <strong>$189</strong><br><span>/ noche</span>
+            </div>
+            <div class="room-actions">
+              <button class="btn-ghost" onclick="openRoomDetail(0)">Ver habitación</button>
+              <button class="btn-primary" onclick="openModal(0)">Reservar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="room-card reveal" data-delay="100">
+        <div class="room-photo">
+          <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=900&q=80&auto=format&fit=crop" alt="Junior Suite" loading="lazy"/>
+          <span class="room-badge">Junior Suite</span>
+        </div>
+        <div class="room-body">
+          <div class="room-name">Junior Suite</div>
+          <div class="room-desc">Sala de estar independiente, zona de trabajo y dormitorio con vistas a la ciudad o jardín del hotel.</div>
+          <div class="room-features">
+            <span class="room-feature">🛏 King size</span>
+            <span class="room-feature">🛋 Sala de estar</span>
+            <span class="room-feature">☕ Nespresso</span>
+            <span class="room-feature">🏙 Vista ciudad</span>
+            <span class="room-feature">🧖 Kit spa</span>
+          </div>
+          <div class="room-meta">
+            <span>👤 1–3 personas</span>
+            <span>📐 55 m²</span>
+          </div>
+          <div class="room-footer">
+            <div class="room-price">
+              <strong>$289</strong><br><span>/ noche</span>
+            </div>
+            <div class="room-actions">
+              <button class="btn-ghost" onclick="openRoomDetail(1)">Ver habitación</button>
+              <button class="btn-primary" onclick="openModal(1)">Reservar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="room-card reveal" data-delay="200">
+        <div class="room-photo">
+          <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=900&q=80&auto=format&fit=crop" alt="Suite Océano" loading="lazy"/>
+          <span class="room-badge">Suite Premium</span>
+        </div>
+        <div class="room-body">
+          <div class="room-name">Suite Océano</div>
+          <div class="room-desc">Terraza privada con vista panorámica al Pacífico. La experiencia definitiva de Miraflores con mayordomo exclusivo.</div>
+          <div class="room-features">
+            <span class="room-feature">🌊 Vista al mar</span>
+            <span class="room-feature">🏖 Terraza privada</span>
+            <span class="room-feature">🛁 Jacuzzi</span>
+            <span class="room-feature">🍾 Bienvenida</span>
+            <span class="room-feature">🛎 Mayordomo</span>
+          </div>
+          <div class="room-meta">
+            <span>👤 1–4 personas</span>
+            <span>📐 85 m²</span>
+          </div>
+          <div class="room-footer">
+            <div class="room-price">
+              <strong>$489</strong><br><span>/ noche</span>
+            </div>
+            <div class="room-actions">
+              <button class="btn-ghost" onclick="openRoomDetail(2)">Ver habitación</button>
+              <button class="btn-primary" onclick="openModal(2)">Reservar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCIAS -->
+<section id="experiencias">
+  <div class="container">
+    <div class="rooms-header reveal" style="margin-bottom:3rem">
+      <p class="section-eyebrow">Más allá de la habitación</p>
+      <h2 class="section-title">Experiencias que perduran</h2>
+      <p class="section-sub">Diseñadas para quienes buscan lo excepcional en cada momento de su estadía.</p>
+    </div>
+    <div class="exp-grid">
+      <div class="exp-card reveal">
+        <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=900&q=80&auto=format&fit=crop" alt="Spa" loading="lazy"/>
+        <div class="exp-overlay">
+          <div class="exp-cat">Bienestar</div>
+          <div class="exp-name">Spa &amp; Wellness</div>
+          <div class="exp-desc">Rituales andinos, masajes terapéuticos y piscina temperada con vista al Pacífico.</div>
+        </div>
+      </div>
+      <div class="exp-card reveal" data-delay="100">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80&auto=format&fit=crop" alt="Gastronomía" loading="lazy"/>
+        <div class="exp-overlay">
+          <div class="exp-cat">Gastronomía</div>
+          <div class="exp-name">Mesa 21</div>
+          <div class="exp-desc">Alta cocina peruana contemporánea. Ceviche de autor, tiraditos y maridajes únicos.</div>
+        </div>
+      </div>
+      <div class="exp-card reveal" data-delay="200">
+        <img src="https://images.unsplash.com/photo-1547383670-64b03bf37ef6?w=1000&q=80&auto=format&fit=crop" alt="Lima Explorer" loading="lazy"/>
+        <div class="exp-overlay">
+          <div class="exp-cat">Exploración</div>
+          <div class="exp-name">Lima Explorer Tour</div>
+          <div class="exp-desc">Miraflores, Barranco y el Centro Histórico con guía privado y pisco sour de bienvenida.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PISCINA -->
+<section id="spa" style="padding:0;height:520px;position:relative;overflow:hidden;">
+  <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200&q=80&auto=format&fit=crop" alt="Piscina" style="height:100%;object-fit:cover;width:100%"/>
+  <div style="position:absolute;inset:0;background:rgba(10,20,15,0.45);display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;">
+    <div>
+      <p style="font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-accent);font-weight:600;margin-bottom:1rem">Vista al Pacífico</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,4rem);font-weight:300;color:#fff;line-height:1.1;margin-bottom:1.25rem">Piscina infinita<br>frente al océano</h2>
+      <p style="font-size:0.9rem;color:rgba(255,255,255,0.7);max-width:480px;margin:0 auto">Abierta todo el año. Servicio de bar en la piscina de 9h a 19h. Toallas y tumbonas incluidas para huéspedes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RESTAURANTE -->
+<section id="restaurante">
+  <div class="container">
+    <div class="rest-split">
+      <div class="rest-photo reveal">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80&auto=format&fit=crop" alt="Restaurante Mesa 21" loading="lazy"/>
+      </div>
+      <div class="rest-content reveal" data-delay="150">
+        <p class="section-eyebrow">Restaurante</p>
+        <h2 class="section-title">Mesa 21</h2>
+        <p class="section-sub" style="margin-bottom:2rem">Alta cocina peruana contemporánea. El chef Rodrigo Alarcón propone una carta que celebra los sabores del Perú con técnica de vanguardia.</p>
+        <div class="menu-section">
+          <div class="menu-section-title">Entradas</div>
+          <div class="menu-item">
+            <div><div class="menu-item-name">Ceviche de mar</div><div class="menu-item-desc">Leche de tigre, ají limo, choclo morado</div></div>
+            <div class="menu-item-price">S/ 62</div>
+          </div>
+          <div class="menu-item">
+            <div><div class="menu-item-name">Tiradito nikkei</div><div class="menu-item-desc">Lenguado, ponzu, miso blanco</div></div>
+            <div class="menu-item-price">S/ 58</div>
+          </div>
+          <div class="menu-item">
+            <div><div class="menu-item-name">Causa de cangrejo</div><div class="menu-item-desc">Papa amarilla, palta, cangrejo real</div></div>
+            <div class="menu-item-price">S/ 54</div>
+          </div>
+        </div>
+        <div class="menu-section">
+          <div class="menu-section-title">Platos Principales</div>
+          <div class="menu-item">
+            <div><div class="menu-item-name">Lomo saltado al wok</div><div class="menu-item-desc">Lomo fino, papas fritas, arroz blanco</div></div>
+            <div class="menu-item-price">S/ 95</div>
+          </div>
+          <div class="menu-item">
+            <div><div class="menu-item-name">Arroz con mariscos</div><div class="menu-item-desc">Langostinos, vieiras, calamares, bisque</div></div>
+            <div class="menu-item-price">S/ 88</div>
+          </div>
+          <div class="menu-item">
+            <div><div class="menu-item-name">Filete de corvina</div><div class="menu-item-desc">Salsa de rocoto, quinua negra, vegetales</div></div>
+            <div class="menu-item-price">S/ 78</div>
+          </div>
+        </div>
+        <div class="menu-section">
+          <div class="menu-section-title">Postres</div>
+          <div class="menu-item">
+            <div><div class="menu-item-name">Tres leches de lúcuma</div><div class="menu-item-desc">Helado artesanal, caramelo andino</div></div>
+            <div class="menu-item-price">S/ 38</div>
+          </div>
+          <div class="menu-item">
+            <div><div class="menu-item-name">Suspiro a la limeña</div><div class="menu-item-desc">Versión moderna, merengue italiano</div></div>
+            <div class="menu-item-price">S/ 36</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UBICACIÓN -->
+<section id="ubicacion">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3rem" class="reveal">
+      <p class="section-eyebrow">Cómo llegar</p>
+      <h2 class="section-title">En el corazón de Miraflores</h2>
+    </div>
+    <div class="ubicacion-grid">
+      <div class="map-embed reveal">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.6!2d-77.0311!3d-12.1211!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDA3JzE2LjAiUyA3N8KwMDEnNTIuMCJX!5e0!3m2!1ses!2spe!4v1600000000000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="how-to-arrive reveal" data-delay="150">
+        <h3>Malecón de la Reserva 121,<br>Miraflores, Lima 15074</h3>
+        <div class="arrive-item">
+          <div class="arrive-icon">✈️</div>
+          <div class="arrive-text">
+            <strong>Desde el Aeropuerto Internacional Jorge Chávez</strong>
+            <span>35–45 minutos en taxi o transfer privado. Servicio de traslado disponible previo aviso (USD 35).</span>
+          </div>
+        </div>
+        <div class="arrive-item">
+          <div class="arrive-icon">🚇</div>
+          <div class="arrive-text">
+            <strong>Metropolitano</strong>
+            <span>Estación Angamos a 10 min caminando. Línea 1 del Metro: Estación Angamos.</span>
+          </div>
+        </div>
+        <div class="arrive-item">
+          <div class="arrive-icon">🚗</div>
+          <div class="arrive-text">
+            <strong>En auto</strong>
+            <span>Ingreso por Malecón de la Reserva. Valet parking gratuito para huéspedes.</span>
+          </div>
+        </div>
+        <div class="arrive-item">
+          <div class="arrive-icon">🚶</div>
+          <div class="arrive-text">
+            <strong>A pie desde el Parque Kennedy</strong>
+            <span>12 minutos a través del Malecón 28 de Julio. Ruta escénica con vistas al acantilado.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section id="testimonios">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3rem" class="reveal">
+      <p class="section-eyebrow">Lo que dicen nuestros huéspedes</p>
+      <h2 class="section-title">Experiencias que inspiran</h2>
+    </div>
+    <div class="test-grid">
+      <div class="test-card reveal">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-text">"Absolutamente espectacular. La Suite Océano superó todas mis expectativas. Ver amanecer sobre el Pacífico desde mi terraza privada es una experiencia que no olvidaré jamás."</div>
+        <div class="test-author">
+          <span class="test-flag">🇩🇪</span>
+          <div>
+            <div class="test-author-name">Klaus &amp; Monika Richter</div>
+            <div class="test-author-from">Múnich, Alemania · Luna de miel</div>
+          </div>
+        </div>
+        <div class="test-ta">📍 TripAdvisor — Verificado · Junio 2024</div>
+      </div>
+      <div class="test-card reveal" data-delay="100">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-text">"El personal recuerda tu nombre desde el primer día. El desayuno en la terraza frente al mar es el mejor que he probado en toda Latinoamérica. Volveremos sin duda."</div>
+        <div class="test-author">
+          <span class="test-flag">🇺🇸</span>
+          <div>
+            <div class="test-author-name">Sarah &amp; James Whitfield</div>
+            <div class="test-author-from">Nueva York, EE. UU. · Viaje de placer</div>
+          </div>
+        </div>
+        <div class="test-ta">📍 Booking.com — Calificación: 10/10 · Agosto 2024</div>
+      </div>
+      <div class="test-card reveal" data-delay="150">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-text">"El restaurante Mesa 21 vale el viaje solo. Pero la verdadera sorpresa fue el tratamiento de spa: rituales andinos con hierbas de la región. Una joya de hotel."</div>
+        <div class="test-author">
+          <span class="test-flag">🇯🇵</span>
+          <div>
+            <div class="test-author-name">Yuki Tanaka</div>
+            <div class="test-author-from">Tokio, Japón · Viaje de negocios</div>
+          </div>
+        </div>
+        <div class="test-ta">📍 Google Reviews — 5 estrellas · Septiembre 2024</div>
+      </div>
+      <div class="test-card reveal" data-delay="200">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-text">"Viajé sola por primera vez y el equipo de Miradores hizo que me sintiera completamente segura y mimada. La Junior Suite con vista a la ciudad fue mi pequeño paraíso limeño."</div>
+        <div class="test-author">
+          <span class="test-flag">🇧🇷</span>
+          <div>
+            <div class="test-author-name">Fernanda Castro</div>
+            <div class="test-author-from">São Paulo, Brasil · Viajera solo</div>
+          </div>
+        </div>
+        <div class="test-ta">📍 TripAdvisor — Verificado · Octubre 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="footer-logo">Miradores</span>
+        <p>Hotel Miradores — Colección de Lujo. Un refugio íntimo sobre el acantilado de Miraflores, frente al Pacífico. Lima, Perú.</p>
+        <div class="footer-socials">
+          <a href="#" class="footer-social">📷</a>
+          <a href="#" class="footer-social">📘</a>
+          <a href="#" class="footer-social">🐦</a>
+          <a href="#" class="footer-social">💼</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>El Hotel</h4>
+        <ul>
+          <li><a href="#">Nuestra historia</a></li>
+          <li><a href="#">Habitaciones</a></li>
+          <li><a href="#">Restaurante Mesa 21</a></li>
+          <li><a href="#">Spa &amp; Bienestar</a></li>
+          <li><a href="#">Eventos &amp; Bodas</a></li>
+          <li><a href="#">Sala de reuniones</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Servicios</h4>
+        <ul>
+          <li><a href="#">Traslado al aeropuerto</a></li>
+          <li><a href="#">Valet parking</a></li>
+          <li><a href="#">Lima Explorer Tour</a></li>
+          <li><a href="#">Concierge 24h</a></li>
+          <li><a href="#">Room service</a></li>
+          <li><a href="#">Lavandería</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <div class="footer-contact-item">
+          <span>📍</span>
+          <span>Malecón de la Reserva 121, Miraflores, Lima 15074, Perú</span>
+        </div>
+        <div class="footer-contact-item">
+          <span>📞</span>
+          <span>+51 1 615 9000</span>
+        </div>
+        <div class="footer-contact-item">
+          <span>✉️</span>
+          <span>reservas@hotelmiradores.pe</span>
+        </div>
+        <div class="footer-contact-item">
+          <span>🕐</span>
+          <span>Check-in: 15:00 · Check-out: 12:00</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 Hotel Miradores — Colección de Lujo. Todos los derechos reservados.</span>
+      <span>Política de privacidad · Términos y condiciones</span>
+    </div>
+  </div>
+</footer>
+
+<a id="wa-btn" href="https://wa.me/5116159000" target="_blank" title="Consultar por WhatsApp">💬</a>
+
+<!-- ROOM DETAIL MODAL -->
+<div id="room-detail-overlay">
+  <div id="room-detail-modal">
+    <button class="modal-close" onclick="closeRoomDetail()">✕</button>
+    <div class="rd-photo">
+      <img id="rd-img" src="" alt=""/>
+      <span id="rd-badge" class="rd-badge"></span>
+    </div>
+    <div class="rd-body">
+      <h2 id="rd-name"></h2>
+      <p id="rd-desc"></p>
+      <div id="rd-features" class="rd-features-grid"></div>
+      <div class="rd-footer">
+        <div class="rd-footer-price">
+          <strong id="rd-price"></strong><span> / noche</span>
+        </div>
+        <div style="display:flex;gap:1rem">
+          <button class="btn-ghost" onclick="closeRoomDetail()">Cerrar</button>
+          <button class="btn-primary" id="rd-reserve-btn">Reservar esta habitación</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESERVATION MODAL -->
+<div id="modal-overlay">
+  <div id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-header">
+      <div class="modal-header-eyebrow">Hotel Miradores — Colección de Lujo</div>
+      <h2>Reservar habitación</h2>
+      <div class="progress-bar">
+        <div class="progress-step active" data-step="1">
+          <div class="step-dot">1</div>
+          <div class="step-label">Fechas</div>
+        </div>
+        <div class="progress-step" data-step="2">
+          <div class="step-dot">2</div>
+          <div class="step-label">Datos</div>
+        </div>
+        <div class="progress-step" data-step="3">
+          <div class="step-dot">3</div>
+          <div class="step-label">Pago</div>
+        </div>
+        <div class="progress-step" data-step="4">
+          <div class="step-dot">4</div>
+          <div class="step-label">Confirmación</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <!-- STEP 1 -->
+      <div class="modal-step active" id="step-1">
+        <div class="modal-room-card" id="modal-room-card">
+          <img id="modal-room-img" src="" alt=""/>
+          <div class="modal-room-info">
+            <div class="modal-room-name" id="modal-room-name">Selecciona una habitación</div>
+            <div class="modal-room-price" id="modal-room-price-text">–</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Check-in *</label>
+            <input type="date" id="m-checkin" required/>
+          </div>
+          <div class="form-group">
+            <label>Check-out *</label>
+            <input type="date" id="m-checkout" required/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Huéspedes</label>
+            <select id="m-guests">
+              <option>1 huésped</option>
+              <option selected>2 huéspedes</option>
+              <option>3 huéspedes</option>
+              <option>4 huéspedes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Habitación</label>
+            <select id="m-room">
+              <option value="0">Habitación Deluxe — $189/noche</option>
+              <option value="1">Junior Suite — $289/noche</option>
+              <option value="2">Suite Océano — $489/noche</option>
+            </select>
+          </div>
+        </div>
+        <div id="nights-display" class="nights-summary" style="display:none">
+          <span id="nights-text">0 noches</span>
+          <strong id="nights-subtotal">$0</strong>
+        </div>
+        <div class="form-row one">
+          <div class="form-group">
+            <label>Peticiones especiales (opcional)</label>
+            <textarea id="m-requests" placeholder="Ej: habitación en piso alto, cuna para bebé, dieta sin gluten…"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span></span>
+          <button class="btn-next" onclick="goStep(2)">Continuar →</button>
+        </div>
+      </div>
+      <!-- STEP 2 -->
+      <div class="modal-step" id="step-2">
+        <p style="font-size:0.82rem;color:var(--c-text-muted);margin-bottom:1.5rem;line-height:1.6">Complete sus datos para continuar. La información se usa únicamente para gestionar su reserva.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" id="m-name" placeholder="María" required/>
+          </div>
+          <div class="form-group">
+            <label>Apellidos *</label>
+            <input type="text" id="m-lastname" placeholder="García López" required/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" id="m-email" placeholder="maria@ejemplo.com" required/>
+          </div>
+          <div class="form-group">
+            <label>Teléfono *</label>
+            <input type="tel" id="m-phone" placeholder="+51 999 000 000" required/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>País de residencia</label>
+            <select id="m-country">
+              <option>Perú</option><option>Argentina</option><option>Brasil</option>
+              <option>Chile</option><option>Colombia</option><option>México</option>
+              <option>España</option><option>Estados Unidos</option>
+              <option>Alemania</option><option>Francia</option><option>Japón</option><option>Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>N.º de membresía (opcional)</label>
+            <input type="text" id="m-membership" placeholder="MIRA-XXXXX"/>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-back" onclick="goStep(1)">← Atrás</button>
+          <button class="btn-next" onclick="goStep(3)">Continuar →</button>
+        </div>
+      </div>
+      <!-- STEP 3 -->
+      <div class="modal-step" id="step-3">
+        <div class="payment-options">
+          <label class="payment-option selected" onclick="selectPayment(this,'card')">
+            <input type="radio" name="payment" value="card" checked/>
+            <div class="payment-option-icon">💳</div>
+            <div class="payment-option-label">Tarjeta</div>
+          </label>
+          <label class="payment-option" onclick="selectPayment(this,'paypal')">
+            <input type="radio" name="payment" value="paypal"/>
+            <div class="payment-option-icon">🅿️</div>
+            <div class="payment-option-label">PayPal</div>
+          </label>
+          <label class="payment-option" onclick="selectPayment(this,'transfer')">
+            <input type="radio" name="payment" value="transfer"/>
+            <div class="payment-option-icon">🏦</div>
+            <div class="payment-option-label">Transferencia</div>
+          </label>
+        </div>
+        <div id="card-fields">
+          <div class="form-row one">
+            <div class="form-group">
+              <label>Número de tarjeta</label>
+              <input type="text" id="m-card-num" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)"/>
+            </div>
+          </div>
+          <div class="form-row one">
+            <div class="form-group">
+              <label>Nombre en la tarjeta</label>
+              <input type="text" id="m-card-name" placeholder="MARÍA GARCÍA"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Vencimiento (MM/AA)</label>
+              <input type="text" id="m-card-exp" placeholder="12/27" maxlength="5"/>
+            </div>
+            <div class="form-group">
+              <label>CVV</label>
+              <input type="text" id="m-card-cvv" placeholder="123" maxlength="4"/>
+            </div>
+          </div>
+        </div>
+        <div id="paypal-fields" style="display:none;padding:2rem;text-align:center;background:var(--c-surface);border-radius:3px;margin-bottom:1rem">
+          <div style="font-size:2rem;margin-bottom:0.5rem">🅿️</div>
+          <p style="font-size:0.85rem;color:var(--c-text-muted)">Serás redirigido a PayPal para completar el pago de forma segura.</p>
+        </div>
+        <div id="transfer-fields" style="display:none;padding:1.25rem;background:var(--c-surface);border-radius:3px;margin-bottom:1rem">
+          <p style="font-size:0.8rem;font-weight:600;color:var(--c-text);margin-bottom:0.5rem">Datos bancarios</p>
+          <p style="font-size:0.78rem;color:var(--c-text-muted);line-height:1.7">Banco: BCP Perú · Cuenta corriente: 200-12345678-0-12<br>CCI: 002-200-001234567890-12 · A nombre de: Miradores Hoteles SAC</p>
+        </div>
+        <div class="price-breakdown">
+          <div class="price-line"><span id="pb-room-nights">Habitación × 1 noche</span><span id="pb-base">$189</span></div>
+          <div class="price-line"><span>IGV (18%)</span><span id="pb-tax">$34.02</span></div>
+          <div class="price-line"><span>Limpieza</span><span>$25</span></div>
+          <div class="price-line total"><span>Total</span><span id="pb-total">$248.02</span></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-back" onclick="goStep(2)">← Atrás</button>
+          <button class="btn-next" onclick="confirmReservation()">Confirmar reserva →</button>
+        </div>
+      </div>
+      <!-- STEP 4 -->
+      <div class="modal-step" id="step-4">
+        <div class="confirmation-box">
+          <svg class="confirm-check" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="36" cy="36" r="32" stroke="#2d4a3e" stroke-width="3" fill="none"/>
+            <path d="M22 36l10 10 18-20" stroke="#c9a84c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+          <h3>¡Reserva confirmada!</h3>
+          <p>Hemos enviado los detalles de su reserva a su correo electrónico. El equipo de Miradores se pondrá en contacto para confirmar el transfer de llegada.</p>
+          <div class="confirm-summary">
+            <div class="confirm-row"><span>N.º de reserva</span><span class="confirm-booking-num" id="confirm-booking-num">MIRA-0000</span></div>
+            <div class="confirm-row"><span>Habitación</span><strong id="confirm-room">–</strong></div>
+            <div class="confirm-row"><span>Fechas</span><strong id="confirm-dates">–</strong></div>
+            <div class="confirm-row"><span>Huéspedes</span><strong id="confirm-guests">–</strong></div>
+            <div class="confirm-row"><span>Total pagado</span><strong id="confirm-total">–</strong></div>
+          </div>
+          <div class="confirm-actions">
+            <button class="btn-outline-gold" onclick="downloadReceipt()">Descargar comprobante</button>
+            <button class="btn-primary" onclick="closeModal()">Volver al hotel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PALETTES = {
+  forest: {'--c-brand':'#2d4a3e','--c-brand-dark':'#1a2e26','--c-accent':'#c9a84c','--c-bg':'#fdf9f4','--c-surface':'#f2ece3','--c-text':'#1a1a0f','--c-text-muted':'#7a7060'},
+  navy:   {'--c-brand':'#1a2744','--c-brand-dark':'#0d1628','--c-accent':'#d4a84c','--c-bg':'#f8f9fc','--c-surface':'#eef0f5','--c-text':'#0d1220','--c-text-muted':'#6a7080'},
+  sand:   {'--c-brand':'#7a5c3c','--c-brand-dark':'#5a4228','--c-accent':'#c4903a','--c-bg':'#fdfaf5','--c-surface':'#f5ede0','--c-text':'#1a1208','--c-text-muted':'#7a6a50'},
+  noir:   {'--c-brand':'#1a1a1a','--c-brand-dark':'#0a0a0a','--c-accent':'#c9b87a','--c-bg':'#fafaf8','--c-surface':'#f0f0ec','--c-text':'#0a0a0a','--c-text-muted':'#666655'},
+};
+
+function applyPalette(name) {
+  const p = PALETTES[name];
+  if (!p) return;
+  Object.entries(p).forEach(([k,v]) => document.documentElement.style.setProperty(k, v));
+  document.querySelectorAll('.pb-swatch').forEach(s => s.classList.toggle('active', s.dataset.palette === name));
+}
+document.querySelectorAll('.pb-swatch').forEach(btn => btn.addEventListener('click', () => applyPalette(btn.dataset.palette)));
+
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 80);
+  const bg = document.getElementById('hero-bg');
+  if (bg) bg.style.transform = `scale(1.08) translateY(${window.scrollY * 0.25}px)`;
+}, { passive: true });
+
+const ROOMS = [
+  {
+    name: 'Habitación Deluxe', badge: 'Deluxe', price: 189,
+    img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=80&auto=format&fit=crop',
+    desc: 'Espacio de 35 m² diseñado con materiales nobles. Cama king size con ropa de cama de 600 hilos, escritorio de trabajo, minibar con selección de productos locales y baño en mármol travertino con ducha de efecto lluvia y bañera independiente.',
+    size: '35 m²', guests: '1–2 personas',
+    features: ['🛏 Cama King Size','🛁 Bañera + Ducha lluvia','🌿 Vista jardín interior','❄️ Minibar premium','☕ Nespresso','📺 Smart TV 65"','📶 WiFi 300 Mbps','🏋️ Acceso gimnasio']
+  },
+  {
+    name: 'Junior Suite', badge: 'Junior Suite', price: 289,
+    img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=900&q=80&auto=format&fit=crop',
+    desc: 'Con 55 m², esta suite combina un elegante dormitorio con sala de estar independiente. Vista a la ciudad o al jardín. Zona de trabajo amplia, sofá-cama para tercer huésped y amenidades de baño con línea de cosmética peruana.',
+    size: '55 m²', guests: '1–3 personas',
+    features: ['🛏 Cama King Size','🛋 Sala de estar','🏙 Vista ciudad/jardín','☕ Nespresso + minibar','🧖 Kit spa de cortesía','📺 Smart TV dual','🛎 Servicio de mayordomía','🚗 Valet parking']
+  },
+  {
+    name: 'Suite Océano', badge: 'Suite Premium', price: 489,
+    img: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=900&q=80&auto=format&fit=crop',
+    desc: 'La experiencia cumbre del hotel. 85 m² con terraza privada y vista panorámica al Pacífico desde el quinto piso. Jacuzzi exterior, sala de estar, comedor y mayordomo personal disponible las 24 horas. Bienvenida con pisco sour y flores frescas.',
+    size: '85 m²', guests: '1–4 personas',
+    features: ['🌊 Vista Pacífico 180°','🏖 Terraza privada','🛁 Jacuzzi exterior','🍾 Bienvenida VIP','🛎 Mayordomo 24h','🍽 Desayuno incluido','🚁 Servicio helipuerto','🎭 Concierge personal']
+  }
+];
+
+let currentRoomIdx = null;
+
+(function initWidgetDates() {
+  const today = new Date();
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+  const fmt = d => d.toISOString().split('T')[0];
+  document.getElementById('w-checkin').value = fmt(today);
+  document.getElementById('w-checkout').value = fmt(tomorrow);
+  document.getElementById('w-checkin').min = fmt(today);
+  document.getElementById('w-checkout').min = fmt(tomorrow);
+})();
+
+document.getElementById('widget-search-btn').addEventListener('click', function() {
+  const ci = document.getElementById('w-checkin').value;
+  const co = document.getElementById('w-checkout').value;
+  const roomVal = document.getElementById('w-room').value;
+  const roomIdx = roomVal !== '' ? parseInt(roomVal) : null;
+  if (ci) document.getElementById('m-checkin').value = ci;
+  if (co) document.getElementById('m-checkout').value = co;
+  const guestsSel = document.getElementById('w-guests').value;
+  Array.from(document.getElementById('m-guests').options).forEach(o => { if (o.text === guestsSel) o.selected = true; });
+  if (roomIdx !== null) document.getElementById('m-room').value = roomIdx;
+  openModal(roomIdx);
+  document.getElementById('habitaciones').scrollIntoView({ behavior: 'smooth' });
+});
+
+let currentStep = 1;
+
+function openModal(roomIdx) {
+  if (roomIdx !== null && roomIdx !== undefined) {
+    currentRoomIdx = roomIdx;
+    document.getElementById('m-room').value = roomIdx;
+  } else if (currentRoomIdx === null) {
+    currentRoomIdx = 0;
+    document.getElementById('m-room').value = 0;
+  }
+  updateModalRoomCard();
+  updateNights();
+  goStepDirect(1);
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('m-checkin').min = today;
+  document.getElementById('m-checkout').min = today;
+  if (!document.getElementById('m-checkin').value) {
+    const t = new Date(); const tom = new Date(t); tom.setDate(t.getDate()+1);
+    document.getElementById('m-checkin').value = t.toISOString().split('T')[0];
+    document.getElementById('m-checkout').value = tom.toISOString().split('T')[0];
+    updateNights();
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal-overlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+function updateModalRoomCard() {
+  const idx = parseInt(document.getElementById('m-room').value);
+  if (isNaN(idx)) return;
+  currentRoomIdx = idx;
+  const r = ROOMS[idx];
+  document.getElementById('modal-room-img').src = r.img;
+  document.getElementById('modal-room-img').alt = r.name;
+  document.getElementById('modal-room-name').textContent = r.name;
+  document.getElementById('modal-room-price-text').innerHTML = `desde <strong>$${r.price}</strong> / noche`;
+}
+
+document.getElementById('m-room').addEventListener('change', function() {
+  currentRoomIdx = parseInt(this.value);
+  updateModalRoomCard();
+  updateNights();
+});
+
+document.getElementById('m-checkin').addEventListener('change', updateNights);
+document.getElementById('m-checkout').addEventListener('change', updateNights);
+
+function getNights() {
+  const ci = new Date(document.getElementById('m-checkin').value);
+  const co = new Date(document.getElementById('m-checkout').value);
+  if (isNaN(ci) || isNaN(co)) return 0;
+  const diff = (co - ci) / (1000*60*60*24);
+  return diff > 0 ? diff : 0;
+}
+
+function updateNights() {
+  const nights = getNights();
+  const display = document.getElementById('nights-display');
+  if (nights > 0) {
+    const r = ROOMS[currentRoomIdx !== null ? currentRoomIdx : 0];
+    document.getElementById('nights-text').textContent = `${nights} noche${nights > 1 ? 's' : ''} × $${r.price}`;
+    document.getElementById('nights-subtotal').textContent = `$${(nights * r.price).toFixed(2)}`;
+    display.style.display = 'flex';
+  } else {
+    display.style.display = 'none';
+  }
+  updatePriceBreakdown();
+}
+
+function updatePriceBreakdown() {
+  const nights = getNights() || 1;
+  const idx = currentRoomIdx !== null ? currentRoomIdx : 0;
+  const base = ROOMS[idx].price * nights;
+  const tax = base * 0.18;
+  const total = base + tax + 25;
+  document.getElementById('pb-room-nights').textContent = `${ROOMS[idx].name} × ${nights} noche${nights>1?'s':''}`;
+  document.getElementById('pb-base').textContent = `$${base.toFixed(2)}`;
+  document.getElementById('pb-tax').textContent = `$${tax.toFixed(2)}`;
+  document.getElementById('pb-total').textContent = `$${total.toFixed(2)}`;
+}
+
+function goStep(n) {
+  if (n > currentStep) {
+    if (currentStep === 1) {
+      const ci = document.getElementById('m-checkin').value;
+      const co = document.getElementById('m-checkout').value;
+      if (!ci || !co) { alert('Por favor seleccione las fechas de check-in y check-out.'); return; }
+      if (new Date(co) <= new Date(ci)) { alert('La fecha de check-out debe ser posterior al check-in.'); return; }
+    }
+    if (currentStep === 2) {
+      const name = document.getElementById('m-name').value.trim();
+      const email = document.getElementById('m-email').value.trim();
+      const phone = document.getElementById('m-phone').value.trim();
+      if (!name || !email || !phone) { alert('Por favor complete nombre, email y teléfono.'); return; }
+      if (!email.includes('@')) { alert('Por favor ingrese un email válido.'); return; }
+    }
+  }
+  goStepDirect(n);
+}
+
+function goStepDirect(n) {
+  document.querySelectorAll('.modal-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`step-${n}`).classList.add('active');
+  document.querySelectorAll('.progress-step').forEach(s => {
+    const sn = parseInt(s.dataset.step);
+    s.classList.remove('active','done');
+    if (sn === n) s.classList.add('active');
+    else if (sn < n) s.classList.add('done');
+  });
+  currentStep = n;
+  if (n === 3) updatePriceBreakdown();
+  document.getElementById('modal').scrollTop = 0;
+}
+
+function selectPayment(el, type) {
+  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('card-fields').style.display = type === 'card' ? 'block' : 'none';
+  document.getElementById('paypal-fields').style.display = type === 'paypal' ? 'block' : 'none';
+  document.getElementById('transfer-fields').style.display = type === 'transfer' ? 'block' : 'none';
+}
+
+function confirmReservation() {
+  const bookingNum = 'MIRA-' + Math.floor(10000 + Math.random() * 90000);
+  const idx = currentRoomIdx !== null ? currentRoomIdx : 0;
+  const r = ROOMS[idx];
+  const nights = getNights() || 1;
+  const ci = document.getElementById('m-checkin').value;
+  const co = document.getElementById('m-checkout').value;
+  const guests = document.getElementById('m-guests').value;
+  const total = (r.price * nights * 1.18 + 25).toFixed(2);
+  document.getElementById('confirm-booking-num').textContent = bookingNum;
+  document.getElementById('confirm-room').textContent = r.name;
+  document.getElementById('confirm-dates').textContent = `${ci} → ${co} (${nights} noche${nights>1?'s':''})`;
+  document.getElementById('confirm-guests').textContent = guests;
+  document.getElementById('confirm-total').textContent = `$${total}`;
+  goStepDirect(4);
+}
+
+function downloadReceipt() {
+  alert('Función disponible en producción. Se generará un PDF con los datos de su reserva y se enviará a su correo registrado.');
+}
+
+function formatCard(input) {
+  let v = input.value.replace(/\D/g,'').substring(0,16);
+  input.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+
+function openRoomDetail(idx) {
+  const r = ROOMS[idx];
+  document.getElementById('rd-img').src = r.img;
+  document.getElementById('rd-img').alt = r.name;
+  document.getElementById('rd-badge').textContent = r.badge;
+  document.getElementById('rd-name').textContent = r.name;
+  document.getElementById('rd-desc').textContent = r.desc;
+  document.getElementById('rd-price').textContent = `$${r.price}`;
+  document.getElementById('rd-features').innerHTML = r.features.map(f => `<div class="rd-feature">${f}</div>`).join('');
+  document.getElementById('rd-reserve-btn').onclick = function() { closeRoomDetail(); openModal(idx); };
+  document.getElementById('room-detail-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeRoomDetail() {
+  document.getElementById('room-detail-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('room-detail-overlay').addEventListener('click', function(e) { if (e.target === this) closeRoomDetail(); });
+
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), parseInt(entry.target.dataset.delay || 0));
+      revealObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) { animateCounter(entry.target); counterObs.unobserve(entry.target); }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
+
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  const start = performance.now();
+  function step(now) {
+    const progress = Math.min((now - start) / 1800, 1);
+    el.textContent = Math.floor((1 - Math.pow(1 - progress, 3)) * target);
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(step);
+}
+
+document.querySelector('.nav-cta').addEventListener('click', function(e) { e.preventDefault(); openModal(null); });
+</script>
+</body>
+</html>
+

@@ -1,0 +1,1820 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sakura Maki — Menú Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Design tokens ────────────────────────────────────── */
+    :root {
+      --c-brand:        #e91e7a;
+      --c-brand-light:  #f8a5c2;
+      --c-bg:           #fdfcfe;
+      --c-surface:      #fef0f6;
+      --c-text:         #1a0a10;
+      --c-accent:       #2d2d2d;
+
+      --c-text-soft:    color-mix(in srgb, var(--c-text) 55%, transparent);
+      --c-border:       color-mix(in srgb, var(--c-brand) 12%, transparent);
+      --c-glass:        color-mix(in srgb, var(--c-bg) 90%, transparent);
+
+      --fs-xs:   0.694rem;
+      --fs-sm:   0.833rem;
+      --fs-base: 1rem;
+      --fs-md:   1.2rem;
+      --fs-lg:   1.44rem;
+      --fs-xl:   1.728rem;
+      --fs-2xl:  2.074rem;
+      --fs-3xl:  2.488rem;
+
+      --ease-out:    cubic-bezier(0.23,1,0.32,1);
+      --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
+      --ease-inout:  cubic-bezier(0.77,0,0.175,1);
+
+      --r-sm: 10px;
+      --r-md: 16px;
+      --r-lg: 24px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--c-bg);
+      color: var(--c-text);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: var(--fs-base);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+    /* ══ PALETTE SWITCHER TOP BAR ═══════════════════════════ */
+    .palette-bar {
+      background: var(--c-brand);
+      color: #fff;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .75rem;
+      padding: 0 1rem;
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .palette-bar span { opacity: .7; }
+    .palette-swatches { display: flex; gap: .45rem; }
+    .swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.25);
+      cursor: pointer;
+      transition: transform 150ms var(--ease-spring), border-color 150ms;
+      position: relative;
+    }
+    .swatch:hover { transform: scale(1.2); }
+    .swatch.active {
+      border-color: #fff;
+      transform: scale(1.1);
+    }
+    .swatch[title]::after {
+      content: attr(title);
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.7);
+      color: #fff;
+      font-size: .6rem;
+      padding: .1rem .35rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 150ms;
+    }
+    .swatch:hover::after { opacity: 1; }
+
+    /* ══ HEADER ═════════════════════════════════════════════ */
+    .header {
+      position: relative;
+      overflow: hidden;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 2.5rem 1.5rem 2rem;
+      text-align: center;
+      color: #fff;
+    }
+    .header-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .header-bg img { object-position: center 30%; }
+    .header-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(10,2,6,.25) 0%,
+        rgba(10,2,6,.55) 55%,
+        rgba(10,2,6,.82) 100%
+      );
+      z-index: 1;
+    }
+
+    /* Sakura petal decorations */
+    .petals {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: var(--c-brand-light);
+      opacity: .35;
+      border-radius: 100% 0 100% 0;
+      animation: petalDrift linear infinite;
+    }
+    .petal:nth-child(1)  { left: 10%; top: -10%; animation-duration: 12s; animation-delay: 0s;   transform: rotate(20deg); width:14px; height:14px; }
+    .petal:nth-child(2)  { left: 25%; top: -5%;  animation-duration: 15s; animation-delay: 2s;   transform: rotate(60deg); opacity:.25; }
+    .petal:nth-child(3)  { left: 50%; top: -8%;  animation-duration: 11s; animation-delay: 1s;   transform: rotate(120deg); width:22px; height:22px; opacity:.2; }
+    .petal:nth-child(4)  { left: 70%; top: -6%;  animation-duration: 13s; animation-delay: 3.5s; transform: rotate(80deg); width:12px; height:12px; }
+    .petal:nth-child(5)  { left: 85%; top: -12%; animation-duration: 9s;  animation-delay: 0.5s; transform: rotate(200deg); width:10px; height:10px; opacity:.3; }
+    .petal:nth-child(6)  { left: 40%; top: -4%;  animation-duration: 16s; animation-delay: 5s;   transform: rotate(310deg); opacity:.2; }
+    @keyframes petalDrift {
+      0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: .35; }
+      50%  { transform: translateY(50vh) rotate(180deg) translateX(30px); opacity: .2; }
+      100% { transform: translateY(110vh) rotate(360deg) translateX(-20px); opacity: 0; }
+    }
+
+    .header-inner { position: relative; z-index: 3; }
+
+    .logo-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--c-brand);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(233,30,122,.5), 0 0 0 3px rgba(255,255,255,.2);
+      margin-bottom: 1rem;
+    }
+
+    .header-jp-text {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: var(--fs-xs);
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--c-brand-light);
+      opacity: .9;
+      margin-bottom: .4rem;
+    }
+
+    .restaurant-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, var(--fs-3xl));
+      font-weight: 700;
+      letter-spacing: .04em;
+      line-height: 1.1;
+      color: #fff;
+    }
+
+    .tagline {
+      font-size: var(--fs-sm);
+      color: rgba(255,255,255,.7);
+      font-style: italic;
+      margin-top: .4rem;
+      letter-spacing: .04em;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .75rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .badge-open {
+      background: rgba(34,197,94,.2);
+      border: 1px solid rgba(34,197,94,.4);
+      color: #86efac;
+      font-size: var(--fs-xs);
+      font-weight: 600;
+      padding: .22rem .75rem;
+      border-radius: 99px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+    .badge-open.closed {
+      background: rgba(239,68,68,.18);
+      border-color: rgba(239,68,68,.35);
+      color: #fca5a5;
+    }
+
+    .wave-border {
+      width: 100%;
+      position: relative;
+      margin-top: -2px;
+      line-height: 0;
+      z-index: 5;
+    }
+    .wave-border svg { width: 100%; height: auto; }
+
+    /* ══ STICKY TABS ════════════════════════════════════════ */
+    .tabs-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--c-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--c-border);
+      box-shadow: 0 2px 20px rgba(233,30,122,.06);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0 .75rem;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--c-text-soft);
+      padding: .85rem .85rem;
+      position: relative;
+      transition: color 180ms var(--ease-out);
+      letter-spacing: .01em;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2.5px;
+      background: var(--c-brand);
+      border-radius: 2px 2px 0 0;
+      transform: translateX(-50%);
+      transition: width 220ms var(--ease-spring);
+    }
+    .tab-btn.active { color: var(--c-brand); font-weight: 700; }
+    .tab-btn.active::after { width: calc(100% - 1.4rem); }
+    @media (hover: hover) and (pointer: fine) {
+      .tab-btn:hover { color: var(--c-brand); }
+      .tab-btn:hover::after { width: calc(100% - 1.4rem); }
+    }
+    .tab-btn:active { opacity: .7; }
+
+    /* ══ LAYOUT ═════════════════════════════════════════════ */
+    .layout { display: block; }
+    @media (min-width: 960px) {
+      .layout {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        align-items: start;
+      }
+    }
+
+    .main { padding: 0 0 6rem; }
+
+    /* ══ FEATURED STRIP ══════════════════════════════════════ */
+    .featured-section {
+      padding: 2rem 0 .5rem;
+    }
+
+    .section-label {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-lg);
+      font-weight: 700;
+      color: var(--c-text);
+      padding: 0 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .section-label small {
+      display: block;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: var(--fs-xs);
+      font-weight: 400;
+      color: var(--c-brand);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: .2rem;
+    }
+
+    .featured-scroll {
+      display: flex;
+      gap: .875rem;
+      overflow-x: auto;
+      padding: .25rem 1.25rem 1.25rem;
+      scrollbar-width: none;
+    }
+    .featured-scroll::-webkit-scrollbar { display: none; }
+
+    .featured-card {
+      flex-shrink: 0;
+      width: 210px;
+      background: var(--c-surface);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      border: 1px solid var(--c-border);
+      box-shadow: 0 2px 14px rgba(233,30,122,.07);
+      transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+      cursor: pointer;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .featured-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 32px rgba(233,30,122,.14);
+      }
+    }
+
+    .featured-img {
+      height: 135px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-body {
+      padding: .75rem .875rem .875rem;
+    }
+    .featured-body .f-name {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-base);
+      font-weight: 600;
+      color: var(--c-text);
+      line-height: 1.3;
+    }
+    .featured-body .f-price {
+      font-size: var(--fs-md);
+      font-weight: 700;
+      color: var(--c-brand);
+      margin-top: .3rem;
+    }
+
+    .feat-badge {
+      position: absolute;
+      top: .6rem;
+      left: .6rem;
+      background: var(--c-brand);
+      color: #fff;
+      font-size: .58rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: .2rem .55rem;
+      border-radius: 99px;
+    }
+
+    /* ══ MENU SECTION ════════════════════════════════════════ */
+    .menu-section {
+      padding: 2.25rem 1.25rem 1rem;
+    }
+    .menu-section + .menu-section {
+      border-top: 1px solid var(--c-border);
+    }
+
+    .category-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+      color: var(--c-text);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+    }
+    .category-heading::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--c-border);
+      display: none;
+    }
+    @media (min-width: 640px) {
+      .category-heading::after { display: block; }
+    }
+
+    /* ══ CARDS GRID ══════════════════════════════════════════ */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: .875rem;
+    }
+    @media (min-width: 540px) {
+      .cards-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 920px) {
+      .cards-grid { grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    .item-card {
+      background: var(--c-surface);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      border: 1px solid var(--c-border);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 8px rgba(233,30,122,.05);
+      transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+      animation: cardIn 320ms var(--ease-out) both;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .item-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(233,30,122,.12);
+      }
+    }
+
+    .card-img {
+      height: 160px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .card-img img {
+      transition: transform 350ms var(--ease-out);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .item-card:hover .card-img img { transform: scale(1.05); }
+    }
+
+    .card-body {
+      padding: .875rem 1rem 1rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .dish-name {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-md);
+      font-weight: 600;
+      color: var(--c-text);
+      line-height: 1.3;
+      margin-bottom: .35rem;
+    }
+
+    .dish-desc {
+      font-size: var(--fs-sm);
+      color: var(--c-text-soft);
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .diet-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem;
+      margin-top: .55rem;
+    }
+    .diet-tag {
+      font-size: .62rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      padding: .15rem .5rem;
+      border-radius: 99px;
+      background: color-mix(in srgb, var(--c-brand) 10%, transparent);
+      color: var(--c-brand);
+      border: 1px solid color-mix(in srgb, var(--c-brand) 20%, transparent);
+    }
+    .diet-tag.veg  { background: rgba(22,163,74,.10); color: #16a34a; border-color: rgba(22,163,74,.2); }
+    .diet-tag.hot  { background: rgba(239,68,68,.10);  color: #ef4444; border-color: rgba(239,68,68,.2); }
+    .diet-tag.pop  { background: color-mix(in srgb, var(--c-brand) 10%, transparent); color: var(--c-brand); }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: .875rem;
+    }
+
+    .price-tag {
+      font-size: var(--fs-lg);
+      font-weight: 700;
+      color: var(--c-brand);
+      letter-spacing: -.02em;
+    }
+    .price-tag small {
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      color: var(--c-text-soft);
+    }
+
+    /* ══ ADD BUTTON ══════════════════════════════════════════ */
+    .add-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--c-brand);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 150ms var(--ease-out), transform 120ms var(--ease-spring);
+      box-shadow: 0 2px 10px rgba(233,30,122,.35);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .add-btn:hover { background: color-mix(in srgb, var(--c-brand) 80%, black); }
+    }
+    .add-btn:active { transform: scale(0.88); }
+    .add-btn.bounce { animation: springBounce 380ms var(--ease-spring); }
+    @keyframes springBounce {
+      0%   { transform: scale(1); }
+      30%  { transform: scale(0.82); }
+      60%  { transform: scale(1.22); }
+      80%  { transform: scale(0.96); }
+      100% { transform: scale(1); }
+    }
+
+    /* ══ FLOAT CART BUTTON ═══════════════════════════════════ */
+    .cart-float {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.25rem;
+      z-index: 200;
+      background: var(--c-brand);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      padding: .8rem 1.25rem;
+      border-radius: 99px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      box-shadow: 0 6px 28px rgba(233,30,122,.45);
+      transition: opacity 280ms var(--ease-out), transform 320ms var(--ease-spring);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(14px) scale(0.92);
+    }
+    .cart-float.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+    .cart-float:active { transform: scale(0.94); }
+    @media (hover: hover) and (pointer: fine) {
+      .cart-float:hover { background: color-mix(in srgb, var(--c-brand) 80%, black); }
+    }
+
+    .cart-badge {
+      background: #fff;
+      color: var(--c-brand);
+      font-size: .65rem;
+      font-weight: 800;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 99px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 .35rem;
+    }
+
+    /* ══ CART SIDEBAR (desktop) ══════════════════════════════ */
+    @media (min-width: 960px) {
+      .cart-float { display: none; }
+      .cart-sidebar {
+        position: sticky;
+        top: 49px;
+        background: var(--c-surface);
+        border-left: 1px solid var(--c-border);
+        min-height: calc(100vh - 49px);
+        padding: 1.5rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+    @media (max-width: 959px) {
+      .cart-sidebar { display: none; }
+    }
+
+    .cart-title {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-lg);
+      font-weight: 700;
+      color: var(--c-text);
+      margin-bottom: 1.25rem;
+      padding-bottom: .75rem;
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cart-count-badge {
+      background: var(--c-brand);
+      color: #fff;
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      border-radius: 99px;
+      padding: .15rem .6rem;
+    }
+
+    .cart-empty {
+      text-align: center;
+      padding: 2.5rem 0;
+      color: var(--c-text-soft);
+      font-size: var(--fs-sm);
+    }
+    .cart-empty-icon { font-size: 2.5rem; margin-bottom: .75rem; opacity: .5; }
+
+    .cart-items { flex: 1; overflow-y: auto; }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .65rem 0;
+      border-bottom: 1px solid var(--c-border);
+      gap: .75rem;
+      animation: slideInRight 200ms var(--ease-out);
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .cart-item-name {
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--c-text);
+      flex: 1;
+    }
+    .cart-item-qty {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .qty-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid var(--c-border);
+      background: var(--c-bg);
+      color: var(--c-text);
+      font-size: .8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 120ms var(--ease-out), transform 100ms var(--ease-spring);
+    }
+    .qty-btn:active { transform: scale(0.88); }
+    .qty-num {
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      min-width: 18px;
+      text-align: center;
+    }
+    .cart-item-price {
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      color: var(--c-brand);
+      white-space: nowrap;
+    }
+
+    .cart-total { padding-top: 1rem; margin-top: auto; }
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--fs-base);
+      font-weight: 700;
+      color: var(--c-text);
+      margin-bottom: .875rem;
+    }
+    .cart-total-row span:last-child { color: var(--c-brand); font-size: var(--fs-lg); }
+
+    .btn-order {
+      width: 100%;
+      background: var(--c-brand);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-sm);
+      padding: .875rem 1.25rem;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: var(--fs-base);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      transition: background 150ms var(--ease-out), transform 120ms var(--ease-spring);
+      box-shadow: 0 3px 16px rgba(233,30,122,.35);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .btn-order:hover { background: color-mix(in srgb, var(--c-brand) 80%, black); }
+    }
+    .btn-order:active { transform: scale(0.97); }
+
+    /* ══ CART DRAWER (mobile) ════════════════════════════════ */
+    .cart-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(10,2,6,.55);
+      backdrop-filter: blur(4px);
+    }
+    .cart-overlay.open { display: block; animation: fadeIn 200ms var(--ease-out); }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .cart-drawer-mobile {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 400;
+      background: var(--c-surface);
+      border-radius: 20px 20px 0 0;
+      padding: 1.25rem 1.25rem 2.5rem;
+      max-height: 85vh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 340ms var(--ease-out);
+    }
+    .cart-drawer-mobile.open { transform: translateY(0); }
+
+    .drawer-handle {
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--c-border);
+      margin: 0 auto .875rem;
+    }
+
+    /* ══ FOOTER ══════════════════════════════════════════════ */
+    .footer {
+      background: var(--c-accent);
+      color: rgba(255,255,255,.7);
+      padding: 2.5rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .footer::before {
+      content: '🌸';
+      position: absolute;
+      font-size: 9rem;
+      right: -1.5rem;
+      bottom: -2rem;
+      opacity: .05;
+      line-height: 1;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    @media (min-width: 640px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 900px) {
+      .footer-grid { grid-template-columns: 2fr 1fr 1fr; }
+    }
+
+    .footer-name {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-lg);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: .35rem;
+    }
+    .footer-sub {
+      font-size: var(--fs-xs);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--c-brand-light);
+      opacity: .8;
+      margin-bottom: .5rem;
+    }
+    .footer-tagline { font-size: var(--fs-sm); font-style: italic; opacity: .6; }
+
+    .footer-section h4 {
+      font-size: var(--fs-xs);
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--c-brand-light);
+      margin-bottom: .75rem;
+    }
+    .footer-section p, .footer-section li {
+      font-size: var(--fs-sm);
+      line-height: 1.75;
+      list-style: none;
+    }
+    .footer-hours li { display: flex; justify-content: space-between; gap: .5rem; }
+    .footer-hours li span:last-child { color: rgba(255,255,255,.9); font-weight: 500; }
+
+    .footer-socials {
+      display: flex;
+      gap: .65rem;
+      margin-top: 1rem;
+    }
+    .social-link {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,.65);
+      font-size: .9rem;
+      text-decoration: none;
+      transition: background 150ms var(--ease-out), color 150ms;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .social-link:hover { background: var(--c-brand); color: #fff; }
+    }
+
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: #25d366;
+      color: #fff;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      padding: .7rem 1.25rem;
+      border-radius: 99px;
+      text-decoration: none;
+      margin-top: 1rem;
+      box-shadow: 0 3px 14px rgba(37,211,102,.3);
+      transition: background 150ms var(--ease-out), transform 120ms var(--ease-spring);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .btn-whatsapp:hover { background: #128c7e; }
+    }
+    .btn-whatsapp:active { transform: scale(0.96); }
+
+    .footer-bottom {
+      margin-top: 2rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(255,255,255,.08);
+      font-size: var(--fs-xs);
+      color: rgba(255,255,255,.3);
+      text-align: center;
+    }
+
+    /* ══ TOAST ═══════════════════════════════════════════════ */
+    .toast-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      pointer-events: none;
+    }
+    .toast {
+      background: var(--c-accent);
+      color: #fff;
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      padding: .6rem 1rem;
+      border-radius: 8px;
+      border-left: 3px solid var(--c-brand);
+      box-shadow: 0 4px 18px rgba(10,2,6,.25);
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out);
+    }
+    .toast.hide {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+
+    /* ══ REDUCED MOTION ══════════════════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;display:flex;align-items:center;gap:12px;padding:10px 20px;background:rgba(8,8,15,0.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.07);font-family:system-ui,sans-serif;">
+  <a href="../index.html" style="display:inline-flex;align-items:center;gap:8px;color:#a855f7;text-decoration:none;font-size:13px;font-weight:500;">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Volver al portafolio
+  </a>
+  <span style="color:rgba(255,255,255,0.15);font-size:12px;">|</span>
+  <span style="color:rgba(255,255,255,0.4);font-size:12px;font-family:monospace;">douglas08pool@gmail.com</span>
+</div>
+<div style="height:44px;"></div>
+
+<!-- ══ PALETTE SWITCHER ═══════════════════════════════════════ -->
+<div class="palette-bar">
+  <span>Paleta:</span>
+  <div class="palette-swatches">
+    <div class="swatch active" data-palette="sakura" title="Sakura 🌸" style="background:#e91e7a"></div>
+    <div class="swatch" data-palette="noir" title="Noir" style="background:#1a1a1a"></div>
+    <div class="swatch" data-palette="matcha" title="Matcha 🍵" style="background:#3d6b4f"></div>
+    <div class="swatch" data-palette="cobalt" title="Cobalt" style="background:#1565c0"></div>
+  </div>
+</div>
+
+<!-- ══ HEADER ════════════════════════════════════════════════ -->
+<header class="header">
+  <div class="header-bg">
+    <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&q=85&auto=format&fit=crop" alt="Sakura Maki" />
+  </div>
+  <div class="header-overlay"></div>
+  <div class="petals">
+    <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+    <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+  </div>
+  <div class="header-inner">
+    <div class="logo-circle">桜</div>
+    <p class="header-jp-text">さくらまき · Cocina Japonesa</p>
+    <h1 class="restaurant-name">SAKURA MAKI</h1>
+    <p class="tagline">Cocina japonesa auténtica · Lima</p>
+    <div class="header-meta">
+      <span class="badge-open" id="openBadge">● Abierto ahora</span>
+      <span style="font-size:var(--fs-xs);color:rgba(255,255,255,.5)">12:00 – 22:00</span>
+    </div>
+  </div>
+</header>
+
+<!-- Wave separator -->
+<div class="wave-border">
+  <svg viewBox="0 0 1440 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,20 C180,40 360,0 540,20 C720,40 900,0 1080,20 C1260,40 1380,10 1440,20 L1440,40 L0,40 Z" fill="var(--c-bg)"/>
+  </svg>
+</div>
+
+<!-- ══ STICKY TABS ════════════════════════════════════════════ -->
+<nav class="tabs-wrapper" aria-label="Categorías del menú">
+  <div class="tabs" role="tablist">
+    <button class="tab-btn active" data-target="destacados" role="tab">🌸 Destacados</button>
+    <button class="tab-btn" data-target="clasicos"    role="tab">🍣 Makis Clásicos</button>
+    <button class="tab-btn" data-target="calientes"   role="tab">🔥 Makis Calientes</button>
+    <button class="tab-btn" data-target="sashimi"     role="tab">🐟 Sashimi</button>
+    <button class="tab-btn" data-target="entradas"    role="tab">🍜 Entradas</button>
+    <button class="tab-btn" data-target="bebidas"     role="tab">🍹 Bebidas</button>
+  </div>
+</nav>
+
+<div class="layout">
+
+<!-- ══ MAIN CONTENT ══════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- ── FEATURED STRIP ───────────────────────────────────── -->
+  <section class="featured-section" id="destacados">
+    <h2 class="section-label">
+      <small>Sakura Picks — Más pedidos</small>
+      Destacados
+    </h2>
+    <div class="featured-scroll">
+
+      <div class="featured-card" onclick="handleAddFeat('Dragon Roll','38',this)">
+        <div class="featured-img">
+          <img src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80&auto=format&fit=crop" alt="Dragon Roll" loading="lazy" />
+          <span class="feat-badge">⭐ Popular</span>
+        </div>
+        <div class="featured-body">
+          <div class="f-name">Dragon Roll</div>
+          <div class="f-price">S/ 38</div>
+        </div>
+      </div>
+
+      <div class="featured-card" onclick="handleAddFeat('Rainbow Roll','42',this)">
+        <div class="featured-img">
+          <img src="https://images.unsplash.com/photo-1563612116625-3012372fccce?w=400&q=80&auto=format&fit=crop" alt="Rainbow Roll" loading="lazy" />
+          <span class="feat-badge">⭐ Popular</span>
+        </div>
+        <div class="featured-body">
+          <div class="f-name">Rainbow Roll</div>
+          <div class="f-price">S/ 42</div>
+        </div>
+      </div>
+
+      <div class="featured-card" onclick="handleAddFeat('Sushi Platter Mixto','52',this)">
+        <div class="featured-img">
+          <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80&auto=format&fit=crop" alt="Sushi Platter" loading="lazy" />
+          <span class="feat-badge">🏆 Chef's Pick</span>
+        </div>
+        <div class="featured-body">
+          <div class="f-name">Sushi Platter</div>
+          <div class="f-price">S/ 52</div>
+        </div>
+      </div>
+
+      <div class="featured-card" onclick="handleAddFeat('Sashimi Mixto (12 pzas)','52',this)">
+        <div class="featured-img">
+          <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80&auto=format&fit=crop" alt="Sashimi" loading="lazy" />
+          <span class="feat-badge">⭐ Recomendado</span>
+        </div>
+        <div class="featured-body">
+          <div class="f-name">Sashimi Mixto</div>
+          <div class="f-price">S/ 52</div>
+        </div>
+      </div>
+
+      <div class="featured-card" onclick="handleAddFeat('Volcano Roll','36',this)">
+        <div class="featured-img">
+          <img src="https://images.unsplash.com/photo-1562802378-063ec186a863?w=400&q=80&auto=format&fit=crop" alt="Volcano Roll" loading="lazy" />
+          <span class="feat-badge">🔥 Picante</span>
+        </div>
+        <div class="featured-body">
+          <div class="f-name">Volcano Roll</div>
+          <div class="f-price">S/ 36</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── MAKIS CLÁSICOS ───────────────────────────────────── -->
+  <section class="menu-section" id="clasicos">
+    <h2 class="category-heading">🍣 Makis Clásicos</h2>
+    <div class="cards-grid">
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80&auto=format&fit=crop" alt="California Roll" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">California Roll</h3>
+          <p class="dish-desc">Kani, palta, pepino y huevas de masago. Clásico e irresistible.</p>
+          <div class="diet-tags"><span class="diet-tag pop">⭐ Popular</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 28 <small>/ 8 pzas</small></div>
+            <button class="add-btn" aria-label="Agregar California Roll" onclick="handleAdd('California Roll','28',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1563612116625-3012372fccce?w=400&q=80&auto=format&fit=crop" alt="Philadelphia Roll" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Philadelphia Roll</h3>
+          <p class="dish-desc">Salmón fresco, queso crema y pepino. Suave y cremoso.</p>
+          <div class="diet-tags"><span class="diet-tag pop">⭐ Popular</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 32</div>
+            <button class="add-btn" aria-label="Agregar Philadelphia Roll" onclick="handleAdd('Philadelphia Roll','32',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80&auto=format&fit=crop" alt="Dragon Roll" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Dragon Roll</h3>
+          <p class="dish-desc">Camarón tempura cubierto con palta en abanico y salsa eel.</p>
+          <div class="diet-tags"><span class="diet-tag pop">⭐ Popular</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 38</div>
+            <button class="add-btn" aria-label="Agregar Dragon Roll" onclick="handleAdd('Dragon Roll','38',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80&auto=format&fit=crop" alt="Spicy Tuna Roll" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Spicy Tuna Roll</h3>
+          <p class="dish-desc">Atún picante, pepino y sriracha mayo. Para los amantes del picante.</p>
+          <div class="diet-tags"><span class="diet-tag hot">🌶️ Picante</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 30</div>
+            <button class="add-btn" aria-label="Agregar Spicy Tuna" onclick="handleAdd('Spicy Tuna Roll','30',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80&auto=format&fit=crop" alt="Rainbow Roll" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Rainbow Roll</h3>
+          <p class="dish-desc">California roll cubierto con 5 tipos de pescado fresco y palta.</p>
+          <div class="diet-tags"><span class="diet-tag pop">⭐ Popular</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 42</div>
+            <button class="add-btn" aria-label="Agregar Rainbow Roll" onclick="handleAdd('Rainbow Roll','42',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1563612116625-3012372fccce?w=400&q=80&auto=format&fit=crop" alt="Cucumber Roll" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Cucumber Roll</h3>
+          <p class="dish-desc">Pepino fresco, aguacate y semillas de sésamo. Ligero y refrescante.</p>
+          <div class="diet-tags"><span class="diet-tag veg">🌱 Vegetariano</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 22</div>
+            <button class="add-btn" aria-label="Agregar Cucumber Roll" onclick="handleAdd('Cucumber Roll','22',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ── MAKIS CALIENTES ──────────────────────────────────── -->
+  <section class="menu-section" id="calientes">
+    <h2 class="category-heading">🔥 Makis Calientes</h2>
+    <div class="cards-grid">
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1562802378-063ec186a863?w=400&q=80&auto=format&fit=crop" alt="Volcano Roll" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Volcano Roll</h3>
+          <p class="dish-desc">California roll gratinado con mezcla de mariscos picantes. Espectacular presentación.</p>
+          <div class="diet-tags"><span class="diet-tag hot">🔥 Picante</span><span class="diet-tag pop">⭐ Popular</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 36</div>
+            <button class="add-btn" aria-label="Agregar Volcano Roll" onclick="handleAdd('Volcano Roll','36',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80&auto=format&fit=crop" alt="Tempura Roll" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Tempura Roll</h3>
+          <p class="dish-desc">Camarón en tempura crujiente, palta y queso crema con salsa ponzu.</p>
+          <div class="diet-tags"><span class="diet-tag pop">⭐ Popular</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 34</div>
+            <button class="add-btn" aria-label="Agregar Tempura Roll" onclick="handleAdd('Tempura Roll','34',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80&auto=format&fit=crop" alt="Crunchy Salmon" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Crunchy Salmon</h3>
+          <p class="dish-desc">Salmón horneado con panko crocante, masago y mayonesa de wasabi.</p>
+          <div class="diet-tags"><span class="diet-tag pop">⭐ Popular</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 38</div>
+            <button class="add-btn" aria-label="Agregar Crunchy Salmon" onclick="handleAdd('Crunchy Salmon','38',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80&auto=format&fit=crop" alt="Fire Roll" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Fire Roll</h3>
+          <p class="dish-desc">Spicy tuna flameado con antorcha, sriracha extra y cebollita china.</p>
+          <div class="diet-tags"><span class="diet-tag hot">🔥 Muy Picante</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 40</div>
+            <button class="add-btn" aria-label="Agregar Fire Roll" onclick="handleAdd('Fire Roll','40',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ── SASHIMI ────────────────────────────────────────────── -->
+  <section class="menu-section" id="sashimi">
+    <h2 class="category-heading">🐟 Sashimi</h2>
+    <div class="cards-grid">
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80&auto=format&fit=crop" alt="Sashimi Salmón" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Sashimi de Salmón</h3>
+          <p class="dish-desc">8 láminas de salmón fresco premium. Servido con wasabi y jengibre encurtido.</p>
+          <div class="diet-tags"><span class="diet-tag pop">⭐ Popular</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 38 <small>/ 8 pzas</small></div>
+            <button class="add-btn" aria-label="Agregar Sashimi Salmón" onclick="handleAdd('Sashimi de Salmón (8 pzas)','38',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80&auto=format&fit=crop" alt="Sashimi Atún" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Sashimi de Atún</h3>
+          <p class="dish-desc">8 láminas de atún de aleta azul. Textura suave, sabor oceánico profundo.</p>
+          <div class="diet-tags"></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 42 <small>/ 8 pzas</small></div>
+            <button class="add-btn" aria-label="Agregar Sashimi Atún" onclick="handleAdd('Sashimi de Atún (8 pzas)','42',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1563612116625-3012372fccce?w=400&q=80&auto=format&fit=crop" alt="Sashimi Mixto" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Sashimi Mixto</h3>
+          <p class="dish-desc">12 láminas variadas: salmón, atún, hamachi, pulpo y camarón. Para compartir.</p>
+          <div class="diet-tags"><span class="diet-tag pop">🏆 Chef's Pick</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 52 <small>/ 12 pzas</small></div>
+            <button class="add-btn" aria-label="Agregar Sashimi Mixto" onclick="handleAdd('Sashimi Mixto (12 pzas)','52',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ── ENTRADAS ───────────────────────────────────────────── -->
+  <section class="menu-section" id="entradas">
+    <h2 class="category-heading">🍜 Entradas</h2>
+    <div class="cards-grid">
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80&auto=format&fit=crop" alt="Edamame" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Edamame</h3>
+          <p class="dish-desc">Vainas de soya al vapor con sal marina de Okinawa. Simple y adictivo.</p>
+          <div class="diet-tags"><span class="diet-tag veg">🌱 Vegetariano</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 12</div>
+            <button class="add-btn" aria-label="Agregar Edamame" onclick="handleAdd('Edamame','12',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1562802378-063ec186a863?w=400&q=80&auto=format&fit=crop" alt="Gyozas" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Gyozas</h3>
+          <p class="dish-desc">6 dumplings de cerdo y repollo, dorados en sartén con salsa ponzu.</p>
+          <div class="diet-tags"><span class="diet-tag pop">⭐ Popular</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 22 <small>/ 6 pzas</small></div>
+            <button class="add-btn" aria-label="Agregar Gyozas" onclick="handleAdd('Gyozas (6 pzas)','22',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80&auto=format&fit=crop" alt="Miso Soup" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Miso Soup</h3>
+          <p class="dish-desc">Caldo de dashi con pasta de miso, tofu sedoso, alga wakame y cebollita.</p>
+          <div class="diet-tags"><span class="diet-tag veg">🌱 Vegetariano</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 10</div>
+            <button class="add-btn" aria-label="Agregar Miso Soup" onclick="handleAdd('Miso Soup','10',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80&auto=format&fit=crop" alt="Takoyaki" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Takoyaki</h3>
+          <p class="dish-desc">6 bolitas de pulpo con salsa takoyaki, mayonesa japonesa y bonito seco.</p>
+          <div class="diet-tags"><span class="diet-tag pop">⭐ Popular</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 24 <small>/ 6 pzas</small></div>
+            <button class="add-btn" aria-label="Agregar Takoyaki" onclick="handleAdd('Takoyaki (6 pzas)','24',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ── BEBIDAS ────────────────────────────────────────────── -->
+  <section class="menu-section" id="bebidas">
+    <h2 class="category-heading">🍹 Bebidas</h2>
+    <div class="cards-grid">
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1543414168-b1ba7ffba046?w=400&q=80&auto=format&fit=crop" alt="Sake Caliente" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Sake Caliente</h3>
+          <p class="dish-desc">Sake japonés premium servido tibio en tokkuri. Suave y aromático.</p>
+          <div class="diet-tags"><span class="diet-tag pop">⭐ Popular</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 18</div>
+            <button class="add-btn" aria-label="Agregar Sake" onclick="handleAdd('Sake Caliente','18',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80&auto=format&fit=crop" alt="Té Verde" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Té Verde Matcha</h3>
+          <p class="dish-desc">Matcha japonés de primera calidad, preparado con agua a 80°C. Puro y ceremonial.</p>
+          <div class="diet-tags"><span class="diet-tag veg">🌱 Vegano</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 8</div>
+            <button class="add-btn" aria-label="Agregar Té Verde" onclick="handleAdd('Té Verde Matcha','8',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1543414168-b1ba7ffba046?w=400&q=80&auto=format&fit=crop" alt="Agua de Jamaica" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Agua de Jamaica</h3>
+          <p class="dish-desc">Infusión fría de flor de jamaica con jengibre y un toque de miel de abeja.</p>
+          <div class="diet-tags"><span class="diet-tag veg">🌱 Vegano</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 10</div>
+            <button class="add-btn" aria-label="Agregar Jamaica" onclick="handleAdd('Agua de Jamaica','10',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80&auto=format&fit=crop" alt="Limonada" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Limonada</h3>
+          <p class="dish-desc">Limonada artesanal de limón sutil con menta fresca y un toque de jengibre.</p>
+          <div class="diet-tags"><span class="diet-tag veg">🌱 Vegano</span></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 10</div>
+            <button class="add-btn" aria-label="Agregar Limonada" onclick="handleAdd('Limonada','10',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="item-card">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1543414168-b1ba7ffba046?w=400&q=80&auto=format&fit=crop" alt="Coca-Cola" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <h3 class="dish-name">Coca-Cola</h3>
+          <p class="dish-desc">Clásica bebida gasificada 350ml, fría y refrescante.</p>
+          <div class="diet-tags"></div>
+          <div class="card-footer">
+            <div class="price-tag">S/ 8</div>
+            <button class="add-btn" aria-label="Agregar Coca-Cola" onclick="handleAdd('Coca-Cola','8',this)">+</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ══ CART SIDEBAR (desktop) ════════════════════════════════ -->
+<aside class="cart-sidebar" aria-label="Carrito de pedido">
+  <div class="cart-title">
+    Tu pedido
+    <span class="cart-count-badge" id="sidebarCount">0</span>
+  </div>
+  <div class="cart-items" id="sidebarItems">
+    <div class="cart-empty" id="sidebarEmpty">
+      <div class="cart-empty-icon">🍱</div>
+      <p>Tu carrito está vacío 🍱</p>
+    </div>
+  </div>
+  <div class="cart-total" id="sidebarTotal" style="display:none">
+    <div class="cart-total-row">
+      <span>Total</span>
+      <span id="sidebarTotalAmt">S/ 0</span>
+    </div>
+    <button class="btn-order" onclick="orderViaWhatsApp()">
+      <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+      Pedir por WhatsApp
+    </button>
+  </div>
+</aside>
+
+</div><!-- /layout -->
+
+<!-- ══ FLOAT CART BUTTON (mobile) ════════════════════════════ -->
+<button class="cart-float" id="cartFloat" onclick="openCartDrawer()" aria-label="Ver carrito">
+  🛒 Ver pedido
+  <span class="cart-badge" id="floatBadge">0</span>
+</button>
+
+<!-- ══ CART DRAWER (mobile) ══════════════════════════════════ -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCartDrawer()"></div>
+<div class="cart-drawer-mobile" id="cartDrawerMobile" aria-label="Carrito móvil">
+  <div class="drawer-handle"></div>
+  <div class="cart-title">
+    Tu pedido
+    <span class="cart-count-badge" id="drawerCount">0</span>
+  </div>
+  <div id="drawerItems">
+    <div class="cart-empty" id="drawerEmpty">
+      <div class="cart-empty-icon">🍱</div>
+      <p>Tu carrito está vacío 🍱</p>
+    </div>
+  </div>
+  <div id="drawerTotal" style="display:none; margin-top:1rem">
+    <div class="cart-total-row" style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:.875rem">
+      <span>Total</span>
+      <span id="drawerTotalAmt" style="color:var(--c-brand);font-size:var(--fs-lg)">S/ 0</span>
+    </div>
+    <button class="btn-order" onclick="orderViaWhatsApp()">
+      <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+      Pedir por WhatsApp
+    </button>
+  </div>
+</div>
+
+<!-- ══ TOAST ══════════════════════════════════════════════════ -->
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+<!-- ══ FOOTER ═════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-grid">
+
+    <div>
+      <div class="footer-sub">さくらまき</div>
+      <div class="footer-name">Sakura Maki</div>
+      <div class="footer-tagline">Cocina japonesa auténtica · Lima</div>
+      <a class="btn-whatsapp" href="https://wa.me/51999888777?text=Hola%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        Ordenar ahora
+      </a>
+      <div class="footer-socials">
+        <a class="social-link" href="#" aria-label="Instagram">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+        </a>
+        <a class="social-link" href="#" aria-label="Facebook">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <a class="social-link" href="#" aria-label="TikTok">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V9.14a8.18 8.18 0 0 0 4.78 1.52V7.22a4.85 4.85 0 0 1-1.01-.53z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <h4>Horarios</h4>
+      <ul class="footer-hours">
+        <li><span>Lun – Vie</span><span>12:00 – 22:00</span></li>
+        <li><span>Sábado</span><span>12:00 – 23:00</span></li>
+        <li><span>Domingo</span><span>12:00 – 21:00</span></li>
+        <li style="margin-top:.5rem;opacity:.5"><span>Festivos</span><span>12:00 – 20:00</span></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h4>Contacto</h4>
+      <p>📍 Av. Larco 847, Miraflores</p>
+      <p style="margin-top:.35rem">📞 (01) 999-888-777</p>
+      <p style="margin-top:.35rem">Delivery: S/ 8.00</p>
+      <p style="margin-top:.35rem; opacity:.6">Radio: 5 km · 30-45 min</p>
+    </div>
+
+  </div>
+  <div class="footer-bottom">
+    🌸 Sakura Maki · © 2026 · Menú digital — Diseñado con amor desde Lima
+  </div>
+</footer>
+
+<script>
+  /* ═══ PALETTES ════════════════════════════════════════════ */
+  const PALETTES = {
+    sakura: {'--c-brand':'#e91e7a','--c-brand-light':'#f8a5c2','--c-bg':'#fdfcfe','--c-surface':'#fef0f6','--c-text':'#1a0a10','--c-accent':'#2d2d2d'},
+    noir:   {'--c-brand':'#1a1a1a','--c-brand-light':'#555555','--c-bg':'#f8f8f8','--c-surface':'#f0f0f0','--c-text':'#0a0a0a','--c-accent':'#c41e3a'},
+    matcha: {'--c-brand':'#3d6b4f','--c-brand-light':'#7ab08a','--c-bg':'#f7fdf8','--c-surface':'#edf7ee','--c-text':'#0a1f12','--c-accent':'#1a2e1e'},
+    cobalt: {'--c-brand':'#1565c0','--c-brand-light':'#90caf9','--c-bg':'#f8fbff','--c-surface':'#e3f2fd','--c-text':'#0a0f1e','--c-accent':'#c62828'},
+  };
+
+  let currentPalette = 'sakura';
+
+  function applyPalette(name) {
+    const p = PALETTES[name];
+    if (!p) return;
+    const root = document.documentElement;
+    Object.entries(p).forEach(([k, v]) => root.style.setProperty(k, v));
+    currentPalette = name;
+    document.querySelectorAll('.swatch').forEach(s => {
+      s.classList.toggle('active', s.dataset.palette === name);
+    });
+  }
+
+  document.querySelectorAll('.swatch').forEach(swatch => {
+    swatch.addEventListener('click', () => applyPalette(swatch.dataset.palette));
+  });
+
+  /* ═══ CART STATE ══════════════════════════════════════════ */
+  const cart = {};
+
+  function parsePrice(priceStr) {
+    return parseInt(String(priceStr).replace(/[^0-9]/g, ''), 10) || 0;
+  }
+  function fmtPrice(soles) {
+    return 'S/ ' + soles.toLocaleString('es-PE');
+  }
+
+  /* ═══ ADD TO CART ══════════════════════════════════════════ */
+  function addToCart(name, priceStr) {
+    const price = parsePrice(priceStr);
+    if (cart[name]) {
+      cart[name].qty += 1;
+    } else {
+      cart[name] = { price, qty: 1 };
+    }
+    renderCart();
+    showToast('✓ ' + name + ' agregado');
+  }
+
+  function handleAdd(name, priceStr, btn) {
+    addToCart(name, priceStr);
+    btn.classList.remove('bounce');
+    void btn.offsetWidth;
+    btn.classList.add('bounce');
+    btn.addEventListener('animationend', () => btn.classList.remove('bounce'), { once: true });
+  }
+
+  function handleAddFeat(name, priceStr, card) {
+    addToCart(name, priceStr);
+    card.style.transform = 'scale(0.96)';
+    setTimeout(() => { card.style.transform = ''; }, 200);
+  }
+
+  function changeQty(name, delta) {
+    if (!cart[name]) return;
+    cart[name].qty += delta;
+    if (cart[name].qty <= 0) delete cart[name];
+    renderCart();
+  }
+
+  /* ═══ RENDER CART ══════════════════════════════════════════ */
+  function renderCart() {
+    const items = Object.entries(cart);
+    const total = items.reduce((s, [, v]) => s + v.price * v.qty, 0);
+    const count = items.reduce((s, [, v]) => s + v.qty, 0);
+
+    /* Sidebar */
+    const sidebarItems = document.getElementById('sidebarItems');
+    const sidebarEmpty = document.getElementById('sidebarEmpty');
+    const sidebarTotal = document.getElementById('sidebarTotal');
+    const sidebarCount = document.getElementById('sidebarCount');
+    const sidebarAmt   = document.getElementById('sidebarTotalAmt');
+
+    sidebarCount.textContent = count;
+    if (items.length === 0) {
+      sidebarEmpty.style.display = '';
+      sidebarTotal.style.display = 'none';
+      removeCartNodes(sidebarItems, sidebarEmpty);
+    } else {
+      sidebarEmpty.style.display = 'none';
+      sidebarTotal.style.display = '';
+      sidebarAmt.textContent = fmtPrice(total);
+      buildCartNodes(sidebarItems, sidebarEmpty, items);
+    }
+
+    /* Drawer */
+    const drawerItems = document.getElementById('drawerItems');
+    const drawerEmpty = document.getElementById('drawerEmpty');
+    const drawerTotal = document.getElementById('drawerTotal');
+    const drawerCount = document.getElementById('drawerCount');
+    const drawerAmt   = document.getElementById('drawerTotalAmt');
+
+    drawerCount.textContent = count;
+    if (items.length === 0) {
+      drawerEmpty.style.display = '';
+      drawerTotal.style.display = 'none';
+      removeCartNodes(drawerItems, drawerEmpty);
+    } else {
+      drawerEmpty.style.display = 'none';
+      drawerTotal.style.display = '';
+      drawerAmt.textContent = fmtPrice(total);
+      buildCartNodes(drawerItems, drawerEmpty, items);
+    }
+
+    /* Float button */
+    const floatBtn  = document.getElementById('cartFloat');
+    const floatBadge = document.getElementById('floatBadge');
+    floatBadge.textContent = count;
+    floatBtn.classList.toggle('visible', count > 0);
+  }
+
+  function removeCartNodes(container, keepEl) {
+    Array.from(container.children).forEach(child => {
+      if (child !== keepEl) child.remove();
+    });
+  }
+
+  function buildCartNodes(container, keepEl, items) {
+    const existing = {};
+    container.querySelectorAll('.cart-item').forEach(el => {
+      existing[el.dataset.name] = el;
+    });
+    const names = new Set(items.map(([n]) => n));
+    Object.keys(existing).forEach(n => { if (!names.has(n)) existing[n].remove(); });
+
+    items.forEach(([name, { price, qty }]) => {
+      const safeN = name.replace(/'/g, "\\'");
+      if (existing[name]) {
+        existing[name].querySelector('.qty-num').textContent = qty;
+        existing[name].querySelector('.cart-item-price').textContent = fmtPrice(price * qty);
+      } else {
+        const el = document.createElement('div');
+        el.className = 'cart-item';
+        el.dataset.name = name;
+        el.innerHTML = `
+          <span class="cart-item-name">${name}</span>
+          <div class="cart-item-qty">
+            <button class="qty-btn" onclick="changeQty('${safeN}',-1)" aria-label="Quitar uno">−</button>
+            <span class="qty-num">${qty}</span>
+            <button class="qty-btn" onclick="changeQty('${safeN}',1)" aria-label="Agregar uno">+</button>
+          </div>
+          <span class="cart-item-price">${fmtPrice(price * qty)}</span>`;
+        container.insertBefore(el, keepEl.nextSibling || null);
+      }
+    });
+  }
+
+  /* ═══ CART DRAWER ══════════════════════════════════════════ */
+  function openCartDrawer() {
+    document.getElementById('cartOverlay').classList.add('open');
+    document.getElementById('cartDrawerMobile').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCartDrawer() {
+    document.getElementById('cartOverlay').classList.remove('open');
+    document.getElementById('cartDrawerMobile').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ═══ WHATSAPP ORDER ═══════════════════════════════════════ */
+  function orderViaWhatsApp() {
+    const items = Object.entries(cart);
+    if (items.length === 0) return;
+    const total = items.reduce((s, [, v]) => s + v.price * v.qty, 0);
+    let msg = '🍣 *Hola! Quiero hacer un pedido en Sakura Maki:*\n\n';
+    items.forEach(([name, { price, qty }]) => {
+      msg += `• ${qty}x ${name} — ${fmtPrice(price * qty)}\n`;
+    });
+    msg += `\n*Total: ${fmtPrice(total)}*`;
+    msg += '\n\n📍 Dirección de entrega: ';
+    const url = 'https://wa.me/51999888777?text=' + encodeURIComponent(msg);
+    window.open(url, '_blank', 'noopener');
+  }
+
+  /* ═══ TOAST ════════════════════════════════════════════════ */
+  function showToast(msg) {
+    const container = document.getElementById('toastContainer');
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    container.appendChild(el);
+    setTimeout(() => {
+      el.classList.add('hide');
+      el.addEventListener('transitionend', () => el.remove(), { once: true });
+    }, 1800);
+  }
+
+  /* ═══ CATEGORY TABS ════════════════════════════════════════ */
+  const tabBtns = document.querySelectorAll('.tab-btn');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected','true');
+      btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+      const target = document.getElementById(btn.dataset.target);
+      if (target) {
+        const tabsH = document.querySelector('.tabs-wrapper').offsetHeight;
+        const palH  = document.querySelector('.palette-bar').offsetHeight;
+        const top = target.getBoundingClientRect().top + window.scrollY - tabsH - palH - 8;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+
+  /* ═══ INTERSECTION OBSERVER — ACTIVE TAB ══════════════════ */
+  const sections = document.querySelectorAll('.menu-section[id], .featured-section[id]');
+  const tabsWrapper = document.querySelector('.tabs-wrapper');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        tabBtns.forEach(btn => {
+          const isActive = btn.dataset.target === id;
+          btn.classList.toggle('active', isActive);
+          if (isActive) btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        });
+      }
+    });
+  }, {
+    rootMargin: `-${(tabsWrapper ? tabsWrapper.offsetHeight : 49) + 50}px 0px -55% 0px`,
+    threshold: 0
+  });
+
+  sections.forEach(s => observer.observe(s));
+
+  /* ═══ OPEN/CLOSED BADGE ════════════════════════════════════ */
+  (function() {
+    const now = new Date();
+    const h = now.getHours();
+    const isOpen = h >= 12 && h < 22;
+    const badge = document.getElementById('openBadge');
+    if (!isOpen) {
+      badge.textContent = '● Cerrado';
+      badge.classList.add('closed');
+    }
+  })();
+</script>
+</body>
+</html>
+

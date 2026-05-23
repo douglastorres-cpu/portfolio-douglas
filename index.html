@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Douglas Torres — Desarrollador Web Full Stack con 2.5 años en producción. Flask, React, Node.js, MongoDB, AWS." />
+  <title>Douglas Torres — Desarrollador Web Full Stack</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Scroll progress bar -->
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- Custom cursor (desktop only) -->
+  <div id="cursor-dot"  aria-hidden="true"></div>
+  <div id="cursor-ring" aria-hidden="true"></div>
+
+  <!-- ══ NAVIGATION ══════════════════════════════════════════════════ -->
+  <nav id="nav" role="navigation" aria-label="Navegación principal">
+    <a href="#hero" class="nav-logo" aria-label="Ir al inicio">
+      <span class="nav-logo-dt">DT</span>
+      <span class="nav-logo-name">Douglas Torres</span>
+    </a>
+
+    <ul class="nav-links" role="list">
+      <li><a href="#work">Proyectos</a></li>
+      <li><a href="#experience">Experiencia</a></li>
+      <li><a href="#about">Sobre mí</a></li>
+      <li><a href="#services">Servicios</a></li>
+      <li><a href="#contact" class="nav-cta">Contacto</a></li>
+    </ul>
+
+    <button class="nav-burger" id="nav-burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile menu overlay -->
+  <div id="mobile-menu" class="mobile-menu" role="dialog" aria-modal="true" aria-label="Menú de navegación">
+    <ul class="mobile-nav-links" role="list">
+      <li><a href="#work"       class="mobile-link" data-index="1">Proyectos</a></li>
+      <li><a href="#experience" class="mobile-link" data-index="2">Experiencia</a></li>
+      <li><a href="#about"      class="mobile-link" data-index="3">Sobre mí</a></li>
+      <li><a href="#services"   class="mobile-link" data-index="4">Servicios</a></li>
+      <li><a href="#contact"    class="mobile-link" data-index="5">Contacto</a></li>
+    </ul>
+    <p class="mobile-menu-email">douglas08pool@gmail.com</p>
+  </div>
+  <div id="mobile-overlay" class="mobile-overlay"></div>
+
+  <!-- ══ HERO ════════════════════════════════════════════════════════ -->
+  <section id="hero" aria-label="Presentación">
+    <!-- Animated background orbs -->
+    <div class="hero-bg" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
+    <div class="hero-inner">
+      <div class="hero-eyebrow">
+        <span class="status-dot" aria-hidden="true"></span>
+        Disponible para proyectos
+      </div>
+
+      <h1 class="hero-title">
+        <span class="hero-line"><span>Código que</span></span>
+        <span class="hero-line hero-line--em"><em><span>funciona</span></em> <span class="plain-word">y se</span></span>
+        <span class="hero-line"><span>ve bien.</span></span>
+      </h1>
+
+      <p class="hero-sub">
+        Desarrollador Web Full Stack · Lima, Perú ·
+        <span class="mono-text">2.5 años</span> en producción real
+      </p>
+
+      <div class="hero-ctas">
+        <a href="#work" class="btn btn-primary" data-magnetic>
+          Ver proyectos
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#contact" class="btn btn-ghost" data-magnetic>Trabajemos juntos</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-value"><span class="stat-number" data-count="2">0</span><span class="stat-plus">+</span></div>
+          <span class="stat-label">años exp.</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat">
+          <div class="stat-value"><span class="stat-number" data-count="9">0</span></div>
+          <span class="stat-label">proyectos</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat">
+          <div class="stat-value"><span class="stat-number" data-count="3">0</span></div>
+          <span class="stat-label">tecnologías cloud</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="#work" class="hero-scroll-hint" aria-label="Ir a proyectos">
+      <span>scroll</span>
+      <div class="scroll-line" aria-hidden="true"></div>
+    </a>
+  </section>
+
+  <!-- ══ MARQUEE BAND ═══════════════════════════════════════════════ -->
+  <div class="marquee-band" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Flask</span><span class="dot">·</span>
+      <span>React</span><span class="dot">·</span>
+      <span>Node.js</span><span class="dot">·</span>
+      <span>MongoDB</span><span class="dot">·</span>
+      <span>AWS SQS</span><span class="dot">·</span>
+      <span>PostgreSQL</span><span class="dot">·</span>
+      <span>JWT Auth</span><span class="dot">·</span>
+      <span>Python</span><span class="dot">·</span>
+      <span>JavaScript</span><span class="dot">·</span>
+      <span>REST APIs</span><span class="dot">·</span>
+      <span>CSS Animations</span><span class="dot">·</span>
+      <span>Diseño Responsivo</span><span class="dot">·</span>
+
+      <!-- Repeat for seamless loop -->
+      <span>Flask</span><span class="dot">·</span>
+      <span>React</span><span class="dot">·</span>
+      <span>Node.js</span><span class="dot">·</span>
+      <span>MongoDB</span><span class="dot">·</span>
+      <span>AWS SQS</span><span class="dot">·</span>
+      <span>PostgreSQL</span><span class="dot">·</span>
+      <span>JWT Auth</span><span class="dot">·</span>
+      <span>Python</span><span class="dot">·</span>
+      <span>JavaScript</span><span class="dot">·</span>
+      <span>REST APIs</span><span class="dot">·</span>
+      <span>CSS Animations</span><span class="dot">·</span>
+      <span>Diseño Responsivo</span><span class="dot">·</span>
+    </div>
+  </div>
+
+  <!-- ══ WORK ════════════════════════════════════════════════════════ -->
+  <section id="work" class="section" aria-labelledby="work-heading">
+    <div class="section-inner">
+      <div class="section-label" data-reveal>Proyectos seleccionados</div>
+      <h2 class="section-title" id="work-heading" data-reveal>Lo que he<br /><em>construido</em></h2>
+
+      <!-- Filter tabs -->
+      <div class="work-filters" role="tablist" aria-label="Filtrar proyectos" data-reveal>
+        <button class="work-filter active" role="tab" aria-selected="true"  data-filter="all">Todos</button>
+        <button class="work-filter"        role="tab" aria-selected="false" data-filter="backend">Backend</button>
+        <button class="work-filter"        role="tab" aria-selected="false" data-filter="template">Plantillas</button>
+      </div>
+
+      <div class="work-grid">
+
+        <!-- Project 01 — BACKEND -->
+        <article class="project-card project-card--featured" data-reveal data-tilt data-category="backend">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="--thumb-color: #7c3aed;"></div>
+            <div class="project-thumb-pattern" aria-hidden="true">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="grid1" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                  </pattern>
+                </defs>
+                <rect width="200" height="200" fill="url(#grid1)"/>
+                <circle cx="100" cy="100" r="60" fill="none" stroke="rgba(139,92,246,0.4)" stroke-width="1" stroke-dasharray="8 4"/>
+                <circle cx="100" cy="100" r="35" fill="none" stroke="rgba(139,92,246,0.3)" stroke-width="1"/>
+                <circle cx="100" cy="100" r="12" fill="rgba(139,92,246,0.5)"/>
+              </svg>
+            </div>
+            <div class="project-thumb-tags">
+              <span>Flask</span><span>React</span><span>MongoDB</span><span>AWS</span>
+            </div>
+            <div class="project-overlay">
+              <span class="overlay-cta">Ver proyecto →</span>
+            </div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">01</span>
+            <h3 class="project-title">Decateca — Plataforma Inmobiliaria</h3>
+            <p class="project-desc">Plataforma de búsqueda de propiedades en producción. Backend Flask MVC, MongoDB Aggregation Pipeline, AWS SQS y CloudWatch. Proyecto formal con equipo Scrum.</p>
+            <div class="project-tags">
+              <span class="tag">Python Flask</span>
+              <span class="tag">MongoDB</span>
+              <span class="tag">AWS</span>
+              <span class="tag tag--featured">En Producción</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 02 — TEMPLATE -->
+        <article class="project-card" data-reveal data-tilt data-category="template" data-href="templates/landing-negocio-local.html">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="--thumb-color: #1e3a5f;"></div>
+            <div class="project-thumb-pattern" aria-hidden="true">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <rect x="20" y="40" width="160" height="120" rx="4" fill="none" stroke="rgba(212,175,55,0.4)" stroke-width="1.5"/>
+                <line x1="20" y1="65" x2="180" y2="65" stroke="rgba(212,175,55,0.3)" stroke-width="1"/>
+                <rect x="35" y="80" width="80" height="8" rx="2" fill="rgba(212,175,55,0.25)"/>
+                <rect x="35" y="96" width="55" height="6" rx="2" fill="rgba(212,175,55,0.15)"/>
+                <rect x="35" y="115" width="90" height="6" rx="2" fill="rgba(212,175,55,0.15)"/>
+                <circle cx="155" cy="52" r="10" fill="rgba(212,175,55,0.3)"/>
+              </svg>
+            </div>
+            <div class="project-thumb-tags"><span>HTML</span><span>CSS</span><span>JS</span></div>
+            <div class="project-overlay"><span class="overlay-cta">Abrir plantilla →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">02</span>
+            <h3 class="project-title">Despacho de Abogados</h3>
+            <p class="project-desc">Landing premium para estudio jurídico: paleta navy + oro, contadores animados, formulario de consulta y selector de paletas.</p>
+            <div class="project-tags">
+              <span class="tag">HTML/CSS</span><span class="tag">JavaScript</span><span class="tag">Motion</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 03 — TEMPLATE -->
+        <article class="project-card" data-reveal data-tilt data-category="template" data-href="templates/portfolio-creativo.html">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="--thumb-color: #1a1a2e;"></div>
+            <div class="project-thumb-pattern" aria-hidden="true">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="80" r="30" fill="none" stroke="rgba(196,98,45,0.5)" stroke-width="1.5"/>
+                <circle cx="60" cy="80" r="18" fill="rgba(196,98,45,0.2)"/>
+                <rect x="100" y="60" width="80" height="8" rx="2" fill="rgba(255,255,255,0.15)"/>
+                <rect x="100" y="76" width="55" height="6" rx="2" fill="rgba(255,255,255,0.1)"/>
+                <rect x="20" y="125" width="160" height="1" stroke="rgba(255,255,255,0.08)"/>
+                <rect x="20" y="140" width="50" height="20" rx="10" fill="rgba(196,98,45,0.3)"/>
+              </svg>
+            </div>
+            <div class="project-thumb-tags"><span>HTML</span><span>CSS</span><span>JS</span></div>
+            <div class="project-overlay"><span class="overlay-cta">Abrir plantilla →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">03</span>
+            <h3 class="project-title">Portafolio Creativo</h3>
+            <p class="project-desc">Plantilla para creativos. Tokens tipográficos, cursor personalizado con RAF, stagger de proyectos y formulario validado.</p>
+            <div class="project-tags">
+              <span class="tag">HTML/CSS</span><span class="tag">Animaciones</span><span class="tag">Diseño</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 04 — TEMPLATE -->
+        <article class="project-card" data-reveal data-tilt data-category="template" data-href="templates/menu-digital-restaurante.html">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="--thumb-color: #2d1b33;"></div>
+            <div class="project-thumb-pattern" aria-hidden="true">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="100" cy="100" r="50" fill="none" stroke="rgba(255,182,193,0.4)" stroke-width="1" stroke-dasharray="4 3"/>
+                <text x="100" y="108" text-anchor="middle" font-size="32" fill="rgba(255,150,180,0.7)">🌸</text>
+                <rect x="30" y="155" width="140" height="6" rx="3" fill="rgba(255,182,193,0.2)"/>
+                <rect x="55" y="167" width="90" height="4" rx="2" fill="rgba(255,182,193,0.12)"/>
+              </svg>
+            </div>
+            <div class="project-thumb-tags"><span>Mobile First</span><span>JS</span></div>
+            <div class="project-overlay"><span class="overlay-cta">Abrir plantilla →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">04</span>
+            <h3 class="project-title">Sakura Maki — Menú QR</h3>
+            <p class="project-desc">Menú digital para restaurante japonés. Estética sakura, fotos reales, carrito funcional y pedido por WhatsApp.</p>
+            <div class="project-tags">
+              <span class="tag">Mobile First</span><span class="tag">JavaScript</span><span class="tag">UX</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 05 — TEMPLATE -->
+        <article class="project-card" data-reveal data-tilt data-category="template" data-href="templates/producto-ecommerce.html">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="--thumb-color: #0a1628;"></div>
+            <div class="project-thumb-pattern" aria-hidden="true">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <rect x="20" y="30" width="160" height="90" rx="3" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                <rect x="20" y="30" width="160" height="28" rx="3" fill="rgba(255,255,255,0.06)"/>
+                <rect x="30" y="72" width="42" height="38" rx="2" fill="rgba(100,180,255,0.2)"/>
+                <rect x="80" y="72" width="42" height="38" rx="2" fill="rgba(100,180,255,0.15)"/>
+                <rect x="130" y="72" width="42" height="38" rx="2" fill="rgba(100,180,255,0.1)"/>
+                <rect x="30" y="140" width="120" height="6" rx="3" fill="rgba(255,255,255,0.1)"/>
+              </svg>
+            </div>
+            <div class="project-thumb-tags"><span>Ecommerce</span><span>JS</span></div>
+            <div class="project-overlay"><span class="overlay-cta">Abrir plantilla →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">05</span>
+            <h3 class="project-title">VELO — Tienda Online</h3>
+            <p class="project-desc">Homepage de moda contemporánea. Hero editorial, grid con selector de colores, carrito, marquee y paleta intercambiable.</p>
+            <div class="project-tags">
+              <span class="tag">Ecommerce</span><span class="tag">JavaScript</span><span class="tag">UI/UX</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 06 — TEMPLATE -->
+        <article class="project-card" data-reveal data-tilt data-category="template" data-href="templates/clinica-dental.html">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="--thumb-color: #0d2137;"></div>
+            <div class="project-thumb-pattern" aria-hidden="true">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 30 L100 170" stroke="rgba(100,210,255,0.2)" stroke-width="1"/>
+                <path d="M30 100 L170 100" stroke="rgba(100,210,255,0.2)" stroke-width="1"/>
+                <circle cx="100" cy="100" r="40" fill="none" stroke="rgba(100,210,255,0.35)" stroke-width="1.5"/>
+                <circle cx="100" cy="100" r="20" fill="rgba(100,210,255,0.15)"/>
+                <text x="100" y="107" text-anchor="middle" font-size="18" fill="rgba(180,240,255,0.8)">+</text>
+              </svg>
+            </div>
+            <div class="project-thumb-tags"><span>HTML/CSS</span><span>Motion</span></div>
+            <div class="project-overlay"><span class="overlay-cta">Abrir plantilla →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">06</span>
+            <h3 class="project-title">Clínica Dental — Web Médica</h3>
+            <p class="project-desc">Landing premium para clínica odontológica. Servicios, equipo médico, testimonios y formulario de citas con validación.</p>
+            <div class="project-tags">
+              <span class="tag">HTML/CSS</span><span class="tag">Motion</span><span class="tag">Diseño Médico</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 07 — BACKEND -->
+        <article class="project-card" data-reveal data-tilt data-category="backend">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="--thumb-color: #0c1f0c;"></div>
+            <div class="project-thumb-pattern" aria-hidden="true">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <rect x="20" y="50" width="160" height="100" rx="4" fill="none" stroke="rgba(74,222,128,0.3)" stroke-width="1"/>
+                <text x="30" y="80" font-size="10" fill="rgba(74,222,128,0.6)" font-family="monospace">POST /auth/login</text>
+                <text x="30" y="96" font-size="10" fill="rgba(74,222,128,0.4)" font-family="monospace">GET  /users/:id</text>
+                <text x="30" y="112" font-size="10" fill="rgba(74,222,128,0.4)" font-family="monospace">PUT  /products</text>
+                <text x="30" y="128" font-size="10" fill="rgba(74,222,128,0.4)" font-family="monospace">200 OK ✓</text>
+              </svg>
+            </div>
+            <div class="project-thumb-tags"><span>Node.js</span><span>JWT</span></div>
+            <div class="project-overlay"><span class="overlay-cta">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">07</span>
+            <h3 class="project-title">API REST + JWT Auth</h3>
+            <p class="project-desc">API RESTful con Node.js y Express. Autenticación JWT, middlewares de validación y manejo de errores centralizado.</p>
+            <div class="project-tags">
+              <span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">JWT</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 08 — BACKEND -->
+        <article class="project-card" data-reveal data-tilt data-category="backend">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="--thumb-color: #1a0d2e;"></div>
+            <div class="project-thumb-pattern" aria-hidden="true">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <rect x="20" y="40" width="50" height="60" rx="3" fill="rgba(139,92,246,0.3)"/>
+                <rect x="80" y="60" width="50" height="40" rx="3" fill="rgba(139,92,246,0.2)"/>
+                <rect x="140" y="50" width="40" height="50" rx="3" fill="rgba(139,92,246,0.25)"/>
+                <text x="30" y="125" font-size="8" fill="rgba(139,92,246,0.7)" font-family="monospace">$group</text>
+                <text x="82" y="125" font-size="8" fill="rgba(139,92,246,0.7)" font-family="monospace">$match</text>
+                <text x="142" y="125" font-size="8" fill="rgba(139,92,246,0.7)" font-family="monospace">$lookup</text>
+              </svg>
+            </div>
+            <div class="project-thumb-tags"><span>MongoDB</span><span>Analytics</span></div>
+            <div class="project-overlay"><span class="overlay-cta">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">08</span>
+            <h3 class="project-title">Dashboard KPIs — MongoDB</h3>
+            <p class="project-desc">Panel de métricas con Aggregation Pipelines: $match, $group, $lookup y $project para reportes en tiempo real.</p>
+            <div class="project-tags">
+              <span class="tag">MongoDB</span><span class="tag">Aggregation</span><span class="tag">Analytics</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 09 — BACKEND -->
+        <article class="project-card" data-reveal data-tilt data-category="backend">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="--thumb-color: #1a1000;"></div>
+            <div class="project-thumb-pattern" aria-hidden="true">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <rect x="30" y="60" width="140" height="90" rx="8" fill="none" stroke="rgba(251,191,36,0.35)" stroke-width="1.5"/>
+                <path d="M70 60 L70 30 L130 30 L130 60" fill="none" stroke="rgba(251,191,36,0.3)" stroke-width="1"/>
+                <rect x="55" y="80" width="90" height="8" rx="2" fill="rgba(251,191,36,0.2)"/>
+                <rect x="65" y="97" width="70" height="6" rx="2" fill="rgba(251,191,36,0.15)"/>
+                <rect x="60" y="120" width="30" height="15" rx="8" fill="rgba(251,191,36,0.35)"/>
+                <rect x="110" y="120" width="30" height="15" rx="8" fill="rgba(251,191,36,0.15)"/>
+              </svg>
+            </div>
+            <div class="project-thumb-tags"><span>Flask</span><span>PostgreSQL</span></div>
+            <div class="project-overlay"><span class="overlay-cta">Ver proyecto →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">09</span>
+            <h3 class="project-title">Hotel Miradores — Reservas</h3>
+            <p class="project-desc">Web de hotel 5★ con reservas multi-paso: habitación, fechas, pago y confirmación. Sistema completo Flask + PostgreSQL.</p>
+            <div class="project-tags">
+              <span class="tag">Flask</span><span class="tag">PostgreSQL</span><span class="tag">UX</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 10 — TEMPLATE: 3D Animations -->
+        <article class="project-card project-card--new" data-reveal data-tilt data-category="template" data-href="templates/animaciones-3d.html">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="--thumb-color: #0a1a3a;"></div>
+            <div class="project-thumb-pattern" aria-hidden="true">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <g transform="translate(100,100)">
+                  <polygon points="0,-55 48,-28 48,28 0,55 -48,28 -48,-28" fill="none" stroke="rgba(99,179,237,0.5)" stroke-width="1.5"/>
+                  <polygon points="0,-30 26,-15 26,15 0,30 -26,15 -26,-15" fill="none" stroke="rgba(99,179,237,0.3)" stroke-width="1"/>
+                  <line x1="0" y1="-55" x2="0" y2="-30" stroke="rgba(99,179,237,0.4)" stroke-width="1"/>
+                  <line x1="48" y1="-28" x2="26" y2="-15" stroke="rgba(99,179,237,0.4)" stroke-width="1"/>
+                  <line x1="48" y1="28" x2="26" y2="15" stroke="rgba(99,179,237,0.4)" stroke-width="1"/>
+                  <line x1="0" y1="55" x2="0" y2="30" stroke="rgba(99,179,237,0.4)" stroke-width="1"/>
+                  <line x1="-48" y1="28" x2="-26" y2="15" stroke="rgba(99,179,237,0.4)" stroke-width="1"/>
+                  <line x1="-48" y1="-28" x2="-26" y2="-15" stroke="rgba(99,179,237,0.4)" stroke-width="1"/>
+                  <circle cx="0" cy="0" r="6" fill="rgba(99,179,237,0.7)"/>
+                </g>
+                <circle cx="100" cy="100" r="75" fill="none" stroke="rgba(99,179,237,0.1)" stroke-dasharray="3 6"/>
+              </svg>
+            </div>
+            <div class="project-thumb-tags"><span>Three.js</span><span>WebGL</span><span>3D</span></div>
+            <div class="project-overlay"><span class="overlay-cta">Abrir demo →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">10</span>
+            <h3 class="project-title">Animaciones 3D Interactivas</h3>
+            <p class="project-desc">Cubo draggable, globo terráqueo interactivo, dodecaedro con paisajes, sistema solar animado y más — todo con Three.js + WebGL.</p>
+            <div class="project-tags">
+              <span class="tag">Three.js</span><span class="tag">WebGL</span><span class="tag">3D</span>
+              <span class="tag tag--featured">Nuevo</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 11 — TEMPLATE: Dashboard Pro -->
+        <article class="project-card project-card--new" data-reveal data-tilt data-category="template" data-href="templates/dashboard-pro.html">
+          <div class="project-thumb">
+            <div class="project-thumb-bg" style="--thumb-color: #0d1117;"></div>
+            <div class="project-thumb-pattern" aria-hidden="true">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="10" width="55" height="55" rx="4" fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.3)" stroke-width="1"/>
+                <rect x="75" y="10" width="55" height="55" rx="4" fill="rgba(34,197,94,0.15)" stroke="rgba(34,197,94,0.25)" stroke-width="1"/>
+                <rect x="140" y="10" width="55" height="55" rx="4" fill="rgba(249,115,22,0.15)" stroke="rgba(249,115,22,0.25)" stroke-width="1"/>
+                <rect x="10" y="75" width="185" height="75" rx="4" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                <rect x="20" y="85" width="40" height="5" rx="2" fill="rgba(255,255,255,0.15)"/>
+                <polyline points="20,140 50,120 80,130 110,105 140,115 170,95 185,100" fill="none" stroke="rgba(139,92,246,0.6)" stroke-width="2"/>
+                <rect x="10" y="160" width="85" height="32" rx="4" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+                <rect x="105" y="160" width="90" height="32" rx="4" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="project-thumb-tags"><span>Chart.js</span><span>Dashboard</span><span>UI</span></div>
+            <div class="project-overlay"><span class="overlay-cta">Abrir demo →</span></div>
+          </div>
+          <div class="project-meta">
+            <span class="project-number">11</span>
+            <h3 class="project-title">Dashboard Profesional</h3>
+            <p class="project-desc">Panel de control completo: KPIs animados, gráficos de líneas y barras, tabla de datos sorteable, actividad en tiempo real.</p>
+            <div class="project-tags">
+              <span class="tag">Chart.js</span><span class="tag">CSS Grid</span><span class="tag">Dark UI</span>
+              <span class="tag tag--featured">Nuevo</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ EXPERIENCE ══════════════════════════════════════════════════ -->
+  <section id="experience" class="section section--alt" aria-labelledby="exp-heading">
+    <div class="section-inner">
+      <div class="section-label" data-reveal>Trayectoria</div>
+      <h2 class="section-title" id="exp-heading" data-reveal>
+        2.5 años en<br /><em>producción real.</em>
+      </h2>
+
+      <div class="timeline">
+
+        <div class="timeline-item" data-reveal>
+          <div class="timeline-marker">
+            <div class="timeline-dot timeline-dot--active" aria-label="Posición actual"></div>
+            <div class="timeline-year">2024<br/>2025</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <h3 class="timeline-role">Desarrollador Web</h3>
+              <span class="timeline-badge">Contratación formal</span>
+            </div>
+            <div class="timeline-company">Decateca · Lima, Perú · 1 año</div>
+            <ul class="timeline-list">
+              <li>Desarrollo frontend y backend con HTML, CSS, JavaScript, React y Node.js</li>
+              <li>Backend Flask MVC con MongoDB Aggregation Pipeline para reportes y KPIs</li>
+              <li>Implementación de AWS Secrets Manager, SQS y CloudWatch en producción</li>
+              <li>Integración de endpoints de API con módulo de gestión de inventario</li>
+              <li>Revisiones de código y refactorización bajo metodología Scrum</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-reveal>
+          <div class="timeline-marker">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2022<br/>2023</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <h3 class="timeline-role">Practicante de Desarrollo Web</h3>
+              <span class="timeline-badge timeline-badge--muted">Primer empleo</span>
+            </div>
+            <div class="timeline-company">Incodice · 1 año 6 meses · <em>Empecé a los 17 años</em></div>
+            <ul class="timeline-list">
+              <li>Desarrollo frontend con HTML, CSS y JavaScript bajo supervisión senior</li>
+              <li>Construcción y mantenimiento de bases de datos SQL y MongoDB</li>
+              <li>Integración de APIs y colaboración en proyectos reales para clientes</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-reveal>
+          <div class="timeline-marker">
+            <div class="timeline-dot timeline-dot--edu"></div>
+            <div class="timeline-year">2021<br/>2023</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <h3 class="timeline-role">Técnico en Desarrollo de Software</h3>
+            </div>
+            <div class="timeline-company">Instituto Superior de Tecnología · Lima, Perú</div>
+            <ul class="timeline-list">
+              <li>JavaScript Moderno — Udemy (2022)</li>
+              <li>Introducción a Bases de Datos con MySQL — Coursera (2022)</li>
+              <li>Node.js y Express: APIs RESTful — Platzi (2023)</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ABOUT ═══════════════════════════════════════════════════════ -->
+  <section id="about" class="section" aria-labelledby="about-heading">
+    <div class="section-inner">
+      <div class="section-label" data-reveal>Sobre mí</div>
+      <h2 class="section-title" id="about-heading" data-reveal>
+        Junior con experiencia<br />en proyectos <em>reales.</em>
+      </h2>
+
+      <div class="about-grid">
+        <div class="about-photo-wrap" data-reveal>
+          <div class="about-photo">
+            <span class="about-initials" aria-label="Iniciales DT">DT</span>
+          </div>
+          <div class="about-photo-ring" aria-hidden="true"></div>
+          <div class="about-badge">
+            <span class="status-dot"></span>
+            Open to work
+          </div>
+        </div>
+
+        <div class="about-text">
+          <p class="about-bio" data-reveal>
+            Soy <strong>Douglas Torres</strong>, desarrollador web de 19 años con 2.5 años de experiencia en
+            producción real. Comencé mi carrera a los 17 en Incodice y fui contratado formalmente por
+            <strong>Decateca</strong>, donde trabajé en una plataforma inmobiliaria de escala real.
+          </p>
+          <p class="about-bio" data-reveal>
+            Trabajo tanto en <strong>frontend</strong> (HTML, CSS, JS) como en
+            <strong>backend</strong> (Python/Flask, Node.js, PHP), con bases de datos relacionales y NoSQL,
+            y servicios de <strong>AWS en producción</strong>. Inglés técnico, español nativo.
+            Disponible para trabajo remoto.
+          </p>
+
+          <div class="skills-section" data-reveal>
+            <div class="skills-group">
+              <h4 class="skills-group-title">Frontend</h4>
+              <ul class="skills-list" role="list">
+                <li class="skill-pill">HTML5 &amp; CSS3</li>
+                <li class="skill-pill">JavaScript ES6+</li>
+                <li class="skill-pill">Flexbox &amp; Grid</li>
+                <li class="skill-pill">Diseño Responsivo</li>
+                <li class="skill-pill">CSS Animations</li>
+              </ul>
+            </div>
+            <div class="skills-group">
+              <h4 class="skills-group-title">Backend</h4>
+              <ul class="skills-list" role="list">
+                <li class="skill-pill">Python / Flask</li>
+                <li class="skill-pill">Node.js / Express</li>
+                <li class="skill-pill">PHP</li>
+                <li class="skill-pill">JWT / Auth</li>
+                <li class="skill-pill">APIs RESTful</li>
+              </ul>
+            </div>
+            <div class="skills-group">
+              <h4 class="skills-group-title">Bases de datos &amp; Cloud</h4>
+              <ul class="skills-list" role="list">
+                <li class="skill-pill">MongoDB</li>
+                <li class="skill-pill">MySQL / PostgreSQL</li>
+                <li class="skill-pill">AWS SQS</li>
+                <li class="skill-pill">CloudWatch</li>
+                <li class="skill-pill">Git &amp; GitHub</li>
+                <li class="skill-pill">Scrum</li>
+              </ul>
+            </div>
+          </div>
+
+          <a href="#contact" class="btn btn-ghost" data-reveal>Hablemos →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SERVICES ════════════════════════════════════════════════════ -->
+  <section id="services" class="section section--alt" aria-labelledby="services-heading">
+    <div class="section-inner">
+      <div class="section-label" data-reveal>Servicios</div>
+      <h2 class="section-title" id="services-heading" data-reveal>¿En qué puedo<br /><em>ayudarte?</em></h2>
+
+      <div class="services-grid">
+
+        <div class="service-card" data-reveal data-tilt>
+          <div class="service-icon-wrap" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </div>
+          <h3 class="service-title">Landing Pages &amp; Webs</h3>
+          <p class="service-desc">Páginas web completas con diseño profesional, animaciones, completamente responsivas y optimizadas para conversión.</p>
+          <div class="service-footer">
+            <span class="service-price">Desde S/500</span>
+            <a href="#contact" class="service-link">
+              Cotizar
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="service-card" data-reveal data-tilt>
+          <div class="service-icon-wrap" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+            </svg>
+          </div>
+          <h3 class="service-title">Backend &amp; APIs REST</h3>
+          <p class="service-desc">APIs RESTful con Python/Flask o Node.js. Autenticación JWT, arquitectura MVC, integración con MongoDB o SQL y deploy en AWS.</p>
+          <div class="service-footer">
+            <span class="service-price">Desde S/800</span>
+            <a href="#contact" class="service-link">
+              Cotizar
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="service-card" data-reveal data-tilt>
+          <div class="service-icon-wrap" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+            </svg>
+          </div>
+          <h3 class="service-title">Base de Datos &amp; Reportes</h3>
+          <p class="service-desc">Diseño de esquemas SQL y NoSQL, Aggregation Pipelines en MongoDB para reportes y KPIs, consultas optimizadas.</p>
+          <div class="service-footer">
+            <span class="service-price">Desde S/400</span>
+            <a href="#contact" class="service-link">
+              Cotizar
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CONTACT ═════════════════════════════════════════════════════ -->
+  <section id="contact" class="section" aria-labelledby="contact-heading">
+    <div class="section-inner contact-inner">
+      <div class="contact-left">
+        <div class="section-label" data-reveal>Contacto</div>
+        <h2 class="section-title" id="contact-heading" data-reveal>
+          ¿Tienes un<br /><em>proyecto?</em>
+        </h2>
+        <p class="contact-sub" data-reveal>
+          Estoy abierto a freelance, colaboraciones y oportunidades de empleo.
+          Respondo en menos de 24 horas.
+        </p>
+        <div class="contact-info" data-reveal>
+          <a href="mailto:douglas08pool@gmail.com" class="contact-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+            douglas08pool@gmail.com
+          </a>
+          <span class="contact-detail">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            Lima, Perú · Remoto disponible
+          </span>
+        </div>
+      </div>
+
+      <form class="contact-form" id="contact-form" novalidate data-reveal aria-label="Formulario de contacto">
+        <div class="form-group">
+          <label for="name">Nombre</label>
+          <input type="text" id="name" name="name" placeholder="Tu nombre completo" autocomplete="name" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="tu@email.com" autocomplete="email" required />
+        </div>
+        <div class="form-group">
+          <label for="project">Proyecto</label>
+          <input type="text" id="project" name="project" placeholder="Landing page, API, Dashboard…" />
+        </div>
+        <div class="form-group">
+          <label for="message">Mensaje</label>
+          <textarea id="message" name="message" placeholder="Cuéntame de tu proyecto…" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="form-submit">
+          Enviar mensaje
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2 8h12M10 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <p class="form-success" id="form-success" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══════════════════════════════════════════════════════ -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="nav-logo-dt">DT</span>
+        <div>
+          <div class="footer-name">Douglas Torres</div>
+          <div class="footer-role">Desarrollador Web Full Stack</div>
+        </div>
+      </div>
+      <nav class="footer-links" aria-label="Navegación del pie de página">
+        <a href="#work">Proyectos</a>
+        <a href="#experience">Experiencia</a>
+        <a href="#about">Sobre mí</a>
+        <a href="#contact">Contacto</a>
+      </nav>
+      <p class="footer-copy">© 2025 Douglas Torres · Lima, Perú · Hecho con HTML, CSS &amp; ☕</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
