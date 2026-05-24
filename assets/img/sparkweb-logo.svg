@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 64" fill="none">
+  <!-- Icon group -->
+  <rect x="2" y="4" width="56" height="56" rx="6" stroke="#4d8ef7" stroke-width="2.5" fill="none"/>
+  <line x1="2" y1="18" x2="58" y2="18" stroke="#4d8ef7" stroke-width="2"/>
+  <circle cx="10" cy="11" r="2.2" fill="#4d8ef7"/>
+  <circle cx="17" cy="11" r="2.2" fill="#4d8ef7"/>
+  <circle cx="24" cy="11" r="2.2" fill="#4d8ef7"/>
+  <path d="M36 4 L26 30 H32 L27 60 L46 30 H40 L46 4 Z" fill="#4d8ef7"/>
+  <!-- "Spark" text -->
+  <text x="72" y="42" font-family="'Syne','Plus Jakarta Sans',system-ui,sans-serif"
+        font-weight="800" font-size="30" fill="#1a2f5a" letter-spacing="-1">Spark</text>
+  <!-- "web" text -->
+  <text x="165" y="42" font-family="'Syne','Plus Jakarta Sans',system-ui,sans-serif"
+        font-weight="800" font-size="30" fill="#4d8ef7" letter-spacing="-1">web</text>
+</svg>

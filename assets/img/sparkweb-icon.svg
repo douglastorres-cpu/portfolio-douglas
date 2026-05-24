@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Browser window outer -->
+  <rect x="6" y="10" width="52" height="44" rx="6" stroke="#4d8ef7" stroke-width="3" fill="none"/>
+  <!-- Title bar line -->
+  <line x1="6" y1="22" x2="58" y2="22" stroke="#4d8ef7" stroke-width="2.5"/>
+  <!-- Window dots -->
+  <circle cx="15" cy="16" r="2.5" fill="#4d8ef7"/>
+  <circle cx="23" cy="16" r="2.5" fill="#4d8ef7"/>
+  <circle cx="31" cy="16" r="2.5" fill="#4d8ef7"/>
+  <!-- Lightning bolt -->
+  <path d="M37 10 L26 34 H33 L27 54 L46 28 H38 L43 10 Z"
+        fill="#1a2f5a" stroke="#4d8ef7" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M37 10 L26 34 H33 L27 54 L46 28 H38 L43 10 Z"
+        fill="#4d8ef7" opacity="0.85"/>
+</svg>

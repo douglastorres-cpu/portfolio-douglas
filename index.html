@@ -10,41 +10,300 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Template card image preview ───────────────────────────── */
+    .thumb-screenshot {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top center;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                  filter 0.4s;
+      filter: brightness(0.92);
+    }
+    .project-card:hover .thumb-screenshot {
+      transform: scale(1.04);
+      filter: brightness(1);
+    }
+    .project-thumb { min-height: 220px; }
+
+    /* ── Backend toggle ─────────────────────────────────────────── */
+    .backend-toggle-wrap {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1.5rem; margin-bottom: 3rem;
+    }
+    .backend-toggle-label {
+      font-family: var(--font-mono); font-size: var(--text-sm);
+      color: var(--text-muted); letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .toggle-switch {
+      position: relative; width: 54px; height: 28px; cursor: pointer;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-track {
+      position: absolute; inset: 0; border-radius: 99px;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .toggle-thumb {
+      position: absolute; top: 3px; left: 3px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--text-faint);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background 0.3s;
+    }
+    .toggle-switch input:checked ~ .toggle-track {
+      background: var(--primary-bg);
+      border-color: var(--primary);
+    }
+    .toggle-switch input:checked ~ .toggle-thumb {
+      transform: translateX(26px);
+      background: var(--primary);
+      box-shadow: 0 0 8px rgba(77,142,247,0.5);
+    }
+    .backend-toggle-label.active { color: var(--primary-light); }
+
+    /* ── Backend section ────────────────────────────────────────── */
+    #backend-section {
+      display: none;
+      animation: fade-up 0.5s var(--ease-out) both;
+    }
+    #backend-section.visible { display: block; }
+
+    .backend-header {
+      display: flex; align-items: center; gap: var(--s3);
+      margin-bottom: var(--s8);
+    }
+    .backend-pill {
+      display: inline-flex; align-items: center; gap: var(--s2);
+      padding: 5px var(--s4);
+      background: rgba(240,180,41,0.08);
+      border: 1px solid rgba(240,180,41,0.25);
+      border-radius: 99px;
+      font-family: var(--font-mono); font-size: var(--text-xs);
+      color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .backend-pill::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px rgba(240,180,41,0.5);
+    }
+    .backend-note {
+      font-size: var(--text-sm); color: var(--text-faint);
+      font-family: var(--font-mono); letter-spacing: 0.04em;
+    }
+
+    .backend-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s5);
+      margin-bottom: var(--s12);
+    }
+
+    .backend-card {
+      padding: 1px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: border-color 0.3s var(--ease-out),
+                  transform 0.35s var(--ease-out),
+                  box-shadow 0.35s var(--ease-out);
+    }
+    .backend-card-inner {
+      background: var(--surface);
+      border-radius: 18px;
+      padding: var(--s6) var(--s7);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+      height: 100%;
+      display: flex; flex-direction: column; gap: var(--s3);
+    }
+    .backend-card:hover {
+      border-color: rgba(240,180,41,0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35),
+                  0 0 0 1px rgba(240,180,41,0.1);
+    }
+    .backend-card-num {
+      font-family: var(--font-mono); font-size: var(--text-xs);
+      color: var(--accent); letter-spacing: 0.12em;
+    }
+    .backend-card-title {
+      font-family: var(--font-display); font-size: var(--text-xl);
+      font-weight: 700; color: var(--text); letter-spacing: -0.02em;
+    }
+    .backend-card-desc {
+      font-size: var(--text-sm); color: var(--text-muted);
+      line-height: 1.6; flex: 1;
+    }
+    .backend-card-tags {
+      display: flex; gap: var(--s2); flex-wrap: wrap; margin-top: var(--s2);
+    }
+    .backend-tag {
+      padding: 3px 10px; border-radius: 6px;
+      background: rgba(240,180,41,0.08);
+      border: 1px solid rgba(240,180,41,0.2);
+      font-family: var(--font-mono); font-size: 0.65rem;
+      color: var(--accent); letter-spacing: 0.03em;
+    }
+    .backend-card-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: var(--text-xs); color: var(--text-faint);
+      font-family: var(--font-mono); letter-spacing: 0.06em;
+      margin-top: auto; padding-top: var(--s3);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Backend Modal ──────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      padding: var(--s8);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s var(--ease-out);
+    }
+    .modal-overlay.open {
+      opacity: 1; pointer-events: auto;
+    }
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      max-width: 680px; width: 100%;
+      max-height: 90dvh; overflow-y: auto;
+      padding: var(--s8);
+      position: relative;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6),
+                  inset 0 1px 0 rgba(255,255,255,0.06);
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.4s var(--ease-out);
+    }
+    .modal-overlay.open .modal-card {
+      transform: none;
+    }
+    .modal-close {
+      position: absolute; top: var(--s5); right: var(--s5);
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--text-muted); font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: var(--surface-3); color: var(--text); }
+
+    .modal-eyebrow {
+      display: inline-flex; align-items: center; gap: var(--s2);
+      padding: 4px var(--s3);
+      background: var(--primary-bg);
+      border: 1px solid rgba(77,142,247,0.2);
+      border-radius: 99px;
+      font-family: var(--font-mono); font-size: 0.65rem;
+      color: var(--primary-light); letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: var(--s5);
+    }
+    .modal-title {
+      font-family: var(--font-display); font-size: var(--text-3xl);
+      font-weight: 800; color: var(--text); letter-spacing: -0.03em;
+      margin-bottom: var(--s4);
+    }
+    .modal-role {
+      font-family: var(--font-mono); font-size: var(--text-sm);
+      color: var(--accent); margin-bottom: var(--s5);
+    }
+    .modal-body {
+      font-size: var(--text-base); color: var(--text-muted);
+      line-height: 1.72; margin-bottom: var(--s6);
+    }
+    .modal-body strong { color: var(--text); font-weight: 600; }
+    .modal-section-title {
+      font-family: var(--font-mono); font-size: var(--text-xs);
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-faint); margin-bottom: var(--s3);
+    }
+    .modal-achievements {
+      list-style: none; display: flex; flex-direction: column; gap: var(--s2);
+      margin-bottom: var(--s6); padding-left: 0;
+    }
+    .modal-achievements li {
+      display: flex; align-items: flex-start; gap: var(--s3);
+      font-size: var(--text-sm); color: var(--text-muted); line-height: 1.6;
+    }
+    .modal-achievements li::before {
+      content: '→'; color: var(--primary); flex-shrink: 0;
+      font-family: var(--font-mono); font-size: 0.8rem; margin-top: 1px;
+    }
+    .modal-tags {
+      display: flex; gap: var(--s2); flex-wrap: wrap;
+    }
+    .modal-divider {
+      border: none; border-top: 1px solid var(--border);
+      margin: var(--s6) 0;
+    }
+
+    /* ── Sparkweb brand block ───────────────────────────────────── */
+    .sparkweb-brand {
+      display: flex; align-items: center; gap: var(--s6);
+      padding: var(--s6) var(--s8);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      margin-top: var(--s12);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+    .sparkweb-logo-img {
+      height: 40px; width: auto; flex-shrink: 0;
+    }
+    .sparkweb-divider {
+      width: 1px; height: 44px;
+      background: var(--border); flex-shrink: 0;
+    }
+    .sparkweb-text p:first-child {
+      font-family: var(--font-mono); font-size: var(--text-xs);
+      color: var(--text-faint); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 4px;
+    }
+    .sparkweb-text p:last-child {
+      font-size: var(--text-sm); color: var(--text-muted);
+    }
+
+    @media (max-width: 768px) {
+      .backend-grid { grid-template-columns: 1fr; }
+      .backend-toggle-wrap { flex-wrap: wrap; }
+      .modal-card { padding: var(--s6); border-radius: 20px; }
+      .modal-title { font-size: var(--text-2xl); }
+      .sparkweb-brand { flex-wrap: wrap; gap: var(--s4); }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Scroll progress bar -->
   <div id="scroll-progress" aria-hidden="true"></div>
-
-  <!-- Custom cursor (desktop only) -->
   <div id="cursor-dot"  aria-hidden="true"></div>
   <div id="cursor-ring" aria-hidden="true"></div>
 
-  <!-- ══ NAVIGATION — Floating Island Pill ══════════════════════ -->
+  <!-- ══ NAVIGATION ════════════════════════════════════════════ -->
   <nav id="nav" role="navigation" aria-label="Navegación principal">
     <a href="#hero" class="nav-logo" aria-label="Ir al inicio">
       <span class="nav-logo-dt">DT</span>
       <span class="nav-logo-name">Douglas Torres</span>
     </a>
-
     <ul class="nav-links" role="list">
-      <li><a href="#work">Proyectos</a></li>
+      <li><a href="#work">Plantillas</a></li>
       <li><a href="#experience">Experiencia</a></li>
       <li><a href="#about">Sobre mí</a></li>
       <li><a href="#services">Servicios</a></li>
     </ul>
-
     <a href="#contact" class="nav-cta">Contacto</a>
-
     <button class="nav-burger" id="nav-burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
       <span></span><span></span>
     </button>
   </nav>
 
-  <!-- Mobile menu overlay -->
   <div id="mobile-menu" class="mobile-menu" role="dialog" aria-modal="true" aria-label="Menú de navegación">
     <ul class="mobile-nav-links" role="list">
-      <li><a href="#work"       class="mobile-link" data-index="1">Proyectos</a></li>
+      <li><a href="#work"       class="mobile-link" data-index="1">Plantillas</a></li>
       <li><a href="#experience" class="mobile-link" data-index="2">Experiencia</a></li>
       <li><a href="#about"      class="mobile-link" data-index="3">Sobre mí</a></li>
       <li><a href="#services"   class="mobile-link" data-index="4">Servicios</a></li>
@@ -82,7 +341,7 @@
 
       <div class="hero-ctas">
         <a href="#work" class="btn btn-primary" data-magnetic>
-          Ver proyectos
+          Ver plantillas
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -97,8 +356,8 @@
         </div>
         <div class="stat-divider" aria-hidden="true"></div>
         <div class="stat">
-          <div class="stat-value"><span class="stat-number" data-count="9">0</span></div>
-          <span class="stat-label">proyectos</span>
+          <div class="stat-value"><span class="stat-number" data-count="8">0</span></div>
+          <span class="stat-label">plantillas</span>
         </div>
         <div class="stat-divider" aria-hidden="true"></div>
         <div class="stat">
@@ -114,7 +373,7 @@
     </a>
   </section>
 
-  <!-- ══ MARQUEE BAND ═══════════════════════════════════════════ -->
+  <!-- ══ MARQUEE BAND ════════════════════════════════════════════ -->
   <div class="marquee-band" aria-hidden="true">
     <div class="marquee-track">
       <span>Flask</span><span class="dot">·</span>
@@ -127,98 +386,40 @@
       <span>Python</span><span class="dot">·</span>
       <span>JavaScript</span><span class="dot">·</span>
       <span>REST APIs</span><span class="dot">·</span>
+      <span>Three.js</span><span class="dot">·</span>
       <span>CSS Animations</span><span class="dot">·</span>
-      <span>Diseño Responsivo</span><span class="dot">·</span>
       <span>Flask</span><span class="dot">·</span>
       <span>React</span><span class="dot">·</span>
       <span>Node.js</span><span class="dot">·</span>
       <span>MongoDB</span><span class="dot">·</span>
       <span>AWS SQS</span><span class="dot">·</span>
       <span>PostgreSQL</span><span class="dot">·</span>
-      <span>JWT Auth</span><span class="dot">·</span>
-      <span>Python</span><span class="dot">·</span>
+      <span>Three.js</span><span class="dot">·</span>
       <span>JavaScript</span><span class="dot">·</span>
-      <span>REST APIs</span><span class="dot">·</span>
-      <span>CSS Animations</span><span class="dot">·</span>
-      <span>Diseño Responsivo</span><span class="dot">·</span>
     </div>
   </div>
 
-  <!-- ══ WORK ══════════════════════════════════════════════════ -->
+  <!-- ══ WORK — Templates ══════════════════════════════════════ -->
   <section id="work" class="section" aria-labelledby="work-heading">
     <div class="section-inner">
-      <div class="section-label" data-reveal>Proyectos seleccionados</div>
-      <h2 class="section-title" id="work-heading" data-reveal>Lo que he<br /><em>construido</em></h2>
+      <div class="section-label" data-reveal>Plantillas web</div>
+      <h2 class="section-title" id="work-heading" data-reveal>Diseños que<br /><em>construí</em></h2>
 
-      <div class="work-filters" role="tablist" aria-label="Filtrar proyectos" data-reveal>
-        <button class="work-filter active" role="tab" aria-selected="true"  data-filter="all">Todos</button>
-        <button class="work-filter"        role="tab" aria-selected="false" data-filter="backend">Backend</button>
-        <button class="work-filter"        role="tab" aria-selected="false" data-filter="template">Plantillas</button>
-      </div>
+      <!-- Template grid -->
+      <div class="work-grid" id="templates-grid">
 
-      <div class="work-grid">
-
-        <!-- Project 01 — BACKEND FEATURED -->
-        <article class="project-card project-card--featured" data-reveal data-tilt data-category="backend">
+        <!-- Template 01 — Despacho Abogados -->
+        <article class="project-card" data-reveal data-tilt data-href="templates/landing-negocio-local.html">
           <div class="project-card-inner">
             <div class="project-thumb">
-              <div class="project-thumb-bg" style="--thumb-color: #2d6fd4;"></div>
-              <div class="project-thumb-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <pattern id="grid1" width="20" height="20" patternUnits="userSpaceOnUse">
-                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-                    </pattern>
-                  </defs>
-                  <rect width="200" height="200" fill="url(#grid1)"/>
-                  <circle cx="100" cy="100" r="62" fill="none" stroke="rgba(77,142,247,0.4)" stroke-width="1" stroke-dasharray="8 4"/>
-                  <circle cx="100" cy="100" r="36" fill="none" stroke="rgba(77,142,247,0.28)" stroke-width="1"/>
-                  <circle cx="100" cy="100" r="13" fill="rgba(77,142,247,0.55)"/>
-                </svg>
-              </div>
-              <div class="project-thumb-tags">
-                <span>Flask</span><span>React</span><span>MongoDB</span><span>AWS</span>
-              </div>
-              <div class="project-overlay">
-                <span class="overlay-cta">Ver proyecto →</span>
-              </div>
-            </div>
-            <div class="project-meta">
-              <span class="project-number">01</span>
-              <h3 class="project-title">Decateca — Plataforma Inmobiliaria</h3>
-              <p class="project-desc">Plataforma de búsqueda de propiedades en producción. Backend Flask MVC, MongoDB Aggregation Pipeline, AWS SQS y CloudWatch. Proyecto formal con equipo Scrum.</p>
-              <div class="project-tags">
-                <span class="tag">Python Flask</span>
-                <span class="tag">MongoDB</span>
-                <span class="tag">AWS</span>
-                <span class="tag tag--featured">En Producción</span>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- Project 02 — TEMPLATE -->
-        <article class="project-card" data-reveal data-tilt data-category="template" data-href="templates/landing-negocio-local.html">
-          <div class="project-card-inner">
-            <div class="project-thumb">
-              <div class="project-thumb-bg" style="--thumb-color: #1e3a5f;"></div>
-              <div class="project-thumb-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="20" y="40" width="160" height="120" rx="4" fill="none" stroke="rgba(212,175,55,0.4)" stroke-width="1.5"/>
-                  <line x1="20" y1="65" x2="180" y2="65" stroke="rgba(212,175,55,0.3)" stroke-width="1"/>
-                  <rect x="35" y="80" width="80" height="8" rx="2" fill="rgba(212,175,55,0.25)"/>
-                  <rect x="35" y="96" width="55" height="6" rx="2" fill="rgba(212,175,55,0.15)"/>
-                  <rect x="35" y="115" width="90" height="6" rx="2" fill="rgba(212,175,55,0.15)"/>
-                  <circle cx="155" cy="52" r="10" fill="rgba(212,175,55,0.3)"/>
-                </svg>
-              </div>
-              <div class="project-thumb-tags"><span>HTML</span><span>CSS</span><span>JS</span></div>
+              <img src="assets/img/previews/landing-negocio-local-preview.jpeg"
+                   alt="Despacho de Abogados preview" class="thumb-screenshot" loading="lazy" />
               <div class="project-overlay"><span class="overlay-cta">Abrir plantilla →</span></div>
             </div>
             <div class="project-meta">
-              <span class="project-number">02</span>
+              <span class="project-number">01</span>
               <h3 class="project-title">Despacho de Abogados</h3>
-              <p class="project-desc">Landing premium para estudio jurídico: paleta navy + oro, contadores animados, formulario de consulta y selector de paletas.</p>
+              <p class="project-desc">Landing premium para estudio jurídico. Paleta navy + oro, contadores animados, formulario de consulta.</p>
               <div class="project-tags">
                 <span class="tag">HTML/CSS</span><span class="tag">JavaScript</span><span class="tag">Motion</span>
               </div>
@@ -226,28 +427,18 @@
           </div>
         </article>
 
-        <!-- Project 03 — TEMPLATE -->
-        <article class="project-card" data-reveal data-tilt data-category="template" data-href="templates/portfolio-creativo.html">
+        <!-- Template 02 — Portafolio Creativo -->
+        <article class="project-card" data-reveal data-tilt data-href="templates/portfolio-creativo.html">
           <div class="project-card-inner">
             <div class="project-thumb">
-              <div class="project-thumb-bg" style="--thumb-color: #1a1a2e;"></div>
-              <div class="project-thumb-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="60" cy="80" r="30" fill="none" stroke="rgba(196,98,45,0.5)" stroke-width="1.5"/>
-                  <circle cx="60" cy="80" r="18" fill="rgba(196,98,45,0.2)"/>
-                  <rect x="100" y="60" width="80" height="8" rx="2" fill="rgba(255,255,255,0.15)"/>
-                  <rect x="100" y="76" width="55" height="6" rx="2" fill="rgba(255,255,255,0.1)"/>
-                  <rect x="20" y="125" width="160" height="1" stroke="rgba(255,255,255,0.08)"/>
-                  <rect x="20" y="140" width="50" height="20" rx="10" fill="rgba(196,98,45,0.3)"/>
-                </svg>
-              </div>
-              <div class="project-thumb-tags"><span>HTML</span><span>CSS</span><span>JS</span></div>
+              <img src="assets/img/previews/portfolio-creativo-preview.jpeg"
+                   alt="Portfolio creativo preview" class="thumb-screenshot" loading="lazy" />
               <div class="project-overlay"><span class="overlay-cta">Abrir plantilla →</span></div>
             </div>
             <div class="project-meta">
-              <span class="project-number">03</span>
+              <span class="project-number">02</span>
               <h3 class="project-title">Portafolio Creativo</h3>
-              <p class="project-desc">Plantilla para creativos. Tokens tipográficos, cursor personalizado con RAF, stagger de proyectos y formulario validado.</p>
+              <p class="project-desc">Plantilla para creativos. Cursor personalizado con RAF, stagger de proyectos y formulario validado.</p>
               <div class="project-tags">
                 <span class="tag">HTML/CSS</span><span class="tag">Animaciones</span><span class="tag">Diseño</span>
               </div>
@@ -255,26 +446,18 @@
           </div>
         </article>
 
-        <!-- Project 04 — TEMPLATE -->
-        <article class="project-card" data-reveal data-tilt data-category="template" data-href="templates/menu-digital-restaurante.html">
+        <!-- Template 03 — Sakura Maki -->
+        <article class="project-card" data-reveal data-tilt data-href="templates/menu-digital-restaurante.html">
           <div class="project-card-inner">
             <div class="project-thumb">
-              <div class="project-thumb-bg" style="--thumb-color: #2d1b33;"></div>
-              <div class="project-thumb-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="100" cy="100" r="50" fill="none" stroke="rgba(255,182,193,0.4)" stroke-width="1" stroke-dasharray="4 3"/>
-                  <circle cx="100" cy="100" r="28" fill="rgba(255,150,180,0.15)"/>
-                  <rect x="30" y="155" width="140" height="6" rx="3" fill="rgba(255,182,193,0.2)"/>
-                  <rect x="55" y="167" width="90" height="4" rx="2" fill="rgba(255,182,193,0.12)"/>
-                </svg>
-              </div>
-              <div class="project-thumb-tags"><span>Mobile First</span><span>JS</span></div>
+              <img src="assets/img/previews/menu-digital-preview.jpeg"
+                   alt="Sakura Maki menú digital preview" class="thumb-screenshot" loading="lazy" />
               <div class="project-overlay"><span class="overlay-cta">Abrir plantilla →</span></div>
             </div>
             <div class="project-meta">
-              <span class="project-number">04</span>
+              <span class="project-number">03</span>
               <h3 class="project-title">Sakura Maki — Menú QR</h3>
-              <p class="project-desc">Menú digital para restaurante japonés. Estética sakura, fotos reales, carrito funcional y pedido por WhatsApp.</p>
+              <p class="project-desc">Menú digital para restaurante japonés. Estética sakura, carrito funcional y pedido por WhatsApp.</p>
               <div class="project-tags">
                 <span class="tag">Mobile First</span><span class="tag">JavaScript</span><span class="tag">UX</span>
               </div>
@@ -282,28 +465,18 @@
           </div>
         </article>
 
-        <!-- Project 05 — TEMPLATE -->
-        <article class="project-card" data-reveal data-tilt data-category="template" data-href="templates/producto-ecommerce.html">
+        <!-- Template 04 — VELO Ecommerce -->
+        <article class="project-card" data-reveal data-tilt data-href="templates/producto-ecommerce.html">
           <div class="project-card-inner">
             <div class="project-thumb">
-              <div class="project-thumb-bg" style="--thumb-color: #0a1628;"></div>
-              <div class="project-thumb-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="20" y="30" width="160" height="90" rx="3" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-                  <rect x="20" y="30" width="160" height="28" rx="3" fill="rgba(255,255,255,0.05)"/>
-                  <rect x="30" y="72" width="42" height="38" rx="2" fill="rgba(100,180,255,0.2)"/>
-                  <rect x="80" y="72" width="42" height="38" rx="2" fill="rgba(100,180,255,0.14)"/>
-                  <rect x="130" y="72" width="42" height="38" rx="2" fill="rgba(100,180,255,0.08)"/>
-                  <rect x="30" y="140" width="120" height="6" rx="3" fill="rgba(255,255,255,0.08)"/>
-                </svg>
-              </div>
-              <div class="project-thumb-tags"><span>Ecommerce</span><span>JS</span></div>
+              <img src="assets/img/previews/producto-ecommerce-preview.jpeg"
+                   alt="VELO ecommerce preview" class="thumb-screenshot" loading="lazy" />
               <div class="project-overlay"><span class="overlay-cta">Abrir plantilla →</span></div>
             </div>
             <div class="project-meta">
-              <span class="project-number">05</span>
+              <span class="project-number">04</span>
               <h3 class="project-title">VELO — Tienda Online</h3>
-              <p class="project-desc">Homepage de moda contemporánea. Hero editorial, grid con selector de colores, carrito, marquee y paleta intercambiable.</p>
+              <p class="project-desc">Homepage de moda contemporánea. Hero editorial, grid con selector de colores, carrito y marquee.</p>
               <div class="project-tags">
                 <span class="tag">Ecommerce</span><span class="tag">JavaScript</span><span class="tag">UI/UX</span>
               </div>
@@ -311,113 +484,37 @@
           </div>
         </article>
 
-        <!-- Project 06 — TEMPLATE -->
-        <article class="project-card" data-reveal data-tilt data-category="template" data-href="templates/clinica-dental.html">
+        <!-- Template 05 — Clínica Dental -->
+        <article class="project-card" data-reveal data-tilt data-href="templates/clinica-dental.html">
           <div class="project-card-inner">
             <div class="project-thumb">
-              <div class="project-thumb-bg" style="--thumb-color: #0d2137;"></div>
-              <div class="project-thumb-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M100 30 L100 170" stroke="rgba(100,210,255,0.2)" stroke-width="1"/>
-                  <path d="M30 100 L170 100" stroke="rgba(100,210,255,0.2)" stroke-width="1"/>
-                  <circle cx="100" cy="100" r="42" fill="none" stroke="rgba(100,210,255,0.32)" stroke-width="1.5"/>
-                  <circle cx="100" cy="100" r="20" fill="rgba(100,210,255,0.12)"/>
-                  <text x="100" y="107" text-anchor="middle" font-size="18" fill="rgba(180,240,255,0.8)">+</text>
-                </svg>
+              <img src="assets/img/previews/clinica-dental-preview.jpeg"
+                   alt="Clínica dental preview" class="thumb-screenshot" loading="lazy" />
+              <div class="project-overlay"><span class="overlay-cta">Abrir plantilla →</span></div>
+            </div>
+            <div class="project-meta">
+              <span class="project-number">05</span>
+              <h3 class="project-title">Clínica Dental</h3>
+              <p class="project-desc">Landing para clínica odontológica. Servicios, equipo médico, testimonios y formulario de citas.</p>
+              <div class="project-tags">
+                <span class="tag">HTML/CSS</span><span class="tag">Motion</span><span class="tag">Médico</span>
               </div>
-              <div class="project-thumb-tags"><span>HTML/CSS</span><span>Motion</span></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Template 06 — Hotel Reservas -->
+        <article class="project-card" data-reveal data-tilt data-href="templates/hotel-reservas.html">
+          <div class="project-card-inner">
+            <div class="project-thumb">
+              <img src="assets/img/previews/hotel-reservas-preview.jpeg"
+                   alt="Hotel Miradores preview" class="thumb-screenshot" loading="lazy" />
               <div class="project-overlay"><span class="overlay-cta">Abrir plantilla →</span></div>
             </div>
             <div class="project-meta">
               <span class="project-number">06</span>
-              <h3 class="project-title">Clínica Dental — Web Médica</h3>
-              <p class="project-desc">Landing premium para clínica odontológica. Servicios, equipo médico, testimonios y formulario de citas con validación.</p>
-              <div class="project-tags">
-                <span class="tag">HTML/CSS</span><span class="tag">Motion</span><span class="tag">Diseño Médico</span>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- Project 07 — BACKEND -->
-        <article class="project-card" data-reveal data-tilt data-category="backend">
-          <div class="project-card-inner">
-            <div class="project-thumb">
-              <div class="project-thumb-bg" style="--thumb-color: #0c1f0c;"></div>
-              <div class="project-thumb-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="20" y="50" width="160" height="100" rx="4" fill="none" stroke="rgba(74,222,128,0.28)" stroke-width="1"/>
-                  <text x="30" y="80" font-size="10" fill="rgba(74,222,128,0.6)" font-family="monospace">POST /auth/login</text>
-                  <text x="30" y="96" font-size="10" fill="rgba(74,222,128,0.4)" font-family="monospace">GET  /users/:id</text>
-                  <text x="30" y="112" font-size="10" fill="rgba(74,222,128,0.4)" font-family="monospace">PUT  /products</text>
-                  <text x="30" y="128" font-size="10" fill="rgba(74,222,128,0.4)" font-family="monospace">200 OK ✓</text>
-                </svg>
-              </div>
-              <div class="project-thumb-tags"><span>Node.js</span><span>JWT</span></div>
-              <div class="project-overlay"><span class="overlay-cta">Ver proyecto →</span></div>
-            </div>
-            <div class="project-meta">
-              <span class="project-number">07</span>
-              <h3 class="project-title">API REST + JWT Auth</h3>
-              <p class="project-desc">API RESTful con Node.js y Express. Autenticación JWT, middlewares de validación y manejo de errores centralizado.</p>
-              <div class="project-tags">
-                <span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">JWT</span>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- Project 08 — BACKEND -->
-        <article class="project-card" data-reveal data-tilt data-category="backend">
-          <div class="project-card-inner">
-            <div class="project-thumb">
-              <div class="project-thumb-bg" style="--thumb-color: #0e0d28;"></div>
-              <div class="project-thumb-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="20" y="40" width="50" height="60" rx="3" fill="rgba(77,142,247,0.28)"/>
-                  <rect x="80" y="60" width="50" height="40" rx="3" fill="rgba(77,142,247,0.18)"/>
-                  <rect x="140" y="50" width="40" height="50" rx="3" fill="rgba(77,142,247,0.22)"/>
-                  <text x="30" y="125" font-size="8" fill="rgba(122,171,249,0.7)" font-family="monospace">$group</text>
-                  <text x="82" y="125" font-size="8" fill="rgba(122,171,249,0.7)" font-family="monospace">$match</text>
-                  <text x="142" y="125" font-size="8" fill="rgba(122,171,249,0.7)" font-family="monospace">$lookup</text>
-                </svg>
-              </div>
-              <div class="project-thumb-tags"><span>MongoDB</span><span>Analytics</span></div>
-              <div class="project-overlay"><span class="overlay-cta">Ver proyecto →</span></div>
-            </div>
-            <div class="project-meta">
-              <span class="project-number">08</span>
-              <h3 class="project-title">Dashboard KPIs — MongoDB</h3>
-              <p class="project-desc">Panel de métricas con Aggregation Pipelines: $match, $group, $lookup y $project para reportes en tiempo real.</p>
-              <div class="project-tags">
-                <span class="tag">MongoDB</span><span class="tag">Aggregation</span><span class="tag">Analytics</span>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- Project 09 — BACKEND -->
-        <article class="project-card" data-reveal data-tilt data-category="backend">
-          <div class="project-card-inner">
-            <div class="project-thumb">
-              <div class="project-thumb-bg" style="--thumb-color: #1a1000;"></div>
-              <div class="project-thumb-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="30" y="60" width="140" height="90" rx="8" fill="none" stroke="rgba(240,180,41,0.32)" stroke-width="1.5"/>
-                  <path d="M70 60 L70 30 L130 30 L130 60" fill="none" stroke="rgba(240,180,41,0.25)" stroke-width="1"/>
-                  <rect x="55" y="80" width="90" height="8" rx="2" fill="rgba(240,180,41,0.2)"/>
-                  <rect x="65" y="97" width="70" height="6" rx="2" fill="rgba(240,180,41,0.14)"/>
-                  <rect x="60" y="120" width="30" height="15" rx="8" fill="rgba(240,180,41,0.32)"/>
-                  <rect x="110" y="120" width="30" height="15" rx="8" fill="rgba(240,180,41,0.12)"/>
-                </svg>
-              </div>
-              <div class="project-thumb-tags"><span>Flask</span><span>PostgreSQL</span></div>
-              <div class="project-overlay"><span class="overlay-cta">Ver proyecto →</span></div>
-            </div>
-            <div class="project-meta">
-              <span class="project-number">09</span>
-              <h3 class="project-title">Hotel Miradores — Reservas</h3>
-              <p class="project-desc">Web de hotel 5★ con reservas multi-paso: habitación, fechas, pago y confirmación. Sistema completo Flask + PostgreSQL.</p>
+              <h3 class="project-title">Hotel Miradores</h3>
+              <p class="project-desc">Web de hotel 5★. Reservas multi-paso: habitación, fechas, pago y confirmación. Flask + PostgreSQL.</p>
               <div class="project-tags">
                 <span class="tag">Flask</span><span class="tag">PostgreSQL</span><span class="tag">UX</span>
               </div>
@@ -425,68 +522,40 @@
           </div>
         </article>
 
-        <!-- Project 10 — TEMPLATE: 3D Animations -->
-        <article class="project-card project-card--new" data-reveal data-tilt data-category="template" data-href="templates/animaciones-3d.html">
+        <!-- Template 07 — Animaciones 3D -->
+        <article class="project-card" data-reveal data-tilt data-href="templates/animaciones-3d.html">
           <div class="project-card-inner">
             <div class="project-thumb">
-              <div class="project-thumb-bg" style="--thumb-color: #0a1a3a;"></div>
-              <div class="project-thumb-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <g transform="translate(100,100)">
-                    <polygon points="0,-55 48,-28 48,28 0,55 -48,28 -48,-28" fill="none" stroke="rgba(77,142,247,0.5)" stroke-width="1.5"/>
-                    <polygon points="0,-30 26,-15 26,15 0,30 -26,15 -26,-15" fill="none" stroke="rgba(77,142,247,0.28)" stroke-width="1"/>
-                    <line x1="0" y1="-55" x2="0" y2="-30" stroke="rgba(77,142,247,0.4)" stroke-width="1"/>
-                    <line x1="48" y1="-28" x2="26" y2="-15" stroke="rgba(77,142,247,0.4)" stroke-width="1"/>
-                    <line x1="48" y1="28" x2="26" y2="15" stroke="rgba(77,142,247,0.4)" stroke-width="1"/>
-                    <line x1="0" y1="55" x2="0" y2="30" stroke="rgba(77,142,247,0.4)" stroke-width="1"/>
-                    <line x1="-48" y1="28" x2="-26" y2="15" stroke="rgba(77,142,247,0.4)" stroke-width="1"/>
-                    <line x1="-48" y1="-28" x2="-26" y2="-15" stroke="rgba(77,142,247,0.4)" stroke-width="1"/>
-                    <circle cx="0" cy="0" r="6" fill="rgba(77,142,247,0.7)"/>
-                  </g>
-                  <circle cx="100" cy="100" r="75" fill="none" stroke="rgba(77,142,247,0.08)" stroke-dasharray="3 6"/>
-                </svg>
-              </div>
-              <div class="project-thumb-tags"><span>Three.js</span><span>WebGL</span><span>3D</span></div>
+              <img src="assets/img/previews/animaciones-3d-preview.jpeg"
+                   alt="Animaciones 3D preview" class="thumb-screenshot" loading="lazy" />
               <div class="project-overlay"><span class="overlay-cta">Abrir demo →</span></div>
             </div>
             <div class="project-meta">
-              <span class="project-number">10</span>
-              <h3 class="project-title">Animaciones 3D Interactivas</h3>
-              <p class="project-desc">Cubo draggable, globo terráqueo interactivo, dodecaedro con paisajes, sistema solar animado y más — todo con Three.js + WebGL.</p>
+              <span class="project-number">07</span>
+              <h3 class="project-title">Animaciones 3D</h3>
+              <p class="project-desc">Cubo draggable, globo interactivo, dodecaedro con paisajes, sistema solar y campo de partículas 2D.</p>
               <div class="project-tags">
-                <span class="tag">Three.js</span><span class="tag">WebGL</span><span class="tag">3D</span>
+                <span class="tag">Three.js</span><span class="tag">WebGL</span>
                 <span class="tag tag--featured">Nuevo</span>
               </div>
             </div>
           </div>
         </article>
 
-        <!-- Project 11 — TEMPLATE: Dashboard Pro -->
-        <article class="project-card project-card--new" data-reveal data-tilt data-category="template" data-href="templates/dashboard-pro.html">
+        <!-- Template 08 — Dashboard Pro -->
+        <article class="project-card" data-reveal data-tilt data-href="templates/dashboard-pro.html">
           <div class="project-card-inner">
             <div class="project-thumb">
-              <div class="project-thumb-bg" style="--thumb-color: #0d1117;"></div>
-              <div class="project-thumb-pattern" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="10" y="10" width="55" height="55" rx="4" fill="rgba(77,142,247,0.18)" stroke="rgba(77,142,247,0.3)" stroke-width="1"/>
-                  <rect x="75" y="10" width="55" height="55" rx="4" fill="rgba(34,197,94,0.12)" stroke="rgba(34,197,94,0.22)" stroke-width="1"/>
-                  <rect x="140" y="10" width="55" height="55" rx="4" fill="rgba(240,180,41,0.12)" stroke="rgba(240,180,41,0.22)" stroke-width="1"/>
-                  <rect x="10" y="75" width="185" height="75" rx="4" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
-                  <rect x="20" y="85" width="40" height="5" rx="2" fill="rgba(255,255,255,0.12)"/>
-                  <polyline points="20,140 50,120 80,130 110,105 140,115 170,95 185,100" fill="none" stroke="rgba(77,142,247,0.6)" stroke-width="2"/>
-                  <rect x="10" y="160" width="85" height="32" rx="4" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-                  <rect x="105" y="160" width="90" height="32" rx="4" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-                </svg>
-              </div>
-              <div class="project-thumb-tags"><span>Chart.js</span><span>Dashboard</span><span>UI</span></div>
+              <img src="assets/img/previews/dashboard-pro-preview.jpeg"
+                   alt="Dashboard Pro preview" class="thumb-screenshot" loading="lazy" />
               <div class="project-overlay"><span class="overlay-cta">Abrir demo →</span></div>
             </div>
             <div class="project-meta">
-              <span class="project-number">11</span>
+              <span class="project-number">08</span>
               <h3 class="project-title">Dashboard Profesional</h3>
-              <p class="project-desc">Panel de control completo: KPIs animados, gráficos de líneas y barras, tabla de datos sorteable, actividad en tiempo real.</p>
+              <p class="project-desc">Panel de control completo: KPIs animados, gráficos de líneas y barras, tabla sorteable.</p>
               <div class="project-tags">
-                <span class="tag">Chart.js</span><span class="tag">CSS Grid</span><span class="tag">Dark UI</span>
+                <span class="tag">Chart.js</span><span class="tag">CSS Grid</span>
                 <span class="tag tag--featured">Nuevo</span>
               </div>
             </div>
@@ -494,8 +563,97 @@
         </article>
 
       </div>
+
+      <!-- ── Backend Toggle ──────────────────────────────────── -->
+      <div class="backend-toggle-wrap" data-reveal>
+        <span class="backend-toggle-label" id="toggle-label-left">Plantillas</span>
+        <label class="toggle-switch" aria-label="Mostrar proyectos backend">
+          <input type="checkbox" id="backend-toggle" />
+          <span class="toggle-track"></span>
+          <span class="toggle-thumb"></span>
+        </label>
+        <span class="backend-toggle-label active" id="toggle-label-right">Backend</span>
+      </div>
+
+      <!-- ── Backend Section (hidden by default) ─────────────── -->
+      <div id="backend-section" aria-live="polite">
+        <div class="backend-header">
+          <span class="backend-pill">Proyectos Backend</span>
+          <span class="backend-note">Click en una card para ver detalles</span>
+        </div>
+
+        <div class="backend-grid">
+
+          <!-- Backend 01 — Decateca -->
+          <div class="backend-card" data-backend="decateca" role="button" tabindex="0" aria-label="Ver detalles de Decateca">
+            <div class="backend-card-inner">
+              <span class="backend-card-num">B·01</span>
+              <h3 class="backend-card-title">Decateca</h3>
+              <p class="backend-card-desc">Plataforma inmobiliaria en producción. Backend Flask MVC con MongoDB Aggregation Pipeline, AWS SQS y CloudWatch.</p>
+              <div class="backend-card-tags">
+                <span class="backend-tag">Python Flask</span>
+                <span class="backend-tag">MongoDB</span>
+                <span class="backend-tag">AWS</span>
+                <span class="backend-tag">Scrum</span>
+              </div>
+              <span class="backend-card-cta">Ver detalles →</span>
+            </div>
+          </div>
+
+          <!-- Backend 02 — API REST + JWT -->
+          <div class="backend-card" data-backend="api-jwt" role="button" tabindex="0" aria-label="Ver detalles de API REST + JWT">
+            <div class="backend-card-inner">
+              <span class="backend-card-num">B·02</span>
+              <h3 class="backend-card-title">API REST + JWT Auth</h3>
+              <p class="backend-card-desc">API RESTful con Node.js y Express. Autenticación JWT, middlewares de validación y manejo de errores centralizado.</p>
+              <div class="backend-card-tags">
+                <span class="backend-tag">Node.js</span>
+                <span class="backend-tag">Express</span>
+                <span class="backend-tag">JWT</span>
+              </div>
+              <span class="backend-card-cta">Ver detalles →</span>
+            </div>
+          </div>
+
+          <!-- Backend 03 — Dashboard KPIs MongoDB -->
+          <div class="backend-card" data-backend="mongodb-kpi" role="button" tabindex="0" aria-label="Ver detalles de Dashboard KPIs MongoDB">
+            <div class="backend-card-inner">
+              <span class="backend-card-num">B·03</span>
+              <h3 class="backend-card-title">Dashboard KPIs</h3>
+              <p class="backend-card-desc">Panel de métricas con MongoDB Aggregation Pipelines: $match, $group, $lookup y $project para reportes en tiempo real.</p>
+              <div class="backend-card-tags">
+                <span class="backend-tag">MongoDB</span>
+                <span class="backend-tag">Aggregation</span>
+                <span class="backend-tag">Analytics</span>
+              </div>
+              <span class="backend-card-cta">Ver detalles →</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sparkweb brand block -->
+        <div class="sparkweb-brand" data-reveal>
+          <img src="assets/img/sparkweb-logo.svg" alt="Sparkweb logo" class="sparkweb-logo-img" />
+          <div class="sparkweb-divider"></div>
+          <div class="sparkweb-text">
+            <p>Mi marca freelance</p>
+            <p>Desarrollo web profesional para negocios locales y startups.</p>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </section>
+
+  <!-- ══ BACKEND MODAL ═══════════════════════════════════════════ -->
+  <div id="backend-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Detalles del proyecto">
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close-btn" aria-label="Cerrar modal">✕</button>
+      <div id="modal-body-content"></div>
+    </div>
+  </div>
 
   <!-- ══ EXPERIENCE ════════════════════════════════════════════ -->
   <section id="experience" class="section section--alt" aria-labelledby="exp-heading">
@@ -643,7 +801,7 @@
     </div>
   </section>
 
-  <!-- ══ SERVICES ══════════════════════════════════════════════ -->
+  <!-- ══ SERVICES ═══════════════════════════════════════════════ -->
   <section id="services" class="section section--alt" aria-labelledby="services-heading">
     <div class="section-inner">
       <div class="section-label" data-reveal>Servicios</div>
@@ -715,10 +873,21 @@
         </div>
 
       </div>
+
+      <!-- Sparkweb brand in services -->
+      <div class="sparkweb-brand" data-reveal style="margin-top: var(--s12);">
+        <img src="assets/img/sparkweb-logo.svg" alt="Sparkweb" class="sparkweb-logo-img" style="height:36px;filter:invert(0);" />
+        <div class="sparkweb-divider"></div>
+        <div class="sparkweb-text">
+          <p>Freelance bajo mi marca</p>
+          <p>Desarrollo y entrego proyectos web de forma independiente con identidad propia.</p>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- ══ CONTACT ═══════════════════════════════════════════════ -->
+  <!-- ══ CONTACT ════════════════════════════════════════════════ -->
   <section id="contact" class="section" aria-labelledby="contact-heading">
     <div class="section-inner contact-inner">
       <div class="contact-left">
@@ -776,7 +945,7 @@
     </div>
   </section>
 
-  <!-- ══ FOOTER ════════════════════════════════════════════════ -->
+  <!-- ══ FOOTER ═════════════════════════════════════════════════ -->
   <footer class="footer" role="contentinfo">
     <div class="footer-inner">
       <div class="footer-logo">
@@ -787,7 +956,7 @@
         </div>
       </div>
       <nav class="footer-links" aria-label="Navegación del pie de página">
-        <a href="#work">Proyectos</a>
+        <a href="#work">Plantillas</a>
         <a href="#experience">Experiencia</a>
         <a href="#about">Sobre mí</a>
         <a href="#contact">Contacto</a>
@@ -797,5 +966,120 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script>
+  /* ── Backend modal data ──────────────────────────────────────── */
+  const backendData = {
+    'decateca': {
+      eyebrow: 'Proyecto en Producción · 2024–2025',
+      title: 'Decateca',
+      role: 'Plataforma Inmobiliaria · Flask + MongoDB + AWS',
+      body: `<p>Trabajé como <strong>Desarrollador Web</strong> en Decateca, una plataforma de búsqueda de propiedades inmobiliarias en producción real con usuarios activos. El proyecto fue desarrollado bajo metodología <strong>Scrum</strong> con un equipo multidisciplinario.</p>`,
+      achievements: [
+        'Backend Flask MVC con arquitectura de capas: controllers, services, repositories',
+        'MongoDB Aggregation Pipeline para reportes de inventario y KPIs en tiempo real',
+        'Integración con AWS SQS para colas de mensajes y CloudWatch para monitoreo',
+        'AWS Secrets Manager para gestión segura de credenciales en producción',
+        'Endpoints REST para módulo de gestión de inventario de propiedades',
+        'Code reviews y refactoring bajo estándares del equipo senior'
+      ],
+      tags: ['Python Flask', 'MongoDB', 'AWS SQS', 'CloudWatch', 'React', 'Scrum', 'JWT']
+    },
+    'api-jwt': {
+      eyebrow: 'Proyecto Personal · Node.js',
+      title: 'API REST + JWT Auth',
+      role: 'Backend Services · Node.js + Express',
+      body: `<p>API RESTful completa construida con <strong>Node.js y Express</strong>. Implementé autenticación stateless con <strong>JWT</strong>, arquitectura de middlewares y manejo centralizado de errores. El objetivo fue crear una base sólida reutilizable para proyectos de clientes.</p>`,
+      achievements: [
+        'Autenticación JWT con access tokens y refresh tokens rotatorios',
+        'Middlewares de validación con express-validator para todos los endpoints',
+        'Manejo centralizado de errores con clases de error personalizadas',
+        'Arquitectura MVC: routes → controllers → services → models',
+        'Rate limiting y protección contra ataques brute-force',
+        'Documentación de endpoints con comentarios estructurados'
+      ],
+      tags: ['Node.js', 'Express', 'JWT', 'bcrypt', 'express-validator', 'MVC']
+    },
+    'mongodb-kpi': {
+      eyebrow: 'Proyecto Real · MongoDB + Python',
+      title: 'Dashboard KPIs — MongoDB',
+      role: 'Analytics & Reportes · Aggregation Pipeline',
+      body: `<p>Panel de métricas desarrollado con <strong>MongoDB Aggregation Pipelines</strong> para generar reportes en tiempo real. Este sistema fue parte del trabajo en Decateca y lo apliqué también en proyectos freelance para clientes con necesidades de analítica de datos.</p>`,
+      achievements: [
+        '$match + $group para segmentar y agrupar datos de propiedades por zona',
+        '$lookup para joins entre colecciones de usuarios, propiedades y transacciones',
+        '$project y $addFields para campos calculados en tiempo de query',
+        'Pipelines optimizados con índices compuestos para queries < 100ms',
+        'Exportación de reportes a JSON para consumo por el frontend React',
+        'Caching de resultados frecuentes para reducir carga en base de datos'
+      ],
+      tags: ['MongoDB', 'Aggregation Pipeline', 'Python', 'Flask', '$lookup', '$group', 'Analytics']
+    }
+  };
+
+  /* ── Backend toggle ─────────────────────────────────────────── */
+  const toggle = document.getElementById('backend-toggle');
+  const backendSection = document.getElementById('backend-section');
+  const labelLeft  = document.getElementById('toggle-label-left');
+  const labelRight = document.getElementById('toggle-label-right');
+
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
+      backendSection.classList.add('visible');
+      labelLeft.classList.remove('active');
+      labelRight.classList.add('active');
+      // scroll into view smoothly
+      setTimeout(() => backendSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+    } else {
+      backendSection.classList.remove('visible');
+      labelLeft.classList.add('active');
+      labelRight.classList.remove('active');
+    }
+  });
+
+  /* ── Backend modal ──────────────────────────────────────────── */
+  const modal    = document.getElementById('backend-modal');
+  const modalBody = document.getElementById('modal-body-content');
+  const closeBtn = document.getElementById('modal-close-btn');
+
+  function openModal(key) {
+    const d = backendData[key];
+    if (!d) return;
+
+    modalBody.innerHTML = `
+      <div class="modal-eyebrow">${d.eyebrow}</div>
+      <h2 class="modal-title">${d.title}</h2>
+      <div class="modal-role">${d.role}</div>
+      <div class="modal-body">${d.body}</div>
+      <hr class="modal-divider"/>
+      <p class="modal-section-title">Lo que construí</p>
+      <ul class="modal-achievements">
+        ${d.achievements.map(a => `<li>${a}</li>`).join('')}
+      </ul>
+      <hr class="modal-divider"/>
+      <p class="modal-section-title">Tecnologías</p>
+      <div class="modal-tags">
+        ${d.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+      </div>
+    `;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.backend-card').forEach(card => {
+    card.addEventListener('click', () => openModal(card.dataset.backend));
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(card.dataset.backend); }
+    });
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  </script>
 </body>
 </html>
