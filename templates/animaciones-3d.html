@@ -11,10 +11,6 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
     body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow-x:hidden}
-    .back-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:rgba(8,8,15,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-    .back-link{display:inline-flex;align-items:center;gap:8px;color:var(--pl);text-decoration:none;font-size:13px;font-weight:500;transition:gap .2s}
-    .back-link:hover{gap:12px}
-    .nav-title{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
     .demo-section{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 60px;position:relative;overflow:hidden}
     .demo-section:nth-child(even){background:var(--surface)}
     .section-badge{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--pl);margin-bottom:12px}
@@ -40,13 +36,6 @@
 </head>
 <body>
 
-<nav class="back-nav">
-  <a href="../index.html" class="back-link">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    Volver al portafolio
-  </a>
-  <span class="nav-title">Animaciones 3D — Three.js + CSS</span>
-</nav>
 
 <div id="globe-tooltip"><div class="tt-card"><div class="tt-flag" id="tt-flag"></div><div class="tt-country" id="tt-country"></div><div class="tt-capital" id="tt-capital"></div><div class="tt-fact" id="tt-fact"></div></div></div>
 
