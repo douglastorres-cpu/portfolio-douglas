@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inmobiliaria Élite — Propiedades Premium</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --bg:#f5f3ee; --surface:#ffffff; --dark:#0e1218; --dark2:#1c2330;
+      --primary:#c9a84c; --primary-d:#9e7d2e; --primary-l:#e8c87a;
+      --text:#1c2330; --muted:#6b7282; --faint:#e8e5df;
+      --border:#ddd9d0; --red:#c0392b; --green:#27ae60;
+      --radius:16px; --ease:cubic-bezier(0.22,1,0.36,1);
+      --sans:'Plus Jakarta Sans',system-ui,sans-serif;
+      --serif:'Playfair Display',Georgia,serif;
+      --mono:'JetBrains Mono',monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;overflow-x:hidden}
+    img{display:block;max-width:100%}
+    a{color:inherit;text-decoration:none}
+
+    /* ── NAV ── */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .3s,box-shadow .3s;padding:0 5vw}
+    .nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(20px);box-shadow:0 1px 0 var(--border)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1280px;margin:0 auto}
+    .logo{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--dark)}
+    .logo span{color:var(--primary)}
+    .nav-links{display:flex;align-items:center;gap:32px}
+    .nav-links a{font-size:13px;font-weight:500;color:var(--muted);letter-spacing:.03em;transition:color .2s}
+    .nav-links a:hover{color:var(--dark)}
+    .nav-cta{display:flex;align-items:center;gap:12px}
+    .btn-outline{padding:8px 20px;border-radius:99px;border:1px solid var(--border);font-size:13px;font-weight:500;color:var(--text);transition:all .2s}
+    .btn-outline:hover{border-color:var(--primary);color:var(--primary)}
+    .btn-gold{padding:9px 22px;border-radius:99px;background:var(--primary);color:#fff;font-size:13px;font-weight:600;transition:background .2s,transform .15s}
+    .btn-gold:hover{background:var(--primary-d);transform:translateY(-1px)}
+    @media(max-width:768px){.nav-links,.nav-cta .btn-outline{display:none}}
+
+    /* ── HERO ── */
+    .hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:var(--dark2)}
+    .hero-bg{position:absolute;inset:0;background:url('https://picsum.photos/seed/luxhome/1920/1080') center/cover no-repeat;opacity:.35}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,18,24,.9) 40%,rgba(14,18,24,.4))}
+    .hero-content{position:relative;z-index:2;max-width:680px;margin:0 0 0 8vw;padding:120px 24px 80px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:99px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--primary-l);margin-bottom:28px;font-family:var(--mono)}
+    .hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 8px var(--primary)}
+    .hero-title{font-family:var(--serif);font-size:clamp(2.8rem,6vw,5rem);font-weight:700;color:#fff;line-height:1.08;margin-bottom:24px}
+    .hero-title em{font-style:italic;color:var(--primary-l)}
+    .hero-sub{font-size:17px;color:rgba(255,255,255,.65);max-width:500px;line-height:1.7;margin-bottom:40px}
+    .hero-actions{display:flex;gap:16px;flex-wrap:wrap}
+    .hero-btn{padding:14px 32px;border-radius:99px;font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px;cursor:pointer;border:none;transition:all .25s var(--ease)}
+    .hero-btn.primary{background:var(--primary);color:#fff}
+    .hero-btn.primary:hover{background:var(--primary-d);transform:translateY(-2px);box-shadow:0 12px 30px rgba(201,168,76,.35)}
+    .hero-btn.ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+    .hero-btn.ghost:hover{background:rgba(255,255,255,.18)}
+    .hero-stats{position:absolute;bottom:40px;right:8vw;display:flex;gap:32px;z-index:2}
+    .hstat{text-align:center}
+    .hstat-val{font-family:var(--serif);font-size:2.2rem;font-weight:700;color:var(--primary-l);line-height:1}
+    .hstat-lbl{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;font-family:var(--mono)}
+
+    /* ── SEARCH BAR ── */
+    .search-section{background:var(--surface);padding:32px 5vw;border-bottom:1px solid var(--faint);box-shadow:0 4px 24px rgba(0,0,0,.06)}
+    .search-inner{max-width:1000px;margin:0 auto}
+    .search-tabs{display:flex;gap:0;margin-bottom:20px}
+    .s-tab{padding:8px 24px;font-size:13px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;transition:all .2s}
+    .s-tab.active{color:var(--primary-d);border-color:var(--primary)}
+    .search-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end}
+    .search-field label{display:block;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-family:var(--mono)}
+    .search-field select,.search-field input{width:100%;padding:11px 16px;border:1px solid var(--border);border-radius:10px;background:var(--bg);font-size:14px;color:var(--text);font-family:var(--sans);outline:none;transition:border-color .2s}
+    .search-field select:focus,.search-field input:focus{border-color:var(--primary)}
+    .search-btn{padding:12px 28px;border-radius:10px;background:var(--primary);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:var(--sans);transition:background .2s}
+    .search-btn:hover{background:var(--primary-d)}
+    @media(max-width:768px){.search-row{grid-template-columns:1fr 1fr;}.search-btn{grid-column:1/-1}}
+
+    /* ── FEATURED PROPERTIES ── */
+    .section{padding:80px 5vw;max-width:1280px;margin:0 auto}
+    .sec-label{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--primary-d);margin-bottom:10px}
+    .sec-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:8px}
+    .sec-sub{color:var(--muted);font-size:15px;margin-bottom:48px;max-width:500px}
+
+    .prop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:48px}
+    .prop-card{background:var(--surface);border-radius:20px;overflow:hidden;border:1px solid var(--faint);transition:transform .3s var(--ease),box-shadow .3s var(--ease);cursor:pointer}
+    .prop-card:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,.1)}
+    .prop-img{position:relative;height:230px;overflow:hidden}
+    .prop-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+    .prop-card:hover .prop-img img{transform:scale(1.06)}
+    .prop-badge{position:absolute;top:14px;left:14px;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:600;font-family:var(--mono)}
+    .prop-badge.venta{background:var(--primary);color:#fff}
+    .prop-badge.renta{background:var(--dark);color:#fff}
+    .prop-badge.nuevo{background:var(--green);color:#fff}
+    .prop-fav{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s}
+    .prop-fav:hover{background:#fff}
+    .prop-info{padding:20px 22px 22px}
+    .prop-price{font-family:var(--serif);font-size:1.6rem;font-weight:700;color:var(--dark);margin-bottom:4px}
+    .prop-price small{font-size:.75rem;font-weight:400;color:var(--muted);font-family:var(--sans)}
+    .prop-name{font-weight:600;font-size:14px;margin-bottom:4px}
+    .prop-loc{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-bottom:14px}
+    .prop-loc::before{content:'📍';font-size:11px}
+    .prop-specs{display:flex;gap:16px;padding-top:14px;border-top:1px solid var(--faint)}
+    .spec{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+    .spec-icon{font-size:14px}
+    @media(max-width:900px){.prop-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:580px){.prop-grid{grid-template-columns:1fr}}
+
+    /* ── FEATURED HERO PROP ── */
+    .featured-section{background:var(--dark2);padding:80px 5vw;margin:0}
+    .featured-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+    .feat-media{position:relative;border-radius:24px;overflow:hidden;height:500px}
+    .feat-media img{width:100%;height:100%;object-fit:cover}
+    .feat-media-badge{position:absolute;bottom:20px;left:20px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:12px 18px;color:#fff}
+    .feat-media-badge strong{display:block;font-size:20px;font-weight:700}
+    .feat-media-badge span{font-size:11px;opacity:.7;font-family:var(--mono)}
+    .feat-content{color:#fff}
+    .feat-badge{display:inline-block;padding:4px 12px;border-radius:99px;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.3);font-size:11px;color:var(--primary-l);font-family:var(--mono);letter-spacing:.1em;margin-bottom:20px}
+    .feat-title{font-family:var(--serif);font-size:clamp(2rem,3.5vw,2.8rem);font-weight:700;line-height:1.15;margin-bottom:16px}
+    .feat-sub{color:rgba(255,255,255,.6);font-size:15px;line-height:1.7;margin-bottom:28px}
+    .feat-specs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px;padding:24px;background:rgba(255,255,255,.05);border-radius:14px;border:1px solid rgba(255,255,255,.08)}
+    .feat-spec{text-align:center}
+    .feat-spec-val{font-size:1.5rem;font-weight:700;font-family:var(--serif);color:var(--primary-l)}
+    .feat-spec-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);font-family:var(--mono);margin-top:3px}
+    .feat-price{font-family:var(--serif);font-size:2.2rem;font-weight:700;color:var(--primary-l);margin-bottom:24px}
+    @media(max-width:900px){.featured-inner{grid-template-columns:1fr}.feat-media{height:320px}}
+
+    /* ── SERVICES ── */
+    .services-section{background:var(--surface);padding:80px 5vw}
+    .services-inner{max-width:1280px;margin:0 auto}
+    .services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+    .serv-card{padding:32px 24px;border-radius:18px;background:var(--bg);border:1px solid var(--faint);text-align:center;transition:all .3s var(--ease)}
+    .serv-card:hover{background:var(--dark2);border-color:var(--dark2);transform:translateY(-4px)}
+    .serv-card:hover .serv-title,.serv-card:hover .serv-desc{color:#fff}
+    .serv-icon{width:56px;height:56px;border-radius:14px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px}
+    .serv-title{font-weight:700;font-size:15px;margin-bottom:8px;transition:color .3s}
+    .serv-desc{font-size:13px;color:var(--muted);line-height:1.6;transition:color .3s}
+    @media(max-width:900px){.services-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.services-grid{grid-template-columns:1fr}}
+
+    /* ── AGENTS ── */
+    .agents-section{padding:80px 5vw}
+    .agents-inner{max-width:1280px;margin:0 auto}
+    .agents-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+    .agent-card{background:var(--surface);border-radius:18px;overflow:hidden;border:1px solid var(--faint);text-align:center;padding-bottom:24px;transition:box-shadow .3s}
+    .agent-card:hover{box-shadow:0 16px 40px rgba(0,0,0,.08)}
+    .agent-photo{height:200px;overflow:hidden}
+    .agent-photo img{width:100%;height:100%;object-fit:cover;object-position:top}
+    .agent-name{font-weight:700;font-size:15px;margin:16px 16px 4px}
+    .agent-role{font-size:12px;color:var(--primary-d);font-family:var(--mono);letter-spacing:.05em;margin-bottom:12px}
+    .agent-stats{display:flex;justify-content:center;gap:20px;padding:12px;border-top:1px solid var(--faint);margin:0 16px}
+    .ag-stat-val{font-weight:700;font-size:15px;display:block}
+    .ag-stat-lbl{font-size:10px;color:var(--muted);font-family:var(--mono)}
+    @media(max-width:900px){.agents-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.agents-grid{grid-template-columns:1fr 1fr}}
+
+    /* ── NEWSLETTER ── */
+    .newsletter{background:linear-gradient(135deg,var(--dark) 0%,var(--dark2) 100%);padding:72px 5vw}
+    .nl-inner{max-width:640px;margin:0 auto;text-align:center}
+    .nl-title{font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.6rem);color:#fff;margin-bottom:12px}
+    .nl-sub{color:rgba(255,255,255,.55);margin-bottom:32px;font-size:15px}
+    .nl-form{display:flex;gap:12px;max-width:480px;margin:0 auto}
+    .nl-input{flex:1;padding:13px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#fff;font-size:14px;font-family:var(--sans);outline:none}
+    .nl-input::placeholder{color:rgba(255,255,255,.35)}
+    .nl-input:focus{border-color:var(--primary)}
+    .nl-btn{padding:13px 24px;border-radius:10px;background:var(--primary);color:#fff;border:none;font-weight:600;font-size:14px;cursor:pointer;white-space:nowrap;font-family:var(--sans)}
+    @media(max-width:480px){.nl-form{flex-direction:column}}
+
+    /* ── FOOTER ── */
+    .footer{background:var(--dark);padding:56px 5vw 28px;color:rgba(255,255,255,.6)}
+    .footer-inner{max-width:1280px;margin:0 auto}
+    .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+    .footer-brand .logo{font-size:20px;margin-bottom:12px;display:block;color:#fff}
+    .footer-brand p{font-size:13px;line-height:1.7;max-width:260px}
+    .footer-col h4{color:#fff;font-size:13px;font-weight:600;letter-spacing:.05em;margin-bottom:16px}
+    .footer-col ul{list-style:none}
+    .footer-col ul li{margin-bottom:10px}
+    .footer-col ul li a{font-size:13px;transition:color .2s}
+    .footer-col ul li a:hover{color:#fff}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:12px}
+    .footer-bottom a{opacity:.7}
+    @media(max-width:768px){.footer-top{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.footer-top{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════════════ -->
+<nav class="nav" id="main-nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">Élite<span>Properties</span></a>
+    <div class="nav-links">
+      <a href="#propiedades">Propiedades</a>
+      <a href="#featured">Destacadas</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#agentes">Agentes</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#" class="btn-outline">Iniciar sesión</a>
+      <a href="#" class="btn-gold">Publicar propiedad</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════════════════════════ -->
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Propiedades Premium</div>
+    <h1 class="hero-title">Encuentra tu<br /><em>hogar ideal</em></h1>
+    <p class="hero-sub">Más de 1,200 propiedades exclusivas en las mejores ubicaciones. Asesoría personalizada y proceso transparente.</p>
+    <div class="hero-actions">
+      <a href="#propiedades" class="hero-btn primary">Explorar propiedades</a>
+      <a href="#agentes" class="hero-btn ghost">Hablar con un agente</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-val">1.2K+</div><div class="hstat-lbl">Propiedades</div></div>
+    <div class="hstat"><div class="hstat-val">98%</div><div class="hstat-lbl">Satisfacción</div></div>
+    <div class="hstat"><div class="hstat-val">15+</div><div class="hstat-lbl">Años exp.</div></div>
+  </div>
+</header>
+
+<!-- ══ SEARCH ════════════════════════════════════════════════════ -->
+<div class="search-section">
+  <div class="search-inner">
+    <div class="search-tabs">
+      <div class="s-tab active" onclick="setTab(this)">Comprar</div>
+      <div class="s-tab" onclick="setTab(this)">Rentar</div>
+      <div class="s-tab" onclick="setTab(this)">Nuevos proyectos</div>
+    </div>
+    <div class="search-row">
+      <div class="search-field">
+        <label>Ubicación</label>
+        <input type="text" placeholder="Ciudad, colonia o zona…" />
+      </div>
+      <div class="search-field">
+        <label>Tipo</label>
+        <select>
+          <option>Todos los tipos</option>
+          <option>Casa</option>
+          <option>Departamento</option>
+          <option>Penthouse</option>
+          <option>Villa</option>
+          <option>Local comercial</option>
+        </select>
+      </div>
+      <div class="search-field">
+        <label>Precio máx.</label>
+        <select>
+          <option>Sin límite</option>
+          <option>$500,000</option>
+          <option>$1,000,000</option>
+          <option>$2,000,000</option>
+          <option>$5,000,000</option>
+        </select>
+      </div>
+      <button class="search-btn">Buscar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PROPERTIES GRID ═══════════════════════════════════════════ -->
+<div id="propiedades" style="background:var(--bg)">
+  <div class="section">
+    <div class="sec-label">Listados recientes</div>
+    <h2 class="sec-title">Propiedades <em style="font-style:italic;color:var(--primary-d)">destacadas</em></h2>
+    <p class="sec-sub">Selección curada de inmuebles en las mejores condiciones y ubicaciones.</p>
+
+    <div class="prop-grid" id="prop-grid">
+      <!-- Cards generated by JS -->
+    </div>
+    <div style="text-align:center">
+      <a href="#" class="btn-gold" style="display:inline-flex;padding:14px 36px;font-size:15px">Ver todas las propiedades →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FEATURED ══════════════════════════════════════════════════ -->
+<div id="featured" class="featured-section">
+  <div class="featured-inner">
+    <div class="feat-media">
+      <img src="https://picsum.photos/seed/luxvilla/800/600" alt="Propiedad destacada" loading="lazy"/>
+      <div class="feat-media-badge">
+        <strong>Villa Palmas</strong>
+        <span>Residencial exclusivo</span>
+      </div>
+    </div>
+    <div class="feat-content">
+      <div class="feat-badge">★ PROPIEDAD DESTACADA DEL MES</div>
+      <h2 class="feat-title">Villa de Lujo con Vista al Mar en Cancún</h2>
+      <p class="feat-sub">Una obra arquitectónica única con 4 niveles, terraza privada, alberca infinity y acceso directo a playa. Acabados de primera calidad y domótica de última generación.</p>
+      <div class="feat-specs">
+        <div class="feat-spec"><div class="feat-spec-val">5</div><div class="feat-spec-lbl">Recámaras</div></div>
+        <div class="feat-spec"><div class="feat-spec-val">680</div><div class="feat-spec-lbl">m² construcción</div></div>
+        <div class="feat-spec"><div class="feat-spec-val">1,200</div><div class="feat-spec-lbl">m² terreno</div></div>
+      </div>
+      <div class="feat-price">$4,850,000 USD</div>
+      <a href="#" class="btn-gold" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;font-size:15px;border-radius:99px">Agendar visita →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SERVICES ══════════════════════════════════════════════════ -->
+<div id="servicios" class="services-section">
+  <div class="services-inner">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="sec-label" style="justify-content:center;display:flex">Nuestros servicios</div>
+      <h2 class="sec-title" style="text-align:center">Todo lo que necesitas<br/>en un solo lugar</h2>
+    </div>
+    <div class="services-grid">
+      <div class="serv-card">
+        <div class="serv-icon">🏠</div>
+        <div class="serv-title">Compra y Venta</div>
+        <p class="serv-desc">Asesoría completa en el proceso de compra venta. Valuación justa y negociación profesional.</p>
+      </div>
+      <div class="serv-card">
+        <div class="serv-icon">📋</div>
+        <div class="serv-title">Gestión Legal</div>
+        <p class="serv-desc">Acompañamiento jurídico en escrituración, contratos y trámites notariales.</p>
+      </div>
+      <div class="serv-card">
+        <div class="serv-icon">💰</div>
+        <div class="serv-title">Financiamiento</div>
+        <p class="serv-desc">Asesoría en crédito hipotecario con las mejores tasas del mercado bancario.</p>
+      </div>
+      <div class="serv-card">
+        <div class="serv-icon">🔑</div>
+        <div class="serv-title">Administración</div>
+        <p class="serv-desc">Gestión integral de propiedades en renta: cobranza, mantenimiento y contratos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ AGENTS ════════════════════════════════════════════════════ -->
+<div id="agentes" class="agents-section">
+  <div class="agents-inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;flex-wrap:wrap;gap:16px">
+      <div><div class="sec-label">Equipo</div><h2 class="sec-title" style="margin-bottom:0">Nuestros agentes</h2></div>
+      <a href="#" class="btn-outline">Ver equipo completo</a>
+    </div>
+    <div class="agents-grid">
+      <div class="agent-card">
+        <div class="agent-photo"><img src="https://picsum.photos/seed/agent1/300/200" alt="Agente" loading="lazy"/></div>
+        <div class="agent-name">Ana Martínez</div>
+        <div class="agent-role">Directora Comercial</div>
+        <div class="agent-stats">
+          <div><span class="ag-stat-val">142</span><span class="ag-stat-lbl">Ventas</span></div>
+          <div><span class="ag-stat-val">$12M</span><span class="ag-stat-lbl">Volumen</span></div>
+        </div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-photo"><img src="https://picsum.photos/seed/agent2/300/200" alt="Agente" loading="lazy"/></div>
+        <div class="agent-name">Carlos Reyes</div>
+        <div class="agent-role">Asesor Senior</div>
+        <div class="agent-stats">
+          <div><span class="ag-stat-val">98</span><span class="ag-stat-lbl">Ventas</span></div>
+          <div><span class="ag-stat-val">$8M</span><span class="ag-stat-lbl">Volumen</span></div>
+        </div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-photo"><img src="https://picsum.photos/seed/agent3/300/200" alt="Agente" loading="lazy"/></div>
+        <div class="agent-name">Laura Vega</div>
+        <div class="agent-role">Especialista Residencial</div>
+        <div class="agent-stats">
+          <div><span class="ag-stat-val">76</span><span class="ag-stat-lbl">Ventas</span></div>
+          <div><span class="ag-stat-val">$6M</span><span class="ag-stat-lbl">Volumen</span></div>
+        </div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-photo"><img src="https://picsum.photos/seed/agent4/300/200" alt="Agente" loading="lazy"/></div>
+        <div class="agent-name">Diego Morales</div>
+        <div class="agent-role">Asesor Comercial</div>
+        <div class="agent-stats">
+          <div><span class="ag-stat-val">54</span><span class="ag-stat-lbl">Ventas</span></div>
+          <div><span class="ag-stat-val">$4M</span><span class="ag-stat-lbl">Volumen</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NEWSLETTER ════════════════════════════════════════════════ -->
+<div class="newsletter">
+  <div class="nl-inner">
+    <h2 class="nl-title">Recibe propiedades exclusivas</h2>
+    <p class="nl-sub">Sé el primero en conocer nuevas propiedades antes de su publicación oficial.</p>
+    <div class="nl-form">
+      <input type="email" class="nl-input" placeholder="tu@correo.com" />
+      <button class="nl-btn">Suscribirme</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FOOTER ════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="logo">Élite<span style="color:var(--primary)">Properties</span></span>
+        <p>Inmobiliaria premium con más de 15 años creando experiencias únicas en el mercado de propiedades de lujo.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Propiedades</h4>
+        <ul>
+          <li><a href="#">Casas en venta</a></li>
+          <li><a href="#">Departamentos</a></li>
+          <li><a href="#">Nuevos proyectos</a></li>
+          <li><a href="#">Propiedades en renta</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#">Nosotros</a></li>
+          <li><a href="#">Agentes</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="#">+52 55 1234 5678</a></li>
+          <li><a href="#">info@eliteproperties.mx</a></li>
+          <li><a href="#">CDMX · Monterrey · Cancún</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Élite Properties. Todos los derechos reservados.</span>
+      <span>Plantilla by <a href="#" style="color:var(--primary)">Sparkweb</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── Nav scroll ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('main-nav').classList.toggle('scrolled',window.scrollY>40);
+});
+
+/* ── Search tabs ── */
+function setTab(el){document.querySelectorAll('.s-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+
+/* ── Property data ── */
+const props=[
+  {price:'$2,400,000',type:'Casa',name:'Residencia Lomas del Valle',loc:'Lomas de Chapultepec, CDMX',bed:4,bath:4,m2:420,img:'prop1',badge:'venta'},
+  {price:'$850,000',type:'Departamento',name:'Penthouse Reforma 222',loc:'Paseo de la Reforma, CDMX',bed:3,bath:2,m2:185,img:'prop2',badge:'nuevo'},
+  {price:'$3,200,000',type:'Villa',name:'Villa Mar Azul',loc:'Zona Hotelera, Cancún',bed:5,bath:5,m2:680,img:'prop3',badge:'venta'},
+  {price:'$12,500/mes',type:'Departamento',name:'Torre Artz Pedregal 14B',loc:'Pedregal, CDMX',bed:2,bath:2,m2:140,img:'prop4',badge:'renta'},
+  {price:'$1,650,000',type:'Casa',name:'Casa Jardines del Bosque',loc:'Interlomas, Edo. México',bed:4,bath:3,m2:320,img:'prop5',badge:'venta'},
+  {price:'$980,000',type:'Departamento',name:'Sky Hub Monterrey',loc:'Valle Oriente, Monterrey',bed:3,bath:3,m2:210,img:'prop6',badge:'nuevo'},
+];
+const grid=document.getElementById('prop-grid');
+props.forEach(p=>{
+  grid.innerHTML+=`<div class="prop-card">
+    <div class="prop-img">
+      <img src="https://picsum.photos/seed/${p.img}/600/400" alt="${p.name}" loading="lazy"/>
+      <span class="prop-badge ${p.badge}">${p.badge==='venta'?'En venta':p.badge==='renta'?'En renta':'Nuevo'}</span>
+      <div class="prop-fav">♡</div>
+    </div>
+    <div class="prop-info">
+      <div class="prop-price">${p.price} <small>${p.type}</small></div>
+      <div class="prop-name">${p.name}</div>
+      <div class="prop-loc">${p.loc}</div>
+      <div class="prop-specs">
+        <div class="spec"><span class="spec-icon">🛏</span>${p.bed} rec.</div>
+        <div class="spec"><span class="spec-icon">🚿</span>${p.bath} baños</div>
+        <div class="spec"><span class="spec-icon">📐</span>${p.m2} m²</div>
+      </div>
+    </div>
+  </div>`;
+});
+
+/* ── Reveal animation ── */
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});
+},{threshold:.1});
+document.querySelectorAll('.prop-card,.serv-card,.agent-card').forEach(el=>{
+  el.style.opacity='0';el.style.transform='translateY(24px)';el.style.transition='opacity .5s ease,transform .5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
